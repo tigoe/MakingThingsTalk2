@@ -1,0 +1,27 @@
+<html>
+<head>
+   <title>Cat Cam</title>
+   <meta http-equiv="refresh" content="10">
+</head>
+<body>
+   <center>
+      <h2>Cat Cam</h2>
+      <script language="javascript">
+         var refreshTime=5000;     // refresh time = 5 seconds(5000ms)
+         var thisImage="catcam.jpg";   
+         function refresh() {
+            // get the time:
+            var thisTime = new Date();  
+            document.images[“pic"]src=thisImage+"?"+thisTime;
+            setTimeout(‘refresh()’, refreshTime);
+         }
+         // display the image:
+         document.write(‘<img src="’+thisImage+’"">’);
+         // if the refresh time is up, reload the page:
+         if(document.images) {
+            window.onload=refresh;
+         }
+      </script>
+   </center>
+</body>
+</html>
