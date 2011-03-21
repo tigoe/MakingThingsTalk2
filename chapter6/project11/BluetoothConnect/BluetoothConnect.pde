@@ -21,9 +21,7 @@ long lastReadingTime = 0;          // previous time you read the sensor
 
 // address of the remote BT radio. Replace with the address 
 // of your remote radio
-//String remoteAddress = "112233445566";  
 String remoteAddress = "000666049D7B";  
-//String remoteAddress = "000666421FDF";
 String messageString = "";        // messages coming in serial port
 
 boolean connected = false;      // whether you're connected or not
