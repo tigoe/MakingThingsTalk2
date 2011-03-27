@@ -1,11 +1,5 @@
 /*
   Web  Server
- Language: Wiring/Arduino
- 
- */
-
-/*
-  Web  Server
   Language: Arduino
  
  */

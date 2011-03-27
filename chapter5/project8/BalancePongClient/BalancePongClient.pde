@@ -1,6 +1,6 @@
 /*
   Balance Board client
- Language:  Wiring/Arduino
+ Language:  Arduino
  
  This program enables an Arduino to control one paddle 
  in a networked Pong game. 
@@ -11,12 +11,11 @@
 #include <Ethernet.h>
 
 byte mac[] = { 0x00, 0xAA, 0xBB, 0xCC, 0xDE, 0x01 };
-byte ip[] = { 192,168,1,20 };
+IPAddress ip(192,168,1,20);
 
 // Enter the IP address of the computer on which 
 // you'll run the pong server:
-byte server[] = { 
-  192,168,1,100 };  
+IPAddress server(192,168,1,100); 
 
 const int connectButton = 2;  // the pushbutton for connecting/disconnecting
 const int connectionLED = 3;  // this LED indicates whether you're connected
@@ -27,7 +26,7 @@ const int right = 891;        // threshold for the joystick to go right
 const int sendInterval = 20;  // minimum time between messages to the server
 const int debounceInterval = 15;  // used to smooth out pushbutton readings
 
-Client client(server, 8080);  // instance of the Client class for connecting
+Client client;               // instance of the Client class for connecting
 int lastButtonState = 0;     // previous state of the pushbutton
 long lastTimeSent = 0;       // timestamp of the last server message
 
@@ -63,7 +62,7 @@ void loop()
     } // if the client's disconnected, try to connect:
     else {
       Serial.println("connecting");
-      client.connect();
+      client.connect(server, 8080);
     }
   }
 

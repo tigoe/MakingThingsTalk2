@@ -1,7 +1,6 @@
-
 /*
   AirNow Web Scraper
- Language: Wiring/Arduino
+ Language: Arduino
  */
 #include <SPI.h>
 #include <Ethernet.h>
@@ -139,4 +138,3 @@ void blink(int thisPin, int howManyTimes) {
     delay(200);  
   }
 }
-
