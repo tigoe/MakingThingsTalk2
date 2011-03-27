@@ -4,19 +4,21 @@
  
  */
 
+/*
+  Web  Server
+  Language: Arduino
+ 
+ */
+
 #include <SPI.h>
 #include <Ethernet.h>
 
 Server server(80);
 
-byte mac[] = { 
-  0x00, 0xAA, 0xBB, 0xCC, 0xDE, 0x01 };
-byte gateway[] = {
-  192,168,1,1};
-byte subnet[] = {
-  255,255,255,0};
-byte ip[] = { 
-  192,168,1,20 };
+byte mac[] = {  0x00, 0xAA, 0xBB, 0xCC, 0xDE, 0x01 };
+IPAddress gateway(192,168,1,1);
+IPAddress subnet(255,255,255,0);
+IPAddress ip(192,168,1,20);
 
 void setup()
 {

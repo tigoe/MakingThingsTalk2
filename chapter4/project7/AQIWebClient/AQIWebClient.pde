@@ -20,14 +20,13 @@ const int requestInterval = 10000;  // delay between updates to the server
 // Enter a MAC address and IP address for your controller below.
 // The IP address will be dependent on your local network:
 byte mac[] = { 0x00, 0xAA, 0xBB, 0xCC, 0xDE, 0x01 };
-byte subnet[] = {255,255,255,0};
-byte ip[] = { 192,168,1,20 };
-byte server[] = { 208,201,239,101 };  // change this to match your server
+IPAddress ip(192,168,1,20);
+IPAddress server(208,201,239,101 );
 
 // Initialize the Ethernet client library
 // with the IP address and port of the server 
 // that you want to connect to (port 80 is default for HTTP):
-Client client(server, 80);
+Client client;
 
 boolean requested;                   // whether you've made a request since connecting
 long lastAttemptTime = 0;            // last time you connected to the server, in milliseconds
@@ -91,7 +90,7 @@ void connectToServer() {
 
   // attempt to connect, and wait a millisecond:
   Serial.println("connecting...");
-  if (client.connect()) {
+  if (client.connect(server, 80)) {
     requested = false; 
   }
   // note the time of this connect attempt:
@@ -102,9 +101,9 @@ boolean makeRequest() {
   Serial.println("requesting...");
   // make HTTP GET request and fill in the path to
   // the PHP script on your server:
-  client.println("GET /mtt2/webpage_scraper_0002.php HTTP/1.1");
+  client.println("GET /~myaccount/scraper.php HTTP/1.1");
   // fill in your server's name:
-  client.println("HOST: tigoe.net");
+  client.println("HOST: example.com");
   client.println();
   return true;
 }

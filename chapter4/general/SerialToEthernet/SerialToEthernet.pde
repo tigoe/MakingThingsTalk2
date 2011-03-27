@@ -9,17 +9,15 @@
 
 // Enter a MAC address and IP address for your controller below.
 // The IP address will be dependent on your local network:
-byte mac[] = {
-  0x00, 0xAA, 0xBB, 0xCC, 0xDE, 0x01 };
-byte ip[] = { 
-  128,122,151,6 };
-byte server[] = { 
-  173,236,203,251 }; // My site
+byte mac[] = { 0x00, 0xAA, 0xBB, 0xCC, 0xDE, 0x01 };
+IPAddress ip(192,168,1,20);
+IPAddress server(208,201,239,101 );
+
 
 // Initialize the Ethernet client library
 // with the IP address and port of the server 
 // that you want to connect to (port 80 is default for HTTP):
-Client client(server, 80);
+Client client;
 
 
 void setup() {
@@ -63,9 +61,8 @@ void loop()
 void connectToServer() {
   // attempt to connect, and wait a millisecond:
   Serial.println("connecting...");
-  client.connect();
   delay(1);
-  if (client.connected()) {
+  if ( client.connect(server, 80)) {
     // if you get a connection, report back via serial:
     Serial.println("connected");
 

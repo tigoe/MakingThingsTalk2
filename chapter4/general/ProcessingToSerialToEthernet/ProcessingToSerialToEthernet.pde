@@ -13,7 +13,7 @@ void setup()
 {
   // get the list of serial ports:
   println(Serial.list());
-  // open the serial port apprropriate to your computer:
+  // open the serial port appropriate to your computer:
   myPort = new Serial(this, Serial.list()[0], 9600);
   // configure the serial object to buffer text until it receives a 
   // linefeed character:
@@ -41,8 +41,8 @@ void keyReleased() {
     break;
   case 1:
     // send a HTTP GET request
-    myPort.write("GET /~igoe/index.html HTTP/1.0\n");
-    myPort.write("HOST:example.com\n\n");
+    myPort.write("GET /~myaccount/index.html HTTP/1.1\n");
+    myPort.write("HOST:myserver.com\n\n");
     step++;
     break;
   }

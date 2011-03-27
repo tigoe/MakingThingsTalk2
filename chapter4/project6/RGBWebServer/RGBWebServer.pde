@@ -1,28 +1,23 @@
 /*
-  Web  Server
- Language: Wiring/Arduino
+  RGB Web  Server
+  Language: Arduino
  
  */
 
 #include <SPI.h>
 #include <Ethernet.h>
 
-// Enter a MAC address and IP address for your controller below.
-// The IP address will be dependent on your local network:
-byte mac[] = {
-  0x90, 0xA2, 0xDA, 0x00, 0x12, 0xA6 };
-byte gateway[] = {
-  128,122,151,1};
-byte subnet[] = {
-  255,255,255,0};
-byte ip[] = { 
-  128,122,151,6 };
+Server server(80);
+
+byte mac[] = {  0x00, 0xAA, 0xBB, 0xCC, 0xDE, 0x01 };
+IPAddress gateway(192,168,1,1);
+IPAddress subnet(255,255,255,0);
+IPAddress ip(192,168,1,20);
 
 
 // Initialize the Ethernet server library
 // with the IP address and port you want to use 
 // (port 80 is default for HTTP):
-Server server(80);
 
 int lineLength = 0;    // length of the incoming text line
 
@@ -82,9 +77,9 @@ void makeResponse(Client thisClient) {
   // set up the body background color tag:
   thisClient.print("<body bgcolor=#");
   // read and the three analog sensors:
-  int red = analogRead(0)/4;
-  int green = analogRead(1)/4;
-  int blue = analogRead(2)/4;
+  int red = analogRead(A0)/4;
+  int green = analogRead(A1)/4;
+  int blue = analogRead(A2)/4;
   // print them as one hexadecimal string:
   thisClient.print(red, HEX);
   thisClient.print(green, HEX);
