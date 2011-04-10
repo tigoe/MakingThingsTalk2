@@ -1,7 +1,5 @@
 
-// Processing UDP example to send and receive string data from Arduino 
-// press any key to send the "Hello Arduino" message
-
+//comment
 
 import hypermedia.net.*;
 

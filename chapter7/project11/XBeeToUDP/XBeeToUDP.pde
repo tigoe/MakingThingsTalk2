@@ -21,7 +21,7 @@ byte mac[] = {
 //IPAddress myIp(192,168,1,20);
 //IPAddress yourIp(192,168,1,21);
 IPAddress myIp(128,122,151,6);
-IPAddress yourIp(128,122,151,128);
+IPAddress yourIp(173,236,203,251);
 
 unsigned int myPort = 10002;      // local port to listen on
 unsigned int yourPort = 10002;  
