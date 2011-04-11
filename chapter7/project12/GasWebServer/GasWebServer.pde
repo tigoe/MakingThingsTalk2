@@ -13,8 +13,7 @@ Server server(80);
 // Ethernet MAC address and IP address for server:
 byte mac[] = {  
   0x00, 0xAA, 0xBB, 0xCC, 0xDE, 0x01 };
-//IPAddress ip(192,168,1,20);
-IPAddress ip(128,122,151,6);
+IPAddress ip(192,168,1,20);
 
 String requestLine = "";        // incoming HTTP request from client
 
@@ -39,15 +38,16 @@ void setup() {
 }
 
 void loop() {
-  // listen for incoming clients:
-  Client client = server.available();
-  if (client) {
-    listenToClient(client);
-  }
-
+ 
   // listen for incoming serial data:
   if (Serial.available() > 0) {
     listenToSerial();
+  }
+
+ // listen for incoming clients:
+  Client client = server.available();
+  if (client) {
+    listenToClient(client);
   }
 
   // cacluate an average of readings after <averageInterval> seconds
@@ -58,30 +58,6 @@ void loop() {
   }
 }
 
-// This method parses the XBee data format
-// and returns an average sensor value for the packet
-int parseData() {
-  int adcStart = 11;                     // ADC reading starts at byte 12
-  int numSamples = dataPacket[8];        // number of samples in packet
-  int total = 0;                         // sum of all the ADC readings
-
-  // read the address. It's a two-byte value, so you
-  // add the two bytes as follows:
-  int address = dataPacket[5] + dataPacket[4] * 256;
-
-  // read <numSamples> 10-bit analog values, two at a time
-  // because each reading is two bytes long:
-  for (int thisByte = 0; thisByte < numSamples * 2;  thisByte=thisByte+2) {
-    // 10-bit value = high byte * 256 + low byte:
-    int thisSample = (dataPacket[thisByte + adcStart] * 256) + 
-      dataPacket[(thisByte + 1) + adcStart];
-    // add the result to the total for averaging later:
-    total = total + thisSample;
-  }
-  // average the result:
-  int average = total / numSamples;
-  return average;
-}
 
 // this method receives serial data and stores it
 // in an array:
@@ -111,6 +87,32 @@ void listenToSerial() {
     byteCounter++;
   }  
 }
+
+// This method parses the XBee data format
+// and returns an average sensor value for the packet
+int parseData() {
+  int adcStart = 11;                     // ADC reading starts at byte 12
+  int numSamples = dataPacket[8];        // number of samples in packet
+  int total = 0;                         // sum of all the ADC readings
+
+  // read the address. It's a two-byte value, so you
+  // add the two bytes as follows:
+  int address = dataPacket[5] + dataPacket[4] * 256;
+
+  // read <numSamples> 10-bit analog values, two at a time
+  // because each reading is two bytes long:
+  for (int thisByte = 0; thisByte < numSamples * 2;  thisByte=thisByte+2) {
+    // 10-bit value = high byte * 256 + low byte:
+    int thisSample = (dataPacket[thisByte + adcStart] * 256) + 
+      dataPacket[(thisByte + 1) + adcStart];
+    // add the result to the total for averaging later:
+    total = total + thisSample;
+  }
+  // average the result:
+  int average = total / numSamples;
+  return average;
+}
+
 
 // this method litens to requests from a HTTP client:
 void listenToClient( Client thisClient) {
@@ -161,8 +163,7 @@ void makeResponse(Client thisClient) {
   else {
     thisClient.print("<h1>No reading</h1>");
   }
-  thisClient.println("</html>\n");
-  thisClient.print("\n\n");
+  thisClient.println("</html>\n\n");
 }
 
 // this method takes an average of the readings:
