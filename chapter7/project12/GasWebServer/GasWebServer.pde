@@ -170,7 +170,7 @@ void makeResponse(Client thisClient) {
 float getAverageReading() {
   int thisAverage = sensorTotal / readingCount;
   // convert to a voltage:
-  float voltage = 5.0 * (thisAverage / 1024.0);
+  float voltage = 3.3 * (thisAverage / 1024.0);
   // reseet the reading count and totals for next time:
   readingCount = 0; 
   sensorTotal = 0;

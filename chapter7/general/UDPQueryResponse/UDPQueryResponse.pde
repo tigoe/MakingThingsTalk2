@@ -1,5 +1,5 @@
 /*
-  Serial to UDP
+ UDP Query Responder
  Language: Arduino
  
  */
@@ -70,7 +70,7 @@ void listen(UDP thisUDP, unsigned int thisPort) {
 
 
 void sendPacket(UDP thisUDP, IPAddress thisAddress, 
-        IPAddress destAddress, unsigned int destPort) {
+IPAddress destAddress, unsigned int destPort) {
   // set up a packet to send:
   thisUDP.beginPacket(destAddress, destPort);
   for (int thisByte = 0; thisByte < 4; thisByte++) {
@@ -81,5 +81,6 @@ void sendPacket(UDP thisUDP, IPAddress thisAddress,
   thisUDP.println("Hi there!");
   thisUDP.endPacket();
 }
+
 
 
