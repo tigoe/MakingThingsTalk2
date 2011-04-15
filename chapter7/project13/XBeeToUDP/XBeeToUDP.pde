@@ -1,21 +1,18 @@
 /*
   XBee to UDP
  Language: Arduino
- 
  */
 
 #include <SPI.h>
 #include <Ethernet.h>
 #include <Udp.h>      
 
-const int packetSize = 22;
-
 // Enter a MAC address and IP address for your controller below.
 // The IP address will be dependent on your local network:
 byte mac[] = { 
   0x00, 0xAA, 0xBB, 0xCC, 0xDE, 0x02 };
-//IPAddress myIp(192,168,1,20);
-//IPAddress yourIp(192,168,1,21);
+IPAddress myIp(192,168,1,20);
+IPAddress yourIp(192,168,1,21);
 
 unsigned int myPort = 43770;      // local port to listen on
 unsigned int yourPort = 43770;    // remote port to send to
@@ -36,13 +33,12 @@ void setup() {
   udp.beginPacket(yourIp, yourPort);
 }
 
-void loop()
-{
+void loop() {
   if (Serial.available()) {
     int serialByte = Serial.read();
     // if you reach max packet size, or get a 0x7E,
     // send the packet and begin a new one:
-    if (byteCount == packetSize || serialByte == 0x7E) {
+    if (serialByte == 0x7E) {
       udp.endPacket();
       // set up a packet to send:
       udp.beginPacket(yourIp, yourPort);
@@ -51,7 +47,3 @@ void loop()
     udp.write(serialByte);
   }
 }
-
-
-
-

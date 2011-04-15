@@ -8,7 +8,7 @@
  byte 2-3:   packet size, a 2-byte value  (not used here)
  byte 4:     API identifier value, a code that says what this response is (not used here)
  byte 5-6:   Sender's address
- byte 7:     RSSI, Received Signal Strength Indicator (not used here)
+ byte 7:     signalStrength, Received Signal Strength Indicator (not used here)
  byte 8:     Broadcast options (not used here)
  byte 9:     Number of samples to follow
  byte 10-11: Active channels indicator (not used here)
@@ -17,8 +17,6 @@
 
 import hypermedia.net.*;
 import processing.serial.*;
-
-
 
 UDP udp;                      // define the UDP object
 int queryPort = 43770;        // the port number for the device query
@@ -37,15 +35,14 @@ void setup() {
   // listen for incoming packets:
   udp.listen( true );
 
-  // show the initial time and date:
+  // make the background black:
   background(0);
-  eraseTime(hPos, 0); 
-  drawTime(hPos, 0);
+  // show the readings text:
+  drawReadings(0,0);
 }
 
 void draw() {
-  // nothing happens here.  It's all event-driven 
-  // by the receive() method.
+  // nothing happens here.
 }
 
 /*
@@ -62,76 +59,66 @@ void receive( byte[] data, String ip, int port ) {
  It then averages the ADC readings and gives you the result.
  */
 void parseData(int[] thisPacket) {
-  int adcStart = 11;                     // ADC reading starts at byte 12
-  int numSamples = thisPacket[8];        // number of samples in packet
-  int[] adcValues = new int[numSamples]; // array to hold the 5 readings
-  int total = 0;                         // sum of all the ADC readings
-  int rssi = 0;                          // the received signal strength
+  // make sure the packet is 22 bytes long first:
+  if (thisPacket.length >= 22) {
+    int adcStart = 11;                     // ADC reading starts at byte 12
+    int numSamples = thisPacket[8];        // number of samples in packet
+    int[] adcValues = new int[numSamples]; // array to hold the 5 readings
+    int total = 0;                         // sum of all the ADC readings
 
-  // read the address. It's a two-byte value, so you
-  // add the two bytes as follows:
-  int address = thisPacket[5] + thisPacket[4] * 256;
+    // read the address. It's a two-byte value, so you
+    // add the two bytes as follows:
+    int address = thisPacket[5] + thisPacket[4] * 256;
 
-  // read the received signal strength:
-  rssi = thisPacket[6];
+    // read the received signal strength:
+    int signalStrength = thisPacket[6];
 
-  // read <numSamples> 10-bit analog values, two at a time
-  // because each reading is two bytes long:
-  for (int i = 0; i < numSamples * 2;  i=i+2) {
-    // 10-bit value = high byte * 256 + low byte:
-    int thisSample = (thisPacket[i + adcStart] * 256) + 
-      thisPacket[(i + 1) + adcStart];
-    // put the result in one of 5 bytes:
-    adcValues[i/2] = thisSample;
-    // add the result to the total for averaging later:
-    total = total + thisSample;
+    // read <numSamples> 10-bit analog values, two at a time
+    // because each reading is two bytes long:
+    for (int i = 0; i < numSamples * 2;  i=i+2) {
+      // 10-bit value = high byte * 256 + low byte:
+      int thisSample = (thisPacket[i + adcStart] * 256) + 
+        thisPacket[(i + 1) + adcStart];
+      // put the result in one of 5 bytes:
+      adcValues[i/2] = thisSample;
+      // add the result to the total for averaging later:
+      total = total + thisSample;
+    }
+    // average the result:
+    int average = total / numSamples;
+    // draw a line on the graph, and the readings:
+    drawGraph(average);
+    drawReadings(average, signalStrength);
   }
-  // average the result:
-  int average = total / numSamples;
-  // draw a line on the graph:
-  drawGraph(average/4);
-  eraseTime (hPos - 1, lineHeight * 2);
-  drawTime(hPos, lineHeight * 2);
 }
 /*
   update the graph 
  */
-void drawGraph(int graphValue) {
+void drawGraph(int thisValue) {
   // draw the line:
-  stroke(0,255,0);
-  line(hPos, height, hPos, height - graphValue);
+  stroke(#4F9FE1);
+  // map the given value to the height of the window:
+  float graphValue = map(thisValue, 0, 1023, 0, height);
+  // detemine the line height for the graph:
+  float graphLineHeight = height - (graphValue);
+  // draw the line:
+  line(hPos, height, hPos, graphLineHeight);
   // at the edge of the screen, go back to the beginning:
   if (hPos >= width) {
     hPos = 0;
     //wipe the screen:
     background(0);
-    // wipe the old date and time, and draw the new:
-    eraseTime(hPos, 0); 
-    drawTime(hPos, 0);
   } 
   else {
     // increment the horizontal position to draw the next line:
     hPos++;
   }
 }
-/*
-  Draw a black block over the previous date and time strings
- */
-
-void eraseTime(int xPos, int yPos) {
-  // use a rect to block out the previous time, rather than 
-  // redrawing the whole screen, which would mess up the graph:
-  noStroke();
-  fill(0);
-  rect(xPos,yPos, 120, 80);
-  // change the fill color for the text:
-  fill(#4F9FE1);
-}
 
 /*
-  print the date and the time
+  draw the date and the time
  */
-void drawTime(int xPos, int yPos) {
+void drawReadings(int thisReading, int thisSignalStrength) {
   // set up an array to get the names of the months 
   // from their numeric values:
   String[] months = {
@@ -145,9 +132,24 @@ void drawTime(int xPos, int yPos) {
   // format the time string
   // all digits are number-formatted as two digits:
   String time = nf(hour(), 2) + ":" + nf(minute(), 2)  + ":" + nf(second(), 2);
-  
-  // print both strings:
+
+  // calculate the voltage from the reading:
+  float voltage = thisReading * 3.3 / 1024;
+
+  // choose a position for the text:
+  int xPos = 20;
+  int yPos = 20;
+
+  // erase the previous readings:
+  noStroke();
+  fill(0);
+  rect(xPos,yPos, 180, 80); 
+  // change the fill color for the text:
+  fill(#4F9FE1);
+  // print the readings :
   text(date, xPos, yPos + lineHeight);
   text(time, xPos, yPos + (2 * lineHeight));
+  text("Voltage: " + voltage + "V", xPos, yPos + (3 * lineHeight));
+  text("Signal Strength: -" + thisSignalStrength + " dBm", xPos, yPos + (4 * lineHeight));
 }
 
