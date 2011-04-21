@@ -18,14 +18,14 @@ const int chipSelect = 4;
 
 const int sdErrorLed = 5;     // lights when there's an error with the SD card
 const int sdWriteLed = 6;     // lights when writing to the SD card
-boolean cardPresent = false;  // whether or not there is a card present
 
 File dataFile;                // the file to write to on the SD card
 String gpsData = "";          // String to gather data for writing to SD card
 int lastReadLength = 0;       // length of the last batch of data
-int reserveLength = 1023;     // memory reserved for the String holding the data
+int lastLength = 0;
+int reserveLength = 768;     // memory reserved for the String holding the data
 
-long lastSentenceTime = 0;    // last time a GPS senstence arrived
+long lastIdleTime = 0;    // last time a GPS senstence arrived
 long delayTime = 250;         // how long to wait before starting an SD write
 
 void setup() {
@@ -49,11 +49,9 @@ void setup() {
     // if the card's not working, let the user know:
     digitalWrite(sdErrorLed, HIGH);
     Serial.println("Card failed, or not present");
-    cardPresent = false;
   } 
   else {
     // if the card's working, initialize the data file:
-    cardPresent = true;
     Serial.println("card initialized.");
     // if the file already exists, delete the previous version:
     if  (SD.exists("datalog.txt")) {
@@ -65,41 +63,46 @@ void setup() {
     }
     // open the file for writing:
     dataFile = SD.open("datalog.txt", FILE_WRITE);
+    dataFile.print("GPS Data");
   }
+  delay(1000);
 }
 
 void loop() {
   // while there's incoming GPS data, save it to a String: 
   while (gpsPort.available() ) {
     char inChar = gpsPort.read();
-    gpsData = gpsData + inChar;
-    lastReadLength++;
-    if (inChar == '\n') {
-      lastSentenceTime = millis();
-    }
+    gpsData += inChar;
   }
-  if (millis() - lastSentenceTime > delayTime) {
-    if (gpsData.length() + lastReadLength > reserveLength) {
-      if (cardPresent && dataFile) {
+  if (gpsData.length() != lastLength) {
+    lastIdleTime = millis();
+    Serial.println(gpsData.length());
+  }
+  lastLength = gpsData.length();
+
+  if (millis() - lastIdleTime > delayTime) {
+    if (gpsData.length() > reserveLength/2) {
+          Serial.println(millis() - lastIdleTime);
+      if (dataFile) {
         // indicate that the card is being accessed:
         digitalWrite(sdWriteLed, HIGH);
         // write the current data to the card:
         dataFile.print(gpsData);
         // make sure the card saves the data:
         dataFile.flush();
-        // print the data you wrote and clear the string:
-        Serial.println(gpsData);
-        gpsData = "";
         digitalWrite(sdWriteLed, LOW);
       }    // if the file isn't open, let the user know:
       else {
+        Serial.print(gpsData);
         digitalWrite(sdErrorLed, HIGH);
         Serial.println("error opening datalog.txt");
-      } 
+      }
+      gpsData = ""; 
     }
   }
 
 }
+
 
 
 
