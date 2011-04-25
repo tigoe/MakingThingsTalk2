@@ -14,7 +14,7 @@
 // Note that even if it's not  used as the CS pin, the SPI hardware 
 // CS pin (10 on most Arduino boards, 53 on the Mega) must be 
 // left as an output or the SD library functions will not work.
-const int chipSelect = 4;
+const int chipSelect = 8;
 
 const int sdErrorLed = 2;     // lights when there's an error with the SD card
 const int sdWriteLed = 6;     // lights when writing to the SD card

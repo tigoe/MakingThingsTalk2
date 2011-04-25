@@ -37,8 +37,8 @@ void setup() {
   // Open whatever port is the one you're using.
   // for a Bluetooth device, this may be further down your
   // serial port list:
-  String portName = Serial.list()[6];
-  myPort = new Serial(this, portName, 9600);
+  String portName = Serial.list()[0];
+  myPort = new Serial(this, portName, 4800);
 
   // read bytes into a buffer until you get a carriage 
   // return (ASCII 13):
