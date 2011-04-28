@@ -52,6 +52,7 @@ void draw () {
   // draw the disc:
   tilt();
 }
+
 void setAttitude() {
   for (int thisAxis = 0; thisAxis < 2; thisAxis++) {
     // calculate the current attitude as a percentage of 2*PI, 
@@ -71,6 +72,7 @@ void tilt() {
   rotateY(-attitude[0] - PI/2);
   // Z is the rotation of the disc:
   rotateZ(PI);
+  
   // set the fill color:
   fill(90, 250, 250);
   // draw the rect:  
@@ -78,8 +80,6 @@ void tilt() {
   // change the fill color:
   fill(0);
   // Draw some text so you can tell front from back:
-  // print the values:
-  // print the values:
   text(sensorValue[0] + "," + sensorValue[1], -30, 10, 1);
 }
 
@@ -97,8 +97,8 @@ void serialEvent(Serial myPort) {
     // split the string at the commas
     String items[] = split(myString, ',');
     if (items.length > 1) {
-      sensorValue[0] = int(items[0]);
-      sensorValue[1] = int(items[1]);
+      sensorValue[0] = int(items[0]);  // X axis
+      sensorValue[1] = int(items[1]);  // Y axis
     }
   }
 }
