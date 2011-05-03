@@ -5,19 +5,15 @@
  and sends the values out the serial port
  */
 
-int xMax, xMin;    // maxima and minima for x axis acceleration
-int yMax, yMin;    // maxima and minima for y axis acceleration
+int xMax = 0;
+int xMin = 1023;    // maxima and minima for x axis acceleration
+int yMax = 0;
+int yMin = 1023;    // maxima and minima for y axis acceleration
 
 void setup() {
   // open serial port:
   Serial.begin(9600);
-  // use pins A0 and A4 as digital output pins
-  // to power the accelerometer:
-  pinMode(A0, OUTPUT);
-  pinMode(A4, OUTPUT);
-  digitalWrite(A0, LOW);  // accelerometer ground
-  digitalWrite(A4, HIGH); // accelerometer power
-
+delay(100);
   while (millis() < 5000){
     calibrate();
   }
@@ -25,19 +21,20 @@ void setup() {
 
 void loop() {
   // read 2 channels of the accelerometer:
-  int surge = analogRead(A3);
-  int pitch = angleRead(surge, xMax, xMin);  // X axis
+  int surge = analogRead(A0);
+  float pitch = angleRead(surge, xMax, xMin);  // X axis
   Serial.print(pitch);
-  Serial.print(",");
-  int sway =  analogRead(A2);
-  int roll = angleRead(sway, yMax, yMin);   // Y axis
+  Serial.print("\t");
+  int sway =  analogRead(A1);
+  float roll = angleRead(sway, yMax, yMin);   // Y axis
   Serial.println(roll);
 }
 
 
 float angleRead(int thisValue, int thisMax, int thisMin){
+  calibrate();
   // normalize the given value to a range between -1 and 1:
-  float normalized = map(thisValue, thisMax, thisMin, -1.0, 1.0);
+   float normalized = (float)(thisValue - thisMin) / (float)(thisMax - thisMin) * 2.0 - 1.0;
   // calculate the angle:
   double result = asin(normalized) * 180.0/PI;
   //return the result:
@@ -48,7 +45,7 @@ float angleRead(int thisValue, int thisMax, int thisMin){
 
 void calibrate() {
   // get the x axis reading:
-  int surge = analogRead(A3);
+  int surge = analogRead(A0);
   // if it's greater than the current max,
   // or less than the current min, then
   // change them:
@@ -61,7 +58,7 @@ void calibrate() {
   // give the analog-to-digital converter time to settle:
   delay(10);
   // get the y axis reading:
-  int sway = analogRead(A2);
+  int sway = analogRead(A1);
   // if it's greater than the current max,
   // or less than the current min, then
   // change them:
