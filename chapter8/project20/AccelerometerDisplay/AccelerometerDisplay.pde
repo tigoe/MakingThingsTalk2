@@ -8,10 +8,7 @@
  */
 import processing.serial.*;      // import the serial lib
 
-int graphPosition = 0;           // horizontal position of the graph
-
-int[] sensorValue = new int[2]; // the accelerometer values
-float pitch, roll;
+float pitch, roll;               // pitch and roll
 float position;                  // position to translate to 
 
 Serial myPort;                   // the serial port
@@ -21,7 +18,7 @@ void setup() {
   size(400, 400, P3D); 
   // calculate translate position for disc:
   position = width/2;
-  
+
   // List all the available serial ports
   println(Serial.list());
 
@@ -29,14 +26,14 @@ void setup() {
   myPort = new Serial(this, Serial.list()[2], 9600);
   // only generate a serial event when you get a newline:
   myPort.bufferUntil('\n');
+  // enable smoothing for 3D:
+  hint(ENABLE_OPENGL_4X_SMOOTH);
 }
 
 void draw () {
-  // clear the screen:
-  background(0);
-   // set the fill color:
-  fill(90, 250, 250);
-  
+  // colors inspired by the Amazon rainforest:
+  background(#20542E);
+  fill(#79BF3D);
   // draw the disc:
   tilt();
 }
@@ -51,14 +48,14 @@ void tilt() {
   // Y is left-to-right:
   rotateY(radians(pitch) );
 
-  // set the fill color:
-  fill(90, 250, 250);
-  // draw the rect:  
+  // set the disc fill color:
+  fill(#79BF3D);
+  // draw the disc:  
   ellipse(0, 0, width/4, width/4);
-  // change the fill color:
-  fill(0);
+  // set the text fill color:
+  fill(#20542E);
   // Draw some text so you can tell front from back:
-  text(pitch + "," + roll, -40, 10,1);
+  text(pitch + "," + roll, -40, 10, 1);
 }
 
 // serialEvent  method is run automatically by the Processing applet
