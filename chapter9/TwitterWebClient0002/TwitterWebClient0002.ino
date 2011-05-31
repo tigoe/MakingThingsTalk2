@@ -22,6 +22,7 @@ Client client;                            // the client connection
 
 String twitterHandle = "";       // tweet handle to come from RFID tag
 String tweet = "";               // the tweet
+char tweetBuffer[150];
 boolean readingTweet = false;    // if you're in the middle of a tweet
 
 long lastRequestTime = 0;       // last time you connected to the server, in milliseconds
@@ -125,42 +126,18 @@ void loop() {
 }
 
 void readResponse() {
-
   // if there are bytes available from the server:
   if (client.available()) {
-    
-      // make an instance of TextFinder to search the response:
-     TextFinder response(client);
-     // see if the response from the server contains <text>:
-     if (response.find("<text>")) {
-     // clear the tweet string:
-     tweet = "";
-     // read new bytes from the server:
-     char inChar = client.read();
-     // until you get "<", add the bytes to the tweet:
-     while(inChar!='<')  {
-     tweet += inChar;
-     inChar = client.read();
-     }
-     // if you got a tweet, prepare it for display:
-     if (tweet != "") {
-     // add a separator between handle and tweet:
-     twitterHandle += ":";
-     // add spaces at the beginning and end of the tweet:
-     for (int c=0; c < screenWidth; c++) {
-     tweet = " " + tweet;
-     tweet += " ";
-     }
-     // reset the cursor position:
-     cursorPosition = 0;
-     // print the tweet string:
-     Serial.println(tweet);
-     // you only care about the tweet:
-     client.stop();
-     }
-     }
-     
-  } 
+    // make an instance of TextFinder to search the response:
+    TextFinder response(client);
+    // see if the response from the server contains <text>:
+    response.getString("<text>", "</text>", tweetBuffer, 150);
+    // print the tweet string:
+    Serial.println(tweetBuffer);
+    // you only care about the tweet:
+    client.stop();
+    status = 0;
+  }
 }
 
 // this method takes a substring of the long
@@ -205,6 +182,7 @@ void connectToServer() {
   // note the time of this connect attempt:
   lastRequestTime = millis();
 }
+
 
 
 
