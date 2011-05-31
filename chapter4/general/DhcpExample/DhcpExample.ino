@@ -18,14 +18,15 @@ void setup() {
   } 
   else {
     // print the bytes of the IP address, separated by dots:
+    IPAddress myIp = Ethernet.localIP();
     Serial.print("I got an IP address. It's ");
-    Serial.print(Ethernet.localIP()[0], DEC); 
+    Serial.print(myIp[0], DEC); 
     Serial.print(".");
-    Serial.print(Ethernet.localIP()[1], DEC); 
+    Serial.print(myIp[1], DEC); 
     Serial.print(".");
-    Serial.print(Ethernet.localIP()[2], DEC); 
+    Serial.print(myIp[2], DEC); 
     Serial.print(".");
-    Serial.println(Ethernet.localIP()[3], DEC); 
+    Serial.println(myIp[3], DEC); 
   }
 }
 
