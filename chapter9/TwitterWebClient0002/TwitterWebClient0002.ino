@@ -128,9 +128,7 @@ void readResponse() {
 
   // if there are bytes available from the server:
   if (client.available()) {
-  Serial.println(".");
-    Serial.write(client.read());
-    /*
+    
       // make an instance of TextFinder to search the response:
      TextFinder response(client);
      // see if the response from the server contains <text>:
@@ -161,7 +159,7 @@ void readResponse() {
      client.stop();
      }
      }
-     */
+     
   } 
 }
 
