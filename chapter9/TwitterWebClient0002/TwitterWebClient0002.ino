@@ -16,8 +16,10 @@
 // The IP address will be dependent on your local network:
 byte mac[] = { 
   0x00, 0xAA, 0xBB, 0xCC, 0xDE, 0x01 };
-IPAddress ip(192,168,1,20);               // will only be used if DHCP fails
-char serverName[] = "api.twitter.com";    // Twitter's API URL
+//IPAddress ip(192,168,1,20);               // will only be used if DHCP fails
+IPAddress ip(128,122,151,6);               // will only be used if DHCP fails
+
+IPAddress server(199,59,149,200);    // Twitter's API address
 Client client;                            // the client connection
 
 String twitterHandle = "";       // tweet handle to come from RFID tag
@@ -45,15 +47,11 @@ int status = 0;
 void setup() {
   // start the serial library:
   Serial.begin(9600);
-  if(!Ethernet.begin(mac)) {
+  //if(!Ethernet.begin(mac)) {
     // start the Ethernet connection:
     Ethernet.begin(mac, ip);
-  }
-  Serial.print(Ethernet.localIP()[0]);
-  Serial.print(Ethernet.localIP()[1]);
-  Serial.print(Ethernet.localIP()[2]);
-  Serial.println(Ethernet.localIP()[3]);
-  // reserve space for the tweet strings:
+ // }
+   // reserve space for the tweet strings:
   twitterHandle.reserve(50);
   tweet.reserve(160);
   shortString.reserve(20);
@@ -67,7 +65,7 @@ void setup() {
   // give the Ethernet shield and RFID reader
   // two seconds to initialize:
   delay(2000);
-  Serial.println("Starting");
+  lcd.println("Starting");
 }
 
 void loop() {
@@ -130,6 +128,7 @@ void readResponse() {
   if (client.available()) {
     // make an instance of TextFinder to search the response:
     TextFinder response(client);
+    Serial.write(client.read());
     // see if the response from the server contains <text>:
     response.getString("<text>", "</text>", tweetBuffer, 150);
     // print the tweet string:
@@ -158,30 +157,6 @@ void scrollLongString(int startPos) {
   lcd.print(shortString);   // tweet, scrolling, on the bottom
 }
 
-// this method connects to the server
-// and makes a HTTP request:
-
-void connectToServer() {
-  // if you're still connected to the server,
-  // disconnect for a new request:
-  if (client.connected()) client.stop();
-
-  // attempt to connect:
-  Serial.println("connecting to server");
-  if (client.connect(serverName, 80)) {
-    Serial.println("making HTTP request");
-    // make HTTP GET request:
-    client.print("GET /1/statuses/user_timeline.xml?screen_name=");
-    client.print(twitterHandle);
-    client.println(" HTTP/1.1");
-    client.print("HOST:");
-    client.println(serverName);
-    client.println();
-  }
-  Serial.println("request made");
-  // note the time of this connect attempt:
-  lastRequestTime = millis();
-}
 
 
 

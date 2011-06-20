@@ -57,7 +57,7 @@ void setup() {
   Rfid.begin();
   // set up the LCD's number of columns and rows: 
   lcd.begin(screenWidth,2);
-
+lcd.clear();
   lcd.println("Starting");
 
 }
@@ -76,6 +76,7 @@ void loop() {
     break;
   case 1:    // read block
     if (Rfid.authenticate(addressBlock)) {
+      Serial.print("authenticated");
       // read the tag for the twitter handle:
       Rfid.readBlock(addressBlock);
       twitterHandle = Rfid.getString();
@@ -135,7 +136,7 @@ void scrollLongString(int startPos) {
     shortString = tweet.substring(startPos, startPos + screenWidth);
   } 
   // refresh the LCD:
-  lcd.home();              // clear previous stuff
+  lcd.clear();              // clear previous stuff
   lcd.print(twitterHandle);       // tweet handle on the top line
   lcd.setCursor(0,1);       // move cursor down
   lcd.print(shortString);   // tweet, scrolling, on the bottom
