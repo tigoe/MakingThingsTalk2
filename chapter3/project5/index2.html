@@ -1,27 +1,27 @@
 <html>
 <head>
    <title>Cat Cam</title>
-   <meta http-equiv="refresh" content="10">
+   <script type="text/javascript">
+      function refresh() {
+         var refreshTime = 5 * 1000;     // 5000 ms
+         var thisImage = "catcam.jpg";   // the image location
+         var today = new Date();         // the current time
+         // add the time to the end of the image string 
+         // to make a unique URL:
+         document.images["pic"].src=thisImage+"?"+today;
+         // reload if the images are loaded:
+         if(document.images) {
+            window.onload=refresh; 
+         }   
+         // if the time is up reload the image
+         t=setTimeout('refresh()',refreshTime);
+      }   
+   </script>
 </head>
-<body>
+<body onload="refresh()">
    <center>
       <h2>Cat Cam</h2>
-      <script language="javascript">
-         var refreshTime=5000;     // refresh time = 5 seconds(5000ms)
-         var thisImage="catcam.jpg";   
-         function refresh() {
-            // get the time:
-            var thisTime = new Date();  
-            document.images[“pic"]src=thisImage+"?"+thisTime;
-            setTimeout(‘refresh()’, refreshTime);
-         }
-         // display the image:
-         document.write(‘<img src="’+thisImage+’"">’);
-         // if the refresh time is up, reload the page:
-         if(document.images) {
-            window.onload=refresh;
-         }
-      </script>
+<img src="catcam.jpg" id="pic">
    </center>
 </body>
 </html>
