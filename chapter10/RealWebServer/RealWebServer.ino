@@ -1,10 +1,10 @@
 /*
   web server with HTML from an SD card
-  This sketch takes HTTP requests from the Ethernet shield,
-  opens an HTML file from an SD card, replaces the <body> tag with 
-  <body bgcolor= followed by the values of three analog sensors in hex,
-  and serves them out.
-  
+ This sketch takes HTTP requests from the Ethernet shield,
+ opens an HTML file from an SD card, replaces the <body> tag with 
+ <body bgcolor= followed by the values of three analog sensors in hex,
+ and serves them out.
+ 
  
  This example uses the String library, which is part of the Arduino core from
  version 0019.  
@@ -23,6 +23,7 @@
 
 #include <SPI.h>
 #include <Ethernet.h>
+#include <TextFinder.h>
 #include <SD.h>
 
 
@@ -40,19 +41,21 @@ IPAddress ip(192,168,1,20);
 // (port 80 is default for HTTP):
 Server server(80);
 
-File myFile;
-
+const int inputLength = 64;
+char inputString[inputLength];  // for input from the browser    
+int nextChar = 0;
+char buffer[8];
 
 void setup()
 {
-   Serial.begin(9600);
-   delay(1000);
-   Serial.println("attempting to get address");
+  Serial.begin(9600);
+  delay(1000);
+  Serial.println("attempting to get address");
   // start the Ethernet connection and the server:
- if (!Ethernet.begin(mac)) {
-  Ethernet.begin(mac, ip, gateway, subnet);
- }
- Serial.print(Ethernet.localIP()[0]);
+  if (!Ethernet.begin(mac)) {
+    Ethernet.begin(mac, ip, gateway, subnet);
+  }
+  Serial.print(Ethernet.localIP()[0]);
   Serial.print(".");
   Serial.print(Ethernet.localIP()[1]);
   Serial.print(".");
@@ -60,7 +63,7 @@ void setup()
   Serial.print(".");
   Serial.println(Ethernet.localIP()[3]);
   server.begin();
- 
+
 
   Serial.print("Initializing SD card...");
 
@@ -69,53 +72,71 @@ void setup()
     return;
   }
   Serial.println("initialization done.");
-
+  clearInput();
 }
 
-void loop()
-{
+void loop() {
   // listen for incoming clients
   Client client = server.available();
+  String fileName = "";
   if (client) {
-    Serial.println("Got a client");
-    String requestLine = "";
+    TextFinder  finder(client );  
+    // an http request ends with a blank line
+    //    boolean current_line_is_blank = true;
+    while (client.connected()) {      
+      if (client.available()) {          
+        int type = 0;
+        if(finder.getString("","/", buffer,8)){
 
-    while (client.connected()) {
-      if (client.available()) {
-        char thisChar = client.read();
-
-        // if you get a newline and the request line is blank,
-        // then the request is over:
-        if (thisChar == '\n' && requestLine.length() < 1) {
-          // send a standard http response header
-          String header = makeHttpHeader();
-          client.println(header);
-
-          sendFileTo(client);
-
-          break;
+          if(String(buffer) == "GET " ) type = 1;
+          else if(String(buffer) == "POST ") type = 2;
+          if (type > 0) {
+            Serial.print("type: ");
+            Serial.println(type);
+          }
         }
 
-        //if you get a newline or carriage return,
-        // you're at the end of a line:
-        if (thisChar == '\n') {
-          Serial.println(requestLine);
-          requestLine = "";
-        } 
-        else if (thisChar != '\r') {
-          // add any other character to the end
-          // of the request line:
-          requestLine += thisChar;
+
+        if(type==1) {
+          char inChar = client.read();
+
+          while (inChar != ' ') {
+            inputString[nextChar] = inChar;
+            nextChar++;
+            Serial.write(inChar);
+            inChar = client.read();
+          }
+
+          if (nextChar == 0) {
+            sendHttpHeader(client);
+            // send index file
+          }
+
+          if (SD.exists(inputString)) {
+            sendHttpHeader(client);
+            sendFile(client, inputString);
+          } 
+          else {
+            send404(client); 
+          }
+          clearInput();
+          Serial.println("Breaking");
+          // give the web browser time to receive the data
+          delay(1);
+          // close the connection:
+          client.stop();
         }
-      }    
+
+        if (type == 2) {
+          finder.findUntil("temperature", "\n\r");
+          int thisTemp = finder.getValue('=');
+          Serial.println(thisTemp);
+        }
+      }
     }
-    Serial.println("Breaking");
-    // give the web browser time to receive the data
-    delay(1);
-    // close the connection:
-    client.stop();
   }
 }
+
 
 
 
@@ -130,17 +151,23 @@ float readSensor() {
   return temperature; 
 }
 
-String makeHttpHeader() {
-  String result = "HTTP/1.1 200 OK\n";
-  result += "Content-Type: text/html\n\n";
-  return result;
+void sendHttpHeader(Client thisClient) {
+  thisClient.println("HTTP/1.1 200 OK");
+  thisClient.println("Content-Type: text/html");
+  thisClient.println();
+}
+
+
+void send404(Client thisClient) {
+  thisClient.println("HTTP/1.1 404 Not Found");
+  thisClient.println();
 }
 
 String readFile() {
   String result = "";
 
   // re-open the file for reading:
-  myFile = SD.open("index.htm");
+  File myFile = SD.open("index.htm");
   if (myFile) {    
     Serial.println("opening file");
     // read from the file until there's nothing else in it:
@@ -159,43 +186,38 @@ String readFile() {
 }
 
 
-void sendFileTo(Client thisClient) {
+void sendFile(Client thisClient, char thisFile[]) {
   String result = "";
 
   // re-open the file for reading:
-  myFile = SD.open("index.htm");
+  File myFile = SD.open(thisFile);
   if (myFile) {    
     Serial.println("opening file");
     // read from the file until there's nothing else in it:
     while (myFile.available()) {
-      char thisChar = (char) myFile.read();
-
-      if (result.endsWith("<div name=\"temp\">")) {
-        Serial.println("replacing");
-        //result = result.replace("<body", bodyTag);
-      }
-
-      switch (thisChar) {
-      case '\r':
-        break;
-      case '\n': 
-        // return the line 
-        thisClient.println(result);
-        result = "";
-        break;
-      default: 
-        result += thisChar;
-      }
-
+      thisClient.write( myFile.read());
     }
     // close the file:
     myFile.close();
   } 
   else {
     // if the file didn't open, print an error:
-    Serial.println("error opening index.htm");
+    Serial.print("error opening ");
+    Serial.print(thisFile);
   } 
 }
+
+
+void clearInput() {
+  for (int c = 0; c < inputLength; c++) {
+    inputString[c] = 0;
+    nextChar = 0;
+  } 
+}
+
+
+
+
 
 
 
