@@ -39,31 +39,33 @@ IPAddress ip(192,168,1,20);
 // (port 80 is default for HTTP):
 Server server(80);
 
-const int inputLength = 16;
+const int inputLength = 16;            // length of the file requested
+const int relayPin = 2;                // pin that the relay is attached to
+const int sdChipSelect = 4;            // SD card chipSelect
+const int thermostatAddress = 10;      // address in EEPROM for storing thermostat setting
+const long tempCheckInterval = 10000;  // time between checks (in ms)
+
+
 char inputString[inputLength];  // for input from the browser    
-int nextChar = 0;
-char buffer[8];
-
-const int relayPin = 2;         // pin that the relay is attached to
-const int sdChipSelect = 4;     // SD card chipSelect
-const int thermostatAddress = 10;  // address in EEPROM for storing thermostat setting
-
-int thermostat = EEPROM.read(thermostatAddress);            // trigger point for the thermostat
+char requestTypeString[7];      // what type of HTTP request: GET or POST
+int nextChar = 0;               // inde counter for reqestTypeString
 
 long now;                       // last time that server checked the temperature
-
-const long tempCheckInterval = 10 * 1000;  // time between checks (in ms)
-
+int thermostat = EEPROM.read(thermostatAddress);  // trigger point for the thermostat
 
 void setup(){
+  // initialize the relay output:
   pinMode(relayPin, OUTPUT);
+  // initialize serial communication:
   Serial.begin(9600);
+  // give the Ethernet controller time to start:
   delay(1000);
   Serial.println(F("attempting to get address"));
-  // start the Ethernet connection and the server:
+  // Attempt to start via DHCP. If not, do it manually:
   if (!Ethernet.begin(mac)) {
     Ethernet.begin(mac, ip, gateway, subnet);
   }
+  // print the IP address:
   Serial.print(Ethernet.localIP()[0]);
   Serial.print(".");
   Serial.print(Ethernet.localIP()[1]);
@@ -73,10 +75,10 @@ void setup(){
   Serial.println(Ethernet.localIP()[3]);
   server.begin();
 
-
+  //see if the SD card is there:
   Serial.print(F("Initializing SD card..."));
-
-  if (!SD.begin(4)) {
+  if (!SD.begin(sdChipSelect)) {
+    // if you can't read the SD card, don't go on:
     Serial.println(F("initialization failed!"));
     return;
   }
@@ -90,50 +92,50 @@ void setup(){
 }
 
 void loop() {
+  String fileName = "";  // filename the client requests
+  char inChar = 0;       // incoming character from client
+  int requestType = 0;   // what type of request (GET or POST);
+
   // listen for incoming clients
   Client client = server.available();
-  String fileName = "";
-  char inChar = 0; 
-  int requestType = 0;
 
   if (client) {
+    // make an instance of TextFinder to look for stuff from the client:
     TextFinder  finder(client );  
 
     while (client.connected()) {      
       if (client.available()) {      
         // look for whatever comes before the /. It should be GET or POST:    
-        if(finder.getString("","/", buffer,8)){
+        if(finder.getString("","/", requestTypeString,7)){
           // Do something different for GET or POST:
-          if(String(buffer) == "GET " ) {
+          if(String(requestTypeString) == "GET " ) {
             requestType = 1;
           }
-          else if(String(buffer) == "POST ") {
+          else if(String(requestTypeString) == "POST ") {
             requestType = 2;
           }
 
           // gather what comes after the / into an array, because
           // it's the filename the client wants:
-          inChar = client.read();
           while (inChar != ' ') {
+            inChar = client.read();
             inputString[nextChar] = inChar;
             nextChar++;
-            Serial.write(inChar);
-            inChar = client.read();
           }
 
+          // now you're done with the GET/POST line, process what you got:
           switch (requestType) {
           case 1:    // GET
-            // for the moment, we'll do nothing with GET
-            // except respond with the file, see below.
+            // do nothing with GET except send the file, below
             break;
-
-          case 2:  //POST
+          case 2:    //POST
             // skip the rest of the header, 
             // which ends with newline and carriage return:
             finder.find("\n\r");
             // if the client sends a value for thermostat, take it:
             if (finder.find("thermostat")) {
               int newThermostat = finder.getValue('=');
+              // if it's changed, save it:
               if (thermostat != newThermostat) {
                 thermostat = newThermostat;
                 // save it to EEPROM:
@@ -142,7 +144,7 @@ void loop() {
             }
             break; 
           }
-          // whether it's GET or POST, give them the string they asked for:
+          // whether it's GET or POST, give them the string they asked for.
           // if there's nothing after the /, then the client wants the index:
           if (nextChar == 0) {
             sendFile(client, "index.htm");
@@ -152,7 +154,6 @@ void loop() {
             sendFile(client, inputString);
           }
         }
-
         // give the client time to receive the data:
         delay(1);
         // close the connection:
@@ -171,6 +172,7 @@ void loop() {
   }
 }
 
+// send a HTTP header to the client:
 void sendHttpHeader(Client thisClient, int errorCode) {
   thisClient.print(F("HTTP/1.1 "));
   switch(errorCode) {
@@ -182,44 +184,49 @@ void sendHttpHeader(Client thisClient, int errorCode) {
     thisClient.println(F("404 Not Found"));
     break;
   }
+  // response header ends with an extra linefeed:
   thisClient.println();
 }
 
+// send the file that was requested:
 void sendFile(Client thisClient, char thisFile[]) {
-  Serial.println(thisFile);
+  String outputString = "";      // a String to get each line of the file
+
   // open the file for reading:
   File myFile = SD.open(thisFile);
-  String outputString = "";
-
   if (myFile) {
+    // send an OK header:
     sendHttpHeader(thisClient, 200);
     // read from the file until there's nothing else in it:
     while (myFile.available()) {
+      // add the current char to the output string:
       char thisChar = myFile.read();
       outputString += thisChar; 
-      // check for temp variable:
+
+      // check for temperature variable and replace
+      // (floats can't be converted to Strings, so send it directly):
       if (outputString.endsWith("$temperature")) {
         thisClient.print(readSensor());
         outputString = "&#176;C";
       } 
 
-      // check for thermostat variable:
+      // check for thermostat variable and replace:
       if (outputString.endsWith("$thermostat")) {
         outputString.replace("$thermostat", String(thermostat));
       } 
 
-      // check for thermostat variable:
+      // check for relay status variable and replace:
       if (outputString.endsWith("$status")) {
-        String status = "off";
+        String relayStatus = "off";
         if (checkThermostat()) {
-          status = "On";
+          relayStatus = "on";
         } 
-        outputString.replace("$status", status);
+        outputString.replace("$status", relayStatus);
       } 
 
-      // onthe neline, print out and clear outputString:
+      // when you get a newline, send out and clear outputString:
       if (thisChar == '\n') {
-        thisClient.println(outputString);
+        thisClient.print(outputString);
         outputString = "";
       } 
     }
@@ -232,7 +239,7 @@ void sendFile(Client thisClient, char thisFile[]) {
   } 
 }
 
-
+// clear the input char array:
 void clearInput() {
   for (int c = 0; c < inputLength; c++) {
     inputString[c] = 0;
@@ -240,31 +247,29 @@ void clearInput() {
   } 
 }
 
+// read the temperature sensor:
 float readSensor() {
   // read the value from the sensor:
   int sensorValue = analogRead(A0);
   // convert the reading to millivolts:
   float voltage = sensorValue *  (5.0/ 1024); 
-  // convert the millivolts to temperature celsius:
+  // convert the millivolts to temperature  in celsius (100mv per degree):
   float temperature = (voltage - 0.5)* 100;
-  // print the temperature:
+  // return the temperature:
   return temperature; 
 }
 
+// Check the temperature and control the relay accordingly:
 boolean checkThermostat() {
-  boolean relayState;  
-  if(thermostat > readSensor()) {
-    relayState = LOW; 
-  }
-  if(thermostat <= readSensor()) {
+  // assume the relay should be off:
+  boolean relayState = LOW;  
+  // if the temperature's greater than the thermostat point, 
+  // the relay should be on:
+  if(readSensor() > thermostat) {
     relayState = HIGH;
   }
+  // set the relay on or off:
   digitalWrite(relayPin, relayState); 
   return relayState; 
 }
-
-
-
-
-
 
