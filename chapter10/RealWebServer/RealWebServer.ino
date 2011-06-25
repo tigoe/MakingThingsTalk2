@@ -32,23 +32,20 @@ IPAddress gateway(192,168,1,1);
 IPAddress subnet(255,255,0,0);
 IPAddress ip(192,168,1,20);
 
-
-
 // Initialize the Ethernet server library
 // with the IP address and port you want to use 
 // (port 80 is default for HTTP):
 Server server(80);
 
-const int inputLength = 16;            // length of the file requested
+const int fileStringLength = 16;            // length of the file requested
+const int typeLength = 5;              // length of GET or POST
 const int relayPin = 2;                // pin that the relay is attached to
 const int sdChipSelect = 4;            // SD card chipSelect
 const int thermostatAddress = 10;      // address in EEPROM for storing thermostat setting
 const long tempCheckInterval = 10000;  // time between checks (in ms)
 
-
-char inputString[inputLength];  // for input from the browser    
-char requestTypeString[7];      // what type of HTTP request: GET or POST
-int nextChar = 0;               // inde counter for reqestTypeString
+char fileString[fileStringLength];         // for input from the browser  
+char requestTypeString[typeLength];    // what type of HTTP request: GET or POST
 
 long now;                       // last time that server checked the temperature
 int thermostat = EEPROM.read(thermostatAddress);  // trigger point for the thermostat
@@ -83,8 +80,7 @@ void setup(){
     return;
   }
   Serial.println(F("initialization done."));
-  // clear the inputString array:
-  clearInput();
+
   // constrain the thermostat to an acceptable range:
   thermostat = constrain(thermostat, 20, 40);  
   // check the temperature and turn on the thermostat if needed:
@@ -95,18 +91,19 @@ void loop() {
   String fileName = "";  // filename the client requests
   char inChar = 0;       // incoming character from client
   int requestType = 0;   // what type of request (GET or POST);
+  int requestedFileLength = 0;  // length of the filename they asked for
 
-  // listen for incoming clients
-  Client client = server.available();
+  // listen for incoming clients:
+  Client client = server.available();  
 
   if (client) {
     // make an instance of TextFinder to look for stuff from the client:
-    TextFinder  finder(client );  
+    TextFinder finder(client );  
 
     while (client.connected()) {      
       if (client.available()) {      
         // look for whatever comes before the /. It should be GET or POST:    
-        if(finder.getString("","/", requestTypeString,7)){
+        if(finder.getString("","/", requestTypeString,typeLength)){
           // Do something different for GET or POST:
           if(String(requestTypeString) == "GET " ) {
             requestType = 1;
@@ -115,13 +112,9 @@ void loop() {
             requestType = 2;
           }
 
-          // gather what comes after the / into an array, because
+          // gather what comes after the / into an array,
           // it's the filename the client wants:
-          while (inChar != ' ') {
-            inChar = client.read();
-            inputString[nextChar] = inChar;
-            nextChar++;
-          }
+          requestedFileLength = finder.getString("", " ", fileString, fileStringLength);
 
           // now you're done with the GET/POST line, process what you got:
           switch (requestType) {
@@ -145,13 +138,14 @@ void loop() {
             break; 
           }
           // whether it's GET or POST, give them the string they asked for.
-          // if there's nothing after the /, then the client wants the index:
-          if (nextChar == 0) {
+          // if there's nothing after the /, then the client 
+          // wants the index:
+          if (requestedFileLength == 0) {
             sendFile(client, "index.htm");
           }             
           // otherwise send whatever file they asked for:
           else  {
-            sendFile(client, inputString);
+            sendFile(client, fileString);
           }
         }
         // give the client time to receive the data:
@@ -159,9 +153,7 @@ void loop() {
         // close the connection:
         Serial.println(F("Closing the connection"));
         client.stop();
-        // clear the inputString array for the next request:
-        clearInput();
-      }
+        }
     }
   }
   // periodically check the temperature to see if you should
@@ -239,22 +231,17 @@ void sendFile(Client thisClient, char thisFile[]) {
   } 
 }
 
-// clear the input char array:
-void clearInput() {
-  for (int c = 0; c < inputLength; c++) {
-    inputString[c] = 0;
-    nextChar = 0;
-  } 
-}
+
 
 // read the temperature sensor:
 float readSensor() {
   // read the value from the sensor:
   int sensorValue = analogRead(A0);
-  // convert the reading to millivolts:
-  float voltage = sensorValue *  (5.0/ 1024); 
-  // convert the millivolts to temperature  in celsius (100mv per degree):
-  float temperature = (voltage - 0.5)* 100;
+  // convert the reading to volts:
+  float voltage = (sensorValue *  5.0) / 1024.0; 
+  // convert the voltage to temperature  in celsius
+  // (100mv per degree - 500mV offset):
+  float temperature = (voltage - 0.5) * 100;
   // return the temperature:
   return temperature; 
 }
@@ -272,4 +259,7 @@ boolean checkThermostat() {
   digitalWrite(relayPin, relayState); 
   return relayState; 
 }
+
+
+
 
