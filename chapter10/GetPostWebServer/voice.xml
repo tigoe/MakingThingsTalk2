@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Gather action="voice.xml" method="POST">
+        <Say>
+            The current temperature is 
+            $temperature
+            degrees Celsius.
+            The thermostat is set to $thermostat degrees Celsius.
+            The air conditioner is $status.
+            If you would like to change the thermostat, please enter a new setting.
+            If you are satisfied, please hang up.
+        </Say>
+    </Gather>
+    <Say>
+    	You didn't give a new setting, 
+    	so the thermostat will remain at $thermostat degrees. Goodbye!
+    </Say>
+</Response>
