@@ -1,8 +1,9 @@
-
 /*
  GET/POST Web server with SD card read
  Language: Arduino
- Reads a TMP36 temperature sensor
+ Reads a TMP36 temperature sensor and serves the result
+ in a web page.  Allows changing of the thermostat
+ from a web form.
  */
 #include <SD.h>
 #include <EEPROM.h>
@@ -102,16 +103,18 @@ void loop() {
             // skip the rest of the header, 
             // which ends with newline and carriage return:
             finder.find("\n\r");
-            // if the client sends a value for thermostat, take it:
-            //            if (finder.find("thermostat")) {
-            //              int newThermostat = finder.getValue('=');
-            //              // if it's changed, save it:
-            //              if (thermostat != newThermostat) {
-            //                thermostat = newThermostat;
-            //                // save it to EEPROM:
-            //                EEPROM.write(thermostatAddress, thermostat);
-            //              }
-            //            }
+            //if the client sends a value for thermostat, take it:
+            if (finder.find("thermostat")) {
+              int newThermostat = finder.getValue('=');
+              // if it's changed, save it:
+              if (thermostat != newThermostat) {
+                thermostat = newThermostat;
+                // constrain it to a range from 20 to 40 degrees:
+                thermostat = constrain(thermostat, 20, 40);
+                // save it to EEPROM:
+                EEPROM.write(thermostatAddress, thermostat);
+              }
+            }
             break; 
           }
 
@@ -192,10 +195,11 @@ void sendFile(Client thisClient, char thisFile[]) {
       char thisChar = myFile.read();
       outputString += thisChar; 
       // check for temperature variable and replace
-      // (floats can’t be converted to Strings, so send it directly):
+      // (floats can't be converted to Strings, so send it directly):
       if (outputString.endsWith("$temperature")) {
-        thisClient.print(readSensor());
-        outputString = "&#176;C";
+        outputString = "";
+        // limit the result to 2 decimal places:
+        thisClient.print(readSensor(), 2);
       } 
 
       // check for thermostat variable and replace:
@@ -212,13 +216,17 @@ void sendFile(Client thisClient, char thisFile[]) {
         outputString.replace("$status", relayStatus);
       } 
 
-
       // when you get a newline, send out and clear outputString:
       if (thisChar == '\n') {
         thisClient.print(outputString);
         outputString = "";
       } 
     }
+    // if the file does not end with a newline, send the last line:
+    if (outputString != "") {
+      thisClient.print(outputString); 
+    }
+
     // close the file:
     myFile.close();
   } 
@@ -227,7 +235,6 @@ void sendFile(Client thisClient, char thisFile[]) {
     sendHttpHeader(thisClient, 404);
   } 
 }
-
 
 
 // send a HTTP header to the client:
@@ -245,6 +252,10 @@ void sendHttpHeader(Client thisClient, int errorCode) {
   // response header ends with an extra linefeed:
   thisClient.println();
 }
+
+
+
+
 
 
 

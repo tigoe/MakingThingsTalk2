@@ -1,8 +1,9 @@
-
 /*
  GET/POST Web server with SD card read
  Language: Arduino
- Reads a TMP36 temperature sensor
+ Reads a TMP36 temperature sensor and serves the result
+ in a web page.  Allows changing of the thermostat
+ from a web form.
  */
 #include <SD.h>
 #include <EEPROM.h>
@@ -105,10 +106,11 @@ void loop() {
             // if the client sends a value for thermostat, take it:
             if (finder.find("Digits")) {
               int newThermostat = finder.getValue('=');
-              Serial.println(newThermostat);
               // if it's changed, save it:
               if (thermostat != newThermostat) {
                 thermostat = newThermostat;
+                // constrain it to a range from 20 to 40 degrees:
+                thermostat = constrain(thermostat, 20, 40);
                 // save it to EEPROM:
                 EEPROM.write(thermostatAddress, thermostat);
               }
@@ -138,13 +140,13 @@ void loop() {
   // periodically check the temperature to see if you should
   // turn on the thermostat:
   if (millis() - now > tempCheckInterval) {
-    //Serial.print("Temperature: ");
-    // Serial.println(readSensor());
+    Serial.print("Temperature: ");
+    Serial.println(readSensor());
     if (checkThermostat()) {
-      //   Serial.println("Thermostat is on");
+      Serial.println("Thermostat is on");
     } 
     else {
-      //    Serial.println("Thermostat is off");
+      Serial.println("Thermostat is off");
     }
     now = millis();
   }
@@ -184,7 +186,10 @@ void sendFile(Client thisClient, char thisFile[]) {
   // open the file for reading:
   File myFile = SD.open(thisFile);
   if (myFile) {
+    // get the file size:
     int mySize = myFile.size();
+    // determine whether the file is XML or HTML
+    // based on the extension (but assume it's HTML):
     int fileType = 1;            // 1 = html, 2 = xml
     if (String(thisFile).endsWith("xml")) {
       fileType = 2;
@@ -199,10 +204,11 @@ void sendFile(Client thisClient, char thisFile[]) {
       outputString += thisChar; 
 
       // check for temperature variable and replace
-      // (floats can’t be converted to Strings, so send it directly):
+      // (floats can't be converted to Strings, so send it directly):
       if (outputString.endsWith("$temperature")) {
         outputString = "";
-        thisClient.print(readSensor());
+        // limit the result to 2 decimal places:
+        thisClient.print(readSensor(), 2);
       } 
 
       // check for thermostat variable and replace:
@@ -266,20 +272,5 @@ void sendHttpHeader(Client thisClient, int errorCode, int fileSize, int fileType
   // response header ends with an extra linefeed:
   thisClient.println();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
