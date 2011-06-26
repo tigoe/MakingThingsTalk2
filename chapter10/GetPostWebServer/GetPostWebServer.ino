@@ -38,7 +38,7 @@ int thermostat = EEPROM.read(thermostatAddress);  // trigger point for the therm
 void setup() {
   // initialize serial communication:
   Serial.begin(9600);
- // set the thermostat to be an output:
+  // set the thermostat to be an output:
   pinMode(relayPin, OUTPUT);
 
   //see if the SD card is there:
@@ -91,7 +91,7 @@ void loop() {
           // gather what comes after the / into an array,
           // it's the filename the client wants:
           requestedFileLength = finder.getString("", " ", 
-            fileString, fileStringLength);
+          fileString, fileStringLength);
 
           // now you're done with the GET/POST line, process what you got:
           switch (requestType) {
@@ -103,15 +103,15 @@ void loop() {
             // which ends with newline and carriage return:
             finder.find("\n\r");
             // if the client sends a value for thermostat, take it:
-            if (finder.find("thermostat")) {
-              int newThermostat = finder.getValue('=');
-              // if it's changed, save it:
-              if (thermostat != newThermostat) {
-                thermostat = newThermostat;
-                // save it to EEPROM:
-                EEPROM.write(thermostatAddress, thermostat);
-              }
-            }
+            //            if (finder.find("thermostat")) {
+            //              int newThermostat = finder.getValue('=');
+            //              // if it's changed, save it:
+            //              if (thermostat != newThermostat) {
+            //                thermostat = newThermostat;
+            //                // save it to EEPROM:
+            //                EEPROM.write(thermostatAddress, thermostat);
+            //              }
+            //            }
             break; 
           }
 
@@ -191,6 +191,27 @@ void sendFile(Client thisClient, char thisFile[]) {
       // add the current char to the output string:
       char thisChar = myFile.read();
       outputString += thisChar; 
+      // check for temperature variable and replace
+      // (floats can’t be converted to Strings, so send it directly):
+      if (outputString.endsWith("$temperature")) {
+        thisClient.print(readSensor());
+        outputString = "&#176;C";
+      } 
+
+      // check for thermostat variable and replace:
+      if (outputString.endsWith("$thermostat")) {
+        outputString.replace("$thermostat", String(thermostat));
+      } 
+
+      // check for relay status variable and replace:
+      if (outputString.endsWith("$status")) {
+        String relayStatus = "off";
+        if (checkThermostat()) {
+          relayStatus = "on";
+        } 
+        outputString.replace("$status", relayStatus);
+      } 
+
 
       // when you get a newline, send out and clear outputString:
       if (thisChar == '\n') {
@@ -224,6 +245,8 @@ void sendHttpHeader(Client thisClient, int errorCode) {
   // response header ends with an extra linefeed:
   thisClient.println();
 }
+
+
 
 
 
