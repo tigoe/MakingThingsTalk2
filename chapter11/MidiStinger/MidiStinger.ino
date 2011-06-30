@@ -4,14 +4,12 @@
 */
 
 #include <SoftwareSerial.h>
-
 // set up a software serial port to send MIDI:
 SoftwareSerial midi(2, 3);  
 
-int midiResetPin = 4;     // Musical instrument shield's reset pin
-
-const int threshold = 40; // sensor threshold
-int lastReading = 0;      // last sensor reading
+const int midiResetPin = 4;     // Musical instrument shield's reset pin
+const int threshold = 100;      // sensor threshold
+int lastReading = 0;            // last sensor reading
 
 void setup() {
   // initialize hardware serial and MIDI serial:
@@ -20,13 +18,6 @@ void setup() {
 
   // reset the musical instrument shield:
   resetMidi(midiResetPin);
-
-  // set the channel volume to max:
-  sendMidi(0xB0, 0x07, 127);
-  // select the drum bank:
-  sendMidi(0xB0, 0x00, 0x78);
-  // choose the standard drum kit:
-  sendMidi(0xC0, 30, 0); 
 }
 
 void loop() {
@@ -53,10 +44,10 @@ void playStinger() {
 // loop over the three notes:
   for (int thisNote = 0; thisNote < 3; thisNote++) {
     // Turn on note:
-    sendMidi(0x90, note[thisNote], 60);
+    noteOn(9, note[thisNote], 60);
     delay(rest[thisNote]);
     //Turn off the note:
-    sendMidi(0x80, note[thisNote], 60);
+    noteOff(9, note[thisNote], 60);
     // a little pause after the second note:
     if (thisNote == 1) {
       delay(50); 
@@ -64,8 +55,20 @@ void playStinger() {
   }
 }
 
+
+//Send a MIDI note-on message.  Like pressing a piano key
+//channel ranges from 0-15
+void noteOn(byte channel, byte note, byte velocity) {
+  sendMidi( (0x90 | channel), note, velocity);
+}
+
+//Send a MIDI note-off message.  Like releasing a piano key
+void noteOff(byte channel, byte note, byte velocity) {
+  sendMidi( (0x80 | channel), note, velocity);
+}
+
 void resetMidi(int thisPin) {
-  //Reset the VS1053
+  //Reset the Music Instrument Shield:
   pinMode(thisPin, OUTPUT);
   digitalWrite(thisPin, LOW);
   delay(100);
@@ -78,8 +81,3 @@ void sendMidi(byte cmd, byte data1, byte data2) {
   midi.write(data1);
   midi.write(data2);
 }
-
-
-
-
-
