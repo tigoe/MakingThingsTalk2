@@ -79,6 +79,10 @@ void draw() {
 }
 
 void pause() {
+ // if you have any readings, send them:
+  if (!currentReadings.equals("")) {
+    sendData(currentReadings);
+  }
   // stop the Bluetooth connection so you can start it again:
   if (bt != null && bt.isConnected()) {
     bt.disconnect();
@@ -86,10 +90,7 @@ void pause() {
 }
 
 void resume() {
-  // if you have any readings, send them:
-  if (!currentReadings.equals("")) {
-    sendData(currentReadings);
-  }
+  
 }
 
 void connect() {
