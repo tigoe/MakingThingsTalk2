@@ -7,7 +7,7 @@ float runningTotal = 0.0;
 
 void setup() {
   // initialize serial:
-  Serial.begin(9600);  
+  Serial.begin(115200);  
 }
 
 void loop() {
@@ -28,9 +28,7 @@ void loop() {
   if (Serial.available() > 0) {
     int inByte = Serial.read();
     float average = runningTotal / readingCount;
-    Serial.print(average);
-    Serial.print(",");
-    Serial.println(readingCount);
+    Serial.println(average);
     runningTotal = 0;
     readingCount = 0;
   }
