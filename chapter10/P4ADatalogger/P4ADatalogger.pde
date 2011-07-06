@@ -79,7 +79,7 @@ void draw() {
 }
 
 void pause() {
- // if you have any readings, send them:
+  // if you have any readings, send them:
   if (!currentReadings.equals("")) {
     sendData(currentReadings);
   }
@@ -90,7 +90,6 @@ void pause() {
 }
 
 void resume() {
-  
 }
 
 void connect() {
@@ -115,27 +114,27 @@ String getData() {
 
   if (bt != null) {
     // if you are connnected, get data:
-    if ( bt.isConnected() ) {    
-      // send data to get new data:
-      bt.write("A");
-      // wait for incoming data:
-      while (bt.available () == 0);
-      // if there are incoming bytes available, read them:
-      while (bt.available () > 0) {
-        // add the incoming bytes to the result string:
-        result += char(bt.read());
-      }
-      // get the last character of the result string:
-      char lastChar = result.charAt(result.length() - 1);
-      // make sure it's a newline, or you don't have valid data:
-      if (lastChar != '\n') {
-        result = null;
-      }
+    //if ( bt.isConnected() ) {    
+    // send data to get new data:
+    bt.write("A");
+    // wait for incoming data:
+    while (bt.available () == 0);
+    // if there are incoming bytes available, read them:
+    while (bt.available () > 0) {
+      // add the incoming bytes to the result string:
+      result += char(bt.read());
     }
+    // get the last character of the result string:
+    char lastChar = result.charAt(result.length() - 1);
+    // make sure it's a newline, or you don't have valid data:
+    if (lastChar != '\n') {
+      result = null;
+    }
+    //   }
     // if you're not connected, try to pair:
-    else {
-      connect();
-    }
+    //   else {
+    //     connect();
+    //   }
   }
   return result;
 }
@@ -167,4 +166,3 @@ String getTime() {
   Date currentDate = new Date();
   return currentDate.toString();
 }
-
