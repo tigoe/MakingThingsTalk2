@@ -1,6 +1,9 @@
+const int readingInterval = 1 * 1000;        // time between readings
+const int voltagePin = 11;      // use pin 11 as voltage to keep circuit simple
+const int groundPin = A1;       // use pin A1 as ground to keep circuit simple
+
 long now;               // current millis() reading
 long lastReadingTime;   // last time you read
-const int readingInterval = 1 * 1000;        // time between readings
 float average;          // average voltage reading of the GSR circuit
 int readingCount = 0;
 float runningTotal = 0.0;
@@ -8,6 +11,12 @@ float runningTotal = 0.0;
 void setup() {
   // initialize serial:
   Serial.begin(115200);  
+  // set powerPin and groundPin as digital outputs:
+  pinMode(voltagePin, OUTPUT);
+  pinMode(groundPin, OUTPUT);
+  // set them high and low respectively:
+  digitalWrite(powerPin, HIGH);
+  digitalWrite(groundPin, LOW);
 }
 
 void loop() {
