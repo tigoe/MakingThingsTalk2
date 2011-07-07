@@ -29,7 +29,7 @@ boolean updateNow = false;
 boolean sendNow = false;
 
 color bgColor = #2B0D15 ;
-color textColor = #FFEB97 ; //45304C
+color textColor = #FFEB97 ;
 color buttonColor = #565F63 ;
 color buttonHighlightColor = #ACBD9B ;
 void setup() {
@@ -58,17 +58,17 @@ void draw() {
 
   // display data onscreen:
   textAlign(LEFT);
-  text(connectionState, 10, screenHeight/3);
-  text(getTime(), 10, screenHeight/2);
-  text("latest reading (volts): " + thisReading, 10, screenHeight/2 + 30);
-  text("Server updated at:\n" + lastSendTime, 10, screenHeight/2 + 90);
+  text(connectionState, 10, screenHeight/4);
+  text(getTime(), 10, screenHeight/4 + 60);
+  text("latest reading (volts): " + thisReading, 10, screenHeight/4 + 90);
+  text("Server updated at:\n" + lastSendTime, 10, screenHeight/4 + 120);
 
   // draw the button:
   readButton.display();
   sendButton.display();
  
   if (sendNow) {
-    text("sending, please wait...", 10, screenHeight/4 + 20);
+    text("sending, please wait...", 10, screenHeight/4 - 60);
   }
 
   // getData() depends on being connected:
