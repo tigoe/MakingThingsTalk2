@@ -22,7 +22,7 @@ IPAddress ip(192,168,1,20);
 Server server(80);
 
 const int fileStringLength = 16;       // length of the file requested
-const int typeLength = 5;              // length of GET or POST
+const int typeLength = 6;              // length of GET or POST
 const int sdChipSelect = 4;            // SD card chipSelect
 const int relayPin = 2;                // pin that the relay is attached to
 const long tempCheckInterval = 10000;  // time between checks (in ms)
