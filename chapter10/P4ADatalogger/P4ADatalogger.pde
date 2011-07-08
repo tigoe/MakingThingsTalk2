@@ -4,7 +4,6 @@
  Uploads data via HTTP every two minutes
  Language: Processing
  */
-
 import cc.arduino.btserial.*;
 // instance of the library:
 BtSerial bt;
@@ -16,17 +15,11 @@ int readInterval = 10;      // in seconds
 int sendInterval = 2;       // in minutes
 
 // URL of your PHP Script:
-<<<<<<< HEAD
-String url = "http://tigoe.net/mtt2/logger2.php?data=";
-String currentReadings = "";      // group of readings, with datestamps
-String thisReading;               // single most recent reading
-String lastSendTime;              // Date of last time you sent to the server
-
-=======
 String url = "http://tigoe.net/mtt2/logger.php?data=";
 String currentReadings = ""; // group of readings, with datestamps
 String thisReading;          // single most recent reading
 String lastSendTime;         // Date of last time you sent to the server
+String connectionState = "";
 
 Button readButton;           // Button for prompting immediate read
 Button sendButton;           // Button for prompting immediate send
@@ -40,11 +33,10 @@ color textColor = #FFEB97 ;
 color buttonColor = #565F63 ;
 color buttonHighlightColor = #ACBD9B ;
 
->>>>>>> correct and latest version of P4Adatalogger
 void setup() {
   // set color scheme:
-  background(#363942);
-  fill(#D8CAA8);
+  background(bgColor);
+  fill(textColor);
 
   // Setup Fonts:
   String[] fontList = PFont.list();
@@ -54,47 +46,12 @@ void setup() {
   // instantiate the library:
   bt = new BtSerial( this );
   // try to connect to Bluetooth:
-  connect();
-<<<<<<< HEAD
-}
+  connectionState = connect();
 
-void draw() {
-  background(#363942);
-  fill(#D8CAA8);
-
-  // display data onscreen:
-  text(getTime(), 10, screenHeight/2);
-  text("latest reading (volts): " + thisReading, 10, screenHeight/2 + 30);
-  text("Server updated at:\n" + lastSendTime, 10, screenHeight/2 + 90);
-
-  if (bt != null) {
-    // try to connect:
-    if (!bt.isConnected()) {
-      text("Trying to pair with \n" + bt.getName(), 10, screenHeight/3);
-      connect();
-    } 
-    else {
-      // put the connected device's name on the screen:
-      text("connected to \n" + bt.getName(), 10, screenHeight/3);
-      // getData() depends on being connected:
-      if (abs(second() - lastRead) >= readInterval) {
-        thisReading = getData();
-
-        // if you got a valid reading, add a timestamp:
-        if (thisReading != null) {      
-          currentReadings += getTime() +"," + thisReading;
-        }
-        lastRead = second();
-      }
-    }
-  }
-
-  // once every 2 minutes, upload the data
-  if (abs(minute() - lastSend) >= sendInterval) {
-=======
-  // set up buttons:
-  readButton = new Button(screenWidth/2 - 100, 2*screenHeight/3, 200, 60, buttonColor, buttonHighlightColor, "Get Reading");
-  sendButton = new Button(screenWidth/2 - 100, 2*screenHeight/3 + 80, 200, 60, buttonColor, buttonHighlightColor, "Send Reading");
+  readButton = new Button(screenWidth/2 - 100, 2*screenHeight/3, 
+  200, 60, buttonColor, buttonHighlightColor, "Get Reading");
+  sendButton = new Button(screenWidth/2 - 100, 2*screenHeight/3 + 80, 
+  200, 60, buttonColor, buttonHighlightColor, "Send Reading");
 }
 
 void draw() {
@@ -110,9 +67,10 @@ void draw() {
   // draw the buttons:
   readButton.display();
   sendButton.display();
-
+  
   if (sendNow) {
-    text("sending, please wait...", 10, screenHeight/4 - 60);
+      textAlign(LEFT);
+    text("sending to server, please wait...", 10, screenHeight/4 - 60);
   }
 
   // if the update interval has passed, 
@@ -133,14 +91,11 @@ void draw() {
   // if the send interval has passed, 
   // or sendNow is true, update automatically:
   if (abs(minute() - lastSend) >= sendInterval || sendNow ) {
->>>>>>> correct and latest version of P4Adatalogger
     sendData(currentReadings);
     // get the time two ways:
     lastSendTime = getTime();    // a String to print on the screen
     lastSend = minute();         // an int for further comparison
   }
-<<<<<<< HEAD
-=======
 
   // if the read button changed from not pressed to pressed,
   // set updateNow, to force an update next time through the
@@ -149,14 +104,16 @@ void draw() {
     updateNow = true;
     println("readButton");
   }
+  //save the state of the button for next check:
   readButton.setLastState(readButton.isPressed());
 
   if (sendButton.isPressed() && !sendButton.getLastState()) {
     sendNow = true;
     println("sendButton");
   }
+  //save the state of the button for next check:
+
   sendButton.setLastState(sendButton.isPressed());
->>>>>>> correct and latest version of P4Adatalogger
 }
 
 void pause() {
@@ -170,49 +127,56 @@ void pause() {
   }
 }
 
-void connect() {
-  // if you are connnected, get data:
-  if ( !bt.isConnected() ) {  
-    // get the list of paired devices:
-    String[] pairedDevices = bt.list();
+String connect() {
+  String result = "Bluetooth not initialized yet...";
+  if (bt !=null) {
+    // if you are connnected, get data:
+    if (!bt.isConnected() ) {  
+      // get the list of paired devices:
+      String[] pairedDevices = bt.list();
 
-    if (pairedDevices.length > 0) {
-      println(pairedDevices);
-      // open a connection to the first one:
-      bt.connect( pairedDevices[0] );
-    } 
-    else {
-      text("Couldn't get any paired devices", 10, height/2);
+      if (pairedDevices.length > 0) {
+        println(pairedDevices);
+        // open a connection to the first one:
+        bt.connect( pairedDevices[0] );
+        result = "Connected to \n" + bt.getName();
+      }
     }
-  }
+    else {
+      result = "Couldn't get any paired devices";
+    }
+  } 
+  return result;
 }
 
 String getData() {
   String result = ""; 
 
   if (bt != null) {
+    println("bt not null");
     // if you are connnected, get data:
-    //if ( bt.isConnected() ) {    
-    // send data to get new data:
-    bt.write("A");
-    // wait for incoming data:
-    while (bt.available () == 0);
-    // if there are incoming bytes available, read them:
-    while (bt.available () > 0) {
-      // add the incoming bytes to the result string:
-      result += char(bt.read());
+    if ( bt.isConnected() ) {    
+      println("bt connected");
+      // send data to get new data:
+      bt.write("A");
+      // wait for incoming data:
+      while (bt.available () == 0);
+      // if there are incoming bytes available, read them:
+      while (bt.available () > 0) {
+        // add the incoming bytes to the result string:
+        result += char(bt.read());
+      }
+      // get the last character of the result string:
+      char lastChar = result.charAt(result.length() - 1);
+      // make sure it's a newline, or you don't have valid data:
+      if (lastChar != '\n') {
+        result = null;
+      }
+    } // if you're not connected, try to pair:
+    else {
+      println("truing to connect");
+      connectionState = connect();
     }
-    // get the last character of the result string:
-    char lastChar = result.charAt(result.length() - 1);
-    // make sure it's a newline, or you don't have valid data:
-    if (lastChar != '\n') {
-      result = null;
-    }
-    //   }
-    // if you're not connected, try to pair:
-    //   else {
-    //     connect();
-    //   }
   }
   return result;
 }
@@ -229,7 +193,6 @@ String formatData(String thisString) {
 void sendData(String thisData) {
   // if there's data to send
   if (thisData != null) {
-    text("Saving data to server", 10, 50);
     // URL-encode the data and URL:
     String sendString = formatData(url + thisData);
     //send the data via HTTP GET:
@@ -244,9 +207,11 @@ String getTime() {
   Date currentDate = new Date();
   return currentDate.toString();
 }
-<<<<<<< HEAD
-=======
 
+// The Button class defines the behavior and look
+// of the onscreen buttons.  Their behavior is slightly
+// different on a touchscreen than on a mouse-based
+// screen, because there is no mouseClick handler.
 class Button {
   int x, y, w, h;                    // positions of the buttons
   color basecolor, highlightcolor;   // color and highlight color
@@ -298,9 +263,9 @@ class Button {
     }
   }
 
-//this method is for setting the state of the button
-// last time it was checked, as opposed to its
-// current state:
+  //this method is for setting the state of the button
+  // last time it was checked, as opposed to its
+  // current state:
   void setLastState(boolean state) {
     pressedLastTime = state;
   }
@@ -308,5 +273,3 @@ class Button {
     return pressedLastTime;
   }
 }
-
->>>>>>> correct and latest version of P4Adatalogger
