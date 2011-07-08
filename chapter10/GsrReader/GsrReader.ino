@@ -22,7 +22,7 @@ void loop() {
   if (Serial.available() > 0) {
     int inByte = Serial.read();
     int sensorReading = analogRead(A0);
-    float voltage = map(sensorReading, 0, 1023, 0, 5);
+    float voltage = map(sensorReading, 0, 1023, 0,3.7);
     Serial.println(voltage);  
   }
 }
