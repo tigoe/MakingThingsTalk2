@@ -2,7 +2,6 @@
   Galvanic Skin Response reader
  Language: Arduino
  */
-
 const int voltagePin = 11;      // use pin 11 as voltage
 const int groundPin = A1;       // use pin A1 as ground
 

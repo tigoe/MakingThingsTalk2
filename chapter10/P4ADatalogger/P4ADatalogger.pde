@@ -2,24 +2,25 @@
  Datalogger
  Receives data via Bluetooth every ten seconds
  Uploads data via HTTP every two minutes
- Language: Processing
+ Language: Processing, Android mode
  */
 import cc.arduino.btserial.*;
 // instance of the library:
 BtSerial bt;
 
-int lastRead = second();    // the seconds last time you read
-int lastSend = minute();    // the minute last time you read
-
 int readInterval = 10;      // in seconds
 int sendInterval = 2;       // in minutes
+
+int lastRead = second();    // the seconds last time you read
+int lastSend = minute();    // the minute last time you read
+String lastSendTime;         // String timestamp of last  server update
 
 // URL of your PHP Script:
 String url = "http://tigoe.net/mtt2/logger.php?data=";
 String currentReadings = ""; // group of readings, with datestamps
-String thisReading;          // single most recent reading
-String lastSendTime;         // Date of last time you sent to the server
-String connectionState = "";
+String thisReading;          // most recent reading
+
+String connectionState = ""; // connected to Bluetooth or not?
 
 Button readButton;           // Button for prompting immediate read
 Button sendButton;           // Button for prompting immediate send
@@ -102,17 +103,14 @@ void draw() {
   // loop. Do the same for the send butto and sendNow, right below:
   if (readButton.isPressed() && !readButton.getLastState()) {
     updateNow = true;
-    println("readButton");
   }
   //save the state of the button for next check:
   readButton.setLastState(readButton.isPressed());
 
   if (sendButton.isPressed() && !sendButton.getLastState()) {
     sendNow = true;
-    println("sendButton");
   }
   //save the state of the button for next check:
-
   sendButton.setLastState(sendButton.isPressed());
 }
 
@@ -153,10 +151,8 @@ String getData() {
   String result = ""; 
 
   if (bt != null) {
-    println("bt not null");
     // if you are connnected, get data:
     if ( bt.isConnected() ) {    
-      println("bt connected");
       // send data to get new data:
       bt.write("A");
       // wait for incoming data:
@@ -174,19 +170,9 @@ String getData() {
       }
     } // if you're not connected, try to pair:
     else {
-      println("truing to connect");
       connectionState = connect();
     }
   }
-  return result;
-}
-
-String formatData(String thisString) {
-  // convert newlines, carriage returns, and 
-  // spaces to HTML-safe equivalent:
-  String result = thisString.replaceAll(" ", "%20");
-  result = result.replaceAll("\n", "%0A");
-  result = result.replaceAll("\r", "%0D");
   return result;
 }
 
@@ -200,6 +186,15 @@ void sendData(String thisData) {
     // clear currentReadings to get more:
     String currentReadings = "";
   }
+}
+
+String formatData(String thisString) {
+  // convert newlines, carriage returns, and 
+  // spaces to HTML-safe equivalent:
+  String result = thisString.replaceAll(" ", "%20");
+  result = result.replaceAll("\n", "%0A");
+  result = result.replaceAll("\r", "%0D");
+  return result;
 }
 
 // get the date and time as a String:
@@ -217,9 +212,10 @@ class Button {
   color basecolor, highlightcolor;   // color and highlight color
   color currentcolor;                // current color of the button
   String name;                       // name on the button
-  boolean pressedLastTime;           // if it was pressed last time you checked
+  boolean pressedLastTime;           // if it was pressed last time 
 
-  // Constructor: sets all the initial values for each instance of the Button class
+  // Constructor: sets all the initial values for 
+  // each instance of the Button class
   Button(int thisX, int thisY, int thisW, int thisH, 
   color thisColor, color thisHighlight, String thisName) {
     x = thisX;
