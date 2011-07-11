@@ -37,7 +37,7 @@ int requestDelay = 15 * 1000;   // time between HTTP requests to the same twitte
 
 
 // initialize the library with the numbers of the interface pins
-LiquidCrystal lcd(9,8, 5, 4, 3, 2);
+LiquidCrystal lcd(9,8, 7, 6,5, 3);
 const int screenWidth = 16;         // width of the LCD in characters
 String shortString = "";           // the string to display on the screen
 long lastScrollTime = 0;            // last time you scrolled the LCD   
@@ -48,16 +48,15 @@ int cursorPosition = 0;                   // first position of the tweet that's 
 void setup() {
   // initalize serial communications and the reader:
   Serial.begin(9600); 
-  // start the Ethernet connection:
-  // if (Ethernet.begin(mac) == 0) {
-  //   Serial.println("Failed to configure Ethernet using DHCP");
-  // no point in carrying on, so do nothing forevermore:
-  Ethernet.begin(mac, ip);
-  // }
+//     start the Ethernet connection:
+  if (Ethernet.begin(mac) == 0) {
+    Serial.println("Failed to configure Ethernet using DHCP");
+    Ethernet.begin(mac, ip);
+  }
   Rfid.begin();
   // set up the LCD's number of columns and rows: 
   lcd.begin(screenWidth,2);
-lcd.clear();
+  lcd.clear();
   lcd.println("Starting");
 
 }
@@ -66,7 +65,6 @@ lcd.clear();
 void loop() {
   switch(status) {
   case 0:    // get tag
-    // try to get a tag:
     tag = Rfid.selectTag();
     if (tag != 0) {
       // you have a tag, so print it:
@@ -143,9 +141,6 @@ void scrollLongString(int startPos) {
 }
 
 
-
-
-
 // this method connects to the server
 // and makes a HTTP request:
 
@@ -181,12 +176,14 @@ int readResponse() {
       result = response.getString("<text>", "</text>", tweetBuffer, 150);
       // print the tweet string:
       Serial.println(tweetBuffer);
+      tweet = String(tweetBuffer);
       // you only care about the tweet:
       client.stop();
     }
   }
   return result;
 }
+
 
 
 
