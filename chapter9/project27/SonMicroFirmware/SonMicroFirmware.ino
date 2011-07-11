@@ -21,7 +21,7 @@ void setup() {
   Wire.write(0x82);      // checksum
   Wire.endTransmission();
   
-  // reader needs 50s in between responses:
+  // reader needs 50ms in between responses:
   delay(50);
   Serial.print("getting reply: ");
   // wait for ten bytes back via I2C:
