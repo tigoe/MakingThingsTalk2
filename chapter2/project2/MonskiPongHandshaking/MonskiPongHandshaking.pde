@@ -1,6 +1,6 @@
 /* 
  Monski Pong with handshaking
- Language: Processing
+ Context: Processing
  
 
  Plays monski pong!

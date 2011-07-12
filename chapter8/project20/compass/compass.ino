@@ -1,6 +1,6 @@
 /*
   Compass
- Language: Arduino
+ Context: Arduino
  
  Reads a ST Microelectronics LSM303DLH compass and prints the output.
  Uses a fork of the LSM303DLH library by Ryan Mulligan, available at

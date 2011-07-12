@@ -1,6 +1,6 @@
 /*
   Stinger player
-  Language: Arduino
+  Context: Arduino
 */
 
 #include <SoftwareSerial.h>

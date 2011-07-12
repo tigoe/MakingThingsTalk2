@@ -1,6 +1,6 @@
 /*
   XBee Packet Reader and Graphing Program
- Language: Processing 
+ Context: Processing 
  Reads a packet from an XBee radio via UDP and parses it. 
  Graphs the results over time. The packet should be 22 bytes long, 
  made up of the following:

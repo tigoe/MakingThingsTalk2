@@ -1,6 +1,6 @@
 /*
   Wi-Fi RGB Web  Server
- Language: Arduino
+ Context: Arduino
  */
 
 #include <SPI.h>

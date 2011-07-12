@@ -1,7 +1,7 @@
 
 /*
 RFID-to-X10 translator
- Language: Arduino
+ Context: Arduino
  Reads RFID tags and sends X10 messages in response to the tags.
  */
 

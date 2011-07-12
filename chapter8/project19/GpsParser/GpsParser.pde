@@ -1,6 +1,6 @@
 /*
   GPS parser
- Language: Processing
+ Context: Processing
  
  This program takes in NMEA 0183 serial data and parses 
  out the date, time, latitude, and longitude using the GPRMC sentence.

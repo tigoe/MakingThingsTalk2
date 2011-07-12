@@ -1,7 +1,7 @@
 
 /*
  GET/POST Web server with SD card read
- Language: Arduino
+ Context: Arduino
  Reads a TMP36 temperature sensor
  */
 #include <SD.h>

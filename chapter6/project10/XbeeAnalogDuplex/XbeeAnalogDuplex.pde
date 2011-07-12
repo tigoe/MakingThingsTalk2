@@ -1,6 +1,6 @@
 /*
   XBee Analog Duplex sender
- Language: Wiring/Arduino
+ Context: Arduino
  
  This sketch configures an XBee radio via the serial port, 
  sends the value of an analog sensor out, and listens for input 

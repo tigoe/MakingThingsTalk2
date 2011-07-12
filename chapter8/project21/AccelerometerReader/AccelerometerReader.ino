@@ -1,6 +1,6 @@
 /*
   Accelerometer reader
- Language: Arduino
+ Context: Arduino
  Reads 2 axes of an accelerometer, calculates pitch and roll,
  and sends the values out the serial port
  */

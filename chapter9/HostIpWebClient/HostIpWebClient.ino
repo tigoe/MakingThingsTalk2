@@ -3,7 +3,7 @@
  HostIP geolocating Web Client
  Prints the location to an LCD display
  
- Language: Arduino
+ Context: Arduino
  */
 #include <SPI.h>
 #include <Ethernet.h>

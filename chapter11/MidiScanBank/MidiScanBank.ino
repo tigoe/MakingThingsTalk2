@@ -1,6 +1,6 @@
 /*
   MIDI general instrument demo
- Language: Arduino
+ Context: Arduino
  
  Plays all the instruments in a General MIDI instrument bank
  */

@@ -1,7 +1,7 @@
 
 /*
   SM130 Firmware reader
-  Language: Arduino
+  Context: Arduino
 */
 #include <Wire.h>
 

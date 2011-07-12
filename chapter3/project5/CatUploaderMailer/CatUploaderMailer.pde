@@ -1,6 +1,6 @@
 /* 
  Cat webcam uploader/emailer
- Language: Processing
+ Context: Processing
  
  takes a webcam image continually, uploads it, and 
  mails you when it receives a serial string above a given value

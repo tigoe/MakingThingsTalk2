@@ -1,7 +1,7 @@
 <?php
 /*
     SMS messenger
-    Language: PHP
+    Context: PHP
 */
    $phoneNumber = $_REQUEST["phoneNumber"];    // get the phone number 
    $carrier   = $_REQUEST["carrier"];          // get the carrier 

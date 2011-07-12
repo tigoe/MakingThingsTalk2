@@ -1,7 +1,7 @@
 <?php
 /*
    Age checker
-   Language: PHP
+   Context: PHP
 
    Expects two parameters from the HTTP request: 
       name (a text string)

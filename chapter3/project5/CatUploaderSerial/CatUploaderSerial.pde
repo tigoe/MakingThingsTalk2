@@ -1,6 +1,6 @@
 /**
  Image capture and upload
- language: Processing
+ Context: Processing
  
  created 2 Oct 2010
  modified: 9 Oct 2010

@@ -1,6 +1,6 @@
 /*
   ID Innovations RFID Reader
-  Language: Processing
+  Context: Processing
 
   Reads data serially from an ID Innovations ID12 RFID reader.
 */

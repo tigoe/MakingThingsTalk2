@@ -1,6 +1,6 @@
 /*
   UDP broadcast query sender/receiver
- Language: Processing
+ Context: Processing
  */
 // import the UDP library:
 import hypermedia.net.*;

@@ -1,6 +1,6 @@
 /*
   Processing for Android test
- Language: Processing
+ Context: Processing
  */
 float ballX, ballY;        // position of the ball
 // file to save data for pause and resume:

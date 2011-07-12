@@ -1,6 +1,6 @@
 /*
   AirNow Web Scraper
- Language: Arduino
+ Context: Arduino
  */
 #include <SPI.h>
 #include <Ethernet.h>

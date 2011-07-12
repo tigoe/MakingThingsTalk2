@@ -1,7 +1,7 @@
 /*
     Voltmeter Tester
  Uses analogWrite() to control a voltmeter.
- Language: Wiring/Arduino
+ Context: Arduino
  */
 // the output pin that the meter is attached to:
 const int meterPin = 9;

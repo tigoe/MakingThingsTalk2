@@ -2,7 +2,7 @@
  Datalogger
  Receives data via Bluetooth every ten seconds
  Uploads data via HTTP every two minutes
- Language: Processing, Android mode
+ Context: Processing, Android mode
  */
 import cc.arduino.btserial.*;
 // instance of the library:

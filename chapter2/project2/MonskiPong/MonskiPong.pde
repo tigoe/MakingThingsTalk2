@@ -1,6 +1,6 @@
 /* 
  Monski Pong
- Language: Processing
+ Context: Processing
  
  Plays monski pong!
  Expects a comma-separated serial string of sensor values :

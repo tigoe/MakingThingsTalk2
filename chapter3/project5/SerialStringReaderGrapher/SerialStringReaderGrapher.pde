@@ -1,6 +1,6 @@
 /* 
  Serial String Reader
- Language: Processing
+ Context: Processing
  
  Reads in a string of characters until it gets a linefeed (ASCII 10).
  Then converts the string into a number.

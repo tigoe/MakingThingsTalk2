@@ -1,6 +1,6 @@
 /*
   I2C accelerometer
- Language: Arduino
+ Context: Arduino
  
  Reads a ST Microelectronics LSM303DLH compass and prints 
  the X and Y axis accelerometer output.

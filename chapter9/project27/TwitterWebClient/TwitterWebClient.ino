@@ -1,7 +1,7 @@
 
 /*
  Twitter RFID Web Client
- Language: Arduino
+ Context: Arduino
  */
 #include <SPI.h>
 #include <Ethernet.h>

@@ -1,6 +1,6 @@
 /*
  ColorTracking with openCV
- Language: Processing
+ Context: Processing
  Based on an example by Daniel Shiffman
  */
 // import the opencv library:

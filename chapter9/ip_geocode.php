@@ -1,7 +1,7 @@
 <?php
 /*
 IP geocoder
- Language: PHP
+ Context: PHP
  
  Uses a client's IP address to get a latitude and longitude. 
  Uses the client's user agent to format the response.

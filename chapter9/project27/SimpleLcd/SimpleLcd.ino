@@ -1,6 +1,6 @@
 /*
   LCD Example
-  Language: Arduino
+  Context: Arduino
   */
 // include the library:
 #include <LiquidCrystal.h>

@@ -1,7 +1,7 @@
 <?php
 /*
    Parameter reader
-   Language: PHP
+   Context: PHP
 
    Prints any parameters sent in using an HTTP GET command.
 */

@@ -1,6 +1,6 @@
 /*
  GPS Datalogger
- Language: Arduino
+ Context: Arduino
  */
 
 #include <SD.h>

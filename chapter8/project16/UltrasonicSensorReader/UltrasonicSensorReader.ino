@@ -1,6 +1,6 @@
 /*
   Maxbotix LV-EZ1 ultrasonic ranger reader
- Language: Arduino
+ Context: Arduino
  
  Reads the value from a Maxbotix LV-EZ1 ultrasonic ranger 
  and sends the result out serially.

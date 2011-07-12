@@ -1,6 +1,6 @@
 /**
  Image capture and upload
- language: Processing
+ Context: Processing
  */
 import processing.video.*;    // import the video library
 Capture myCam;                // the camera
