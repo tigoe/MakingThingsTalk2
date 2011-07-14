@@ -1,6 +1,6 @@
 <?php
 /* Date page
-   Language: PHP
+   Context: PHP
    Prints the date. */
 
 // get the date, and format it:

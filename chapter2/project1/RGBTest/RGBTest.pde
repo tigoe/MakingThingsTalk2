@@ -1,6 +1,6 @@
 /*
   Serial RGB LED controller test
- language: Wiring/Arduino
+ Context: Arduino
  
  created 19 July 2010
  by Tom Igoe

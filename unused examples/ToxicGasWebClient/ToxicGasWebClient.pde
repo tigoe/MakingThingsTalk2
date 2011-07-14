@@ -1,6 +1,6 @@
 /*
  Toxic Gas Web Scraper
- Language: Arduino
+ Context: Arduino
  */
 #include <SPI.h>
 #include <Ethernet.h>

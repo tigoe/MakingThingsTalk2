@@ -1,6 +1,6 @@
 /* 
  Sensor Reader
- Language: Wiring/Arduino
+ Context: Arduino
  
  Reads two analog inputs and two digital inputs and outputs 
  their values.

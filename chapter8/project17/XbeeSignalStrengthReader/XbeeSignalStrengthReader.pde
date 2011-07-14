@@ -1,6 +1,6 @@
 /*
    XBee Signal Strength Reader
- Language: Processing
+ Context: Processing
  
  Reads a packet from an XBee radio and parses it.  The packet 
  should be 22 bytes long. It should be made up of the following:

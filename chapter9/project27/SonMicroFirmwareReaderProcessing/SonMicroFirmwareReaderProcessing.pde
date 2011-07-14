@@ -1,6 +1,6 @@
 /*
   SonMicro Firmware version reader
- Language: Processing
+ Context: Processing
  */
 import processing.serial.*;
 Serial myPort;           // The serial port

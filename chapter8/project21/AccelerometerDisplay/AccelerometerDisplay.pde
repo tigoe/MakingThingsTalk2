@@ -1,6 +1,6 @@
 /*
   Accelerometer Tilt
- Language: Processing
+ Context: Processing
  
  Takes the values in serially from an accelerometer 
  attached to a microcontroller and uses them to set the 

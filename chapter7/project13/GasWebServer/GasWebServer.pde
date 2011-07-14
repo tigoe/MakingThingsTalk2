@@ -1,6 +1,6 @@
 /*
   Gas sensor web server
-  Language: Arduino
+  Context: Arduino
 */
 
 // include SPI and Ethernet libraries:

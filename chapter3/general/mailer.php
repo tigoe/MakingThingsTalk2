@@ -1,7 +1,7 @@
 <?
 /*
    mailer
-   Language: PHP
+   Context: PHP
 
    sends an email.
 */

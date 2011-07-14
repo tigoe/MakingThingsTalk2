@@ -1,7 +1,7 @@
 <?php
 /*
    Mail sender
-   Language: PHP
+   Context: PHP
 
    Sends an email if sensorValue is above a threshold value.
 */

@@ -3,7 +3,7 @@
 
 /*
   Sharp GP2xx IR ranger reader
- Language: Arduino
+ Context: Arduino
  
  Reads the value from a Sharp GP2Y0A21 IR ranger and sends 
  it out serially.

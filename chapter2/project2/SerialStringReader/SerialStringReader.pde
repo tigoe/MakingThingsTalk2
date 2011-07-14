@@ -1,6 +1,6 @@
 /* 
  Serial String Reader
- Language: Processing
+ Context: Processing
  
  reads in a string of characters from a serial port
  until it gets a linefeed (ASCII 10).

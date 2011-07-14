@@ -1,6 +1,6 @@
 /*
  RFID Reader
- Language: Arduino
+ Context: Arduino
 */
 #include <SoftwareSerial.h>
 SoftwareSerial rfid(7,8);

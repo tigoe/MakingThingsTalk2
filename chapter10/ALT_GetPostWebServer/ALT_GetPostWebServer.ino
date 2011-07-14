@@ -1,9 +1,7 @@
 /*
  GET/POST Web server with SD card read
- Language: Arduino
- Reads a TMP36 temperature sensor and serves the result
- in a web page.  Allows changing of the thermostat
- from a web form.
+ Context: Arduino
+ Reads a TMP36 temperature sensor
  */
 #include <SD.h>
 #include <EEPROM.h>
@@ -255,16 +253,3 @@ void sendHttpHeader(Client thisClient, int errorCode) {
   // response header ends with an extra linefeed:
   thisClient.println();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

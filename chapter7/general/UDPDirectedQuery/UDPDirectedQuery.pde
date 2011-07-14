@@ -1,6 +1,6 @@
 /*
   UDP directed or broadcast query sender/receiver
- Language: Processing
+ Context: Processing
  */
 
 // import the UDP library:

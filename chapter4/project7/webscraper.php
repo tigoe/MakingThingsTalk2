@@ -1,7 +1,7 @@
 <?php
 /*
     AIRNow Web Page Scraper
-    Language: PHP
+    Context: PHP
 */
     // Define variables:
     // url of the page with the air quality index data for New York City:

@@ -1,6 +1,6 @@
 /*
    Analog sensor reader
-   Language: Arduino/Wiring
+   Context: Arduino/Wiring
 
    Reads an analog input on Analog in 0, prints the result
    as an ASCII-formatted  decimal value.

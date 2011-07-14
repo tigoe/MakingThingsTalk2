@@ -1,6 +1,6 @@
 /*
  GET/POST Web server with SD card read
- Language: Arduino
+ Context: Arduino
  Reads a TMP36 temperature sensor and serves the result
  in a web page.  Allows changing of the thermostat
  from a web form.

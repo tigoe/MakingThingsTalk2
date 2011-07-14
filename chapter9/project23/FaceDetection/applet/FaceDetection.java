@@ -22,7 +22,7 @@ public class FaceDetection extends PApplet {
 
 /*
   Face detection using openCV
-  Language: Processing
+  Context: Processing
 */
 // import the opencv and Rectangle libraries:
 

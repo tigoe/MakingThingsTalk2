@@ -1,6 +1,6 @@
 /*
  TMP36 Temperature reader/relay control
- Language: Arduino
+ Context: Arduino
  Reads a TMP36 temperature sensor
  */
 

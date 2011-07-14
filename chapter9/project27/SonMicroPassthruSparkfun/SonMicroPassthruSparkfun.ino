@@ -1,6 +1,6 @@
 /*
   Spark Fun RFID shield serial pass through
-  Language: Arduino
+  Context: Arduino
 */
 
 #include <SoftwareSerial.h>

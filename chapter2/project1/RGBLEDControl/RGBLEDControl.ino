@@ -1,12 +1,12 @@
 /*
   Serial RGB LED controller
- language: Wiring/Arduino
+ Context: Arduino
  
  Controls an RGB LED whose R, G and B legs are 
  connected to pins 11, 9, and 10, respectively.
  
  To control it, type 'r', 'g', or 'b' followed by
- the numberals 0 through 9. Each LED can be set at a brightness level 
+ the numerals 0 through 9. Each LED can be set at a brightness level 
  from 0 to 9.
  
  created 19 July 2010
