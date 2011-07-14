@@ -1,11 +1,11 @@
 
 /*
  Twitter RFID Web Client
- Context: Arduino
+ Language: Arduino
  */
 #include <SPI.h>
 #include <Ethernet.h>
-#include <TextFinder.h>
+//#include <TextFinder.h>
 #include <Wire.h>
 #include <LiquidCrystal.h>
 #include <SonMicroReader.h>
@@ -21,9 +21,7 @@ int state = 0;              // the state that the sketch is in
 // The IP address will be dependent on your local network:
 byte mac[] = { 
   0x00, 0xAA, 0xBB, 0xCC, 0xDE, 0x01 };
-//IPAddress ip(192,168,1,20);          // will only be used if DHCP fails
-IPAddress ip(128,12,151,6);          // will only be used if DHCP fails
-
+IPAddress ip(192,168,1,20);          // will only be used if DHCP fails
 IPAddress server(199,59,149,200);    // Twitter's API address
 Client client;                       // the client connection
 
@@ -32,8 +30,8 @@ String tweet = "";               // the tweet
 int tweetBufferLength;           // the space to reserve for the tweet
 int tweetLength = 0;             // the actual length of the tweet
 
-long lastRequestTime = 0;       // last time you connected to the server
-int requestDelay = 15 * 1000;   // time between HTTP requests
+long lastRequestTime = 0;       // last time you connected to the server, in milliseconds
+int requestDelay = 15 * 1000;   // time between HTTP requests to the same twitter ID
 
 
 // initialize the library with the numbers of the interface pins
@@ -41,11 +39,8 @@ LiquidCrystal lcd(9,8, 7, 6,5, 3);
 const int screenWidth = 16;         // width of the LCD in characters
 long lastScrollTime = 0;            // last time you scrolled the LCD   
 int scrollDelay = 130;              // delay between LCD moves
-int cursorPosition = 0;             // cursor position on the LCD
+int cursorPosition = 0;             // first position of the tweet that's on the LCD
 
-const int potVoltage = A0;
-const int potGround = A2;
-const int potInput = A1;
 
 void setup() {
   // initalize serial communications and the reader:
@@ -55,13 +50,6 @@ void setup() {
     Serial.println(F("Failed to configure Ethernet using DHCP"));
     Ethernet.begin(mac, ip);
   }
-  // set pins A0 and A2 to digital out, and use them as
-  // power and ground for the scroll speed potentiometer:
-  pinMode(potGround, OUTPUT);
-  pinMode(potVoltage, OUTPUT);
-  digitalWrite(potGround, LOW);
-  digitalWrite(potVoltage, HIGH);
-  
   // reserve 140 * 2 screenWidths + 3 bytes extra for tweet:
   tweetBufferLength = 140 + 2*screenWidth + 3;
   tweet.reserve(tweetBufferLength);   
@@ -70,6 +58,7 @@ void setup() {
   lcd.begin(screenWidth,2);
   lcd.clear();
   lcd.print(F("Ready"));
+
 }
 
 
@@ -135,10 +124,10 @@ void loop() {
     lastScrollTime = millis();    
   } 
 
-  // update the speed of scrolling from the second potentiometer:
-  int sensorReading = analogRead(potInput);
-  // map to a scrolling delay of 100 - 300 ms:
-  scrollDelay = map(sensorReading, 0, 1023, 100, 300);
+ // update the speed of scrolling from the second potentiometer:
+  int sensorReading = analogRead(A0);
+  scrollDelay = map(sensorReading, 0, 1023, 50, 300);
+
 }
 
 
@@ -187,25 +176,26 @@ boolean connectToServer() {
 
 int readResponse() {
   char tweetBuffer[141];    // 140 chars + 1 extra
-
+  
   int result = 0;
   // if there are bytes available from the server:
   while (client.connected()) {
     if (client.available()) {
       // make an instance of TextFinder to search the response:
-      TextFinder response(client);
+     // TextFinder response(client);
       // see if the response from the server contains <text>:
-      response.getString("<text>", "</text>", tweetBuffer, 141);
+      if (client.find("<text>")) {
+      client.readCharsUntil('<', tweetBuffer, 141);
       // print the tweet string:
       Serial.println(tweetBuffer);
       // make a String with padding on both ends:
       tweet = "                " + String(tweetBuffer) 
-        +  "                ";
+           +  "                ";
       result = tweet.length();
+      }
       // you only care about the tweet:
       client.stop();
     }
   }
   return result;
 }
-

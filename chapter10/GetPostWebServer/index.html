@@ -1,0 +1,36 @@
+<html>
+   <head>
+      <link rel="stylesheet" type="text/css" href="mystyle.css" />
+      <script type="text/javascript">
+         function refresh() {
+            var today=new Date();
+            document.images["pic"].src="kitty.jpg"+"?"+today;
+            
+            if(document.images) window.onload=refresh;    
+            t=setTimeout('refresh()',500);
+         }
+      </script>
+   </head>
+
+   <body onload="refresh()">
+      <div class="header"><h1>Thermostat Control</h1></div>
+      
+      <div class="main">
+         <img src="kitty.jpg" width="300" id="pic">      
+         <form name="tempSetting" action="response.htm" method="POST">
+            <p>Current temperature: 
+            21
+            &#176;C
+            </p>
+            Thermostat setting (&#176;C):
+            <input name="thermostat" type="number"
+               min="22"
+               max="40"
+               step="1"
+               value=25>    
+            <input type="submit" value="submit">
+         </form>
+         Air conditioner is off
+      </div>
+   </body>
+</html>
