@@ -51,8 +51,9 @@ void loop() {
     if (inByte >= '0' && inByte <= '9') {
       // map the incoming byte value to the range of the analogRead() command:
       brightness = map(inByte, '0', '9', 0, 255);  
+      // set the current pin to the current brightness:
+      analogWrite(currentPin, brightness);    
     } 
-    // set the current pin to the current brightness:
-    analogWrite(currentPin, brightness);  
   }
 }
+

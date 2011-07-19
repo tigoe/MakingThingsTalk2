@@ -23,10 +23,10 @@ foreach ($_REQUEST as $key => $value)
 
 if (isset($name) && isset($age) ) {
     if ($age < 21) {
-        echo “<p> $name, You’re not old enough to drink.</p>\n”;
+        echo "<p> $name, You're not old enough to drink.</p>\n";
     } else {
-        echo “<p> Hi $name. You’re old enough to have a drink, but do “;
-        echo “so responsibly.</p>\n”;
+        echo "<p> Hi $name. You're old enough to have a drink, but do ";
+        echo "so responsibly.</p>\n";
     }
 }
 ?>
@@ -34,11 +34,11 @@ if (isset($name) && isset($age) ) {
 <html>
 <body>
 
-<form action=”age_checker.php” method=”post”
-enctype=”application/x-www-form-urlencoded”>
-First name: <input type=”text” name=”name” /><br>
-Last name: <input type=”age” name=”age” />
-<input type=”submit” value=”Submit” />
+<form action="age_checker.php" method="post"
+enctype="application/x-www-form-urlencoded">
+Name: <input type="text" name="name" /><br>
+Age: <input type="age" name="age" />
+<input type="submit" value="Submit" />
 </form>
 
 </body>
