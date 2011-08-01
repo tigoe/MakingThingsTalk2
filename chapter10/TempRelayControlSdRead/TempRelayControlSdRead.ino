@@ -23,13 +23,13 @@ void setup() {
   pinMode(relayPin, OUTPUT);
 
   if (!SD.begin(sdChipSelect)) {
-    // if you can't read the SD card, don't go on:
+    // if you can't read the SD card, print the error and go on:
     Serial.println(F("initialization failed!"));
   } 
   else {
     Serial.println(F("initialization done."));
+    sendFile("index.htm");  
   }
-  sendFile("index.htm");
 }
 
 void loop() {
@@ -52,7 +52,7 @@ void loop() {
 float readSensor() {
   // read the value from the sensor:
   int sensorValue = analogRead(A0);
- // convert the reading to volts:
+  // convert the reading to volts:
   float voltage = (sensorValue *  5.0) / 1024.0; 
   // convert the voltage to temperature  in celsius
   // (100mv per degree - 500mV offset):
@@ -103,5 +103,6 @@ void sendFile(char thisFile[]) {
     Serial.print("I couldn't open the file.");
   } 
 }
+
 
 

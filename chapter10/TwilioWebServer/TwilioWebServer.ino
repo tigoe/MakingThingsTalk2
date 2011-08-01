@@ -45,7 +45,7 @@ void setup() {
   //see if the SD card is there:
   Serial.print(F("Initializing SD card..."));
   if (!SD.begin(sdChipSelect)) {
-    // if you can't read the SD card, don't go on:
+    // if you can't read the SD card, print the error and go on:
     Serial.println(F("initialization failed!"));
   } 
   else {
