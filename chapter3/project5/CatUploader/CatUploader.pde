@@ -60,7 +60,7 @@ void keyReleased() {
   PImage img = get();
   img.save(fileName);
   postPicture();
- // loadStrings("http://www.tigoe.net/mtt2/mailer.php");
+ // loadStrings("http://www.www.example.com/mailer.php");
 }
 
 void postPicture() {

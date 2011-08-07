@@ -16,7 +16,7 @@ int threshold = 250;        // above this number, the cat is on the mat.
 
 int lastTimeSent = 0;     // last minute you sent a mail
 int timeThreshold = 1;           // minimum minutes between mails
-String mailUrl = "http://tigoe.net/mtt2/cat-script.php";
+String mailUrl = "http://www.example.com/cat-script.php";
 
 
 void setup() {

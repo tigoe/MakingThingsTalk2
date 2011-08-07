@@ -16,7 +16,7 @@ int lastSend = minute();    // the minute last time you read
 String lastSendTime;         // String timestamp of last  server update
 
 // URL of your PHP Script:
-String url = "http://tigoe.net/mtt2/logger.php?data=";
+String url = "http://www.example.com/logger.php?data=";
 String currentReadings = ""; // group of readings, with datestamps
 String thisReading;          // most recent reading
 
