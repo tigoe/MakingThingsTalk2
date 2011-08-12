@@ -36,7 +36,7 @@ void setup() {
 void loop() {
   if (Serial.available()) {
     int serialByte = Serial.read();
-    // if you reach max packet size, or get a 0x7E,
+    // if you get a 0x7E,
     // send the packet and begin a new one:
     if (serialByte == 0x7E) {
       udp.endPacket();
