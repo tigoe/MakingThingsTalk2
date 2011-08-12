@@ -13,7 +13,7 @@ void setup() {
 void loop() {
   int sensorValue = analogRead(A0); // read the sensor value
   // convert to a voltage:
-  float voltage = (sensorValue * 5.0 / 1024.0);
+  float voltage = map(sensorValue, 0, 5, 0, 1023);
 
   // the sensor actually gives results that aren't linear.
   // This formula is derived from the datasheet's graph
