@@ -13,7 +13,7 @@ void setup() {
 void loop() {
   // read the sensor value and convert to a voltage:
   int sensorValue = analogRead(A0); 
-  float voltage = sensorValue * 5.0 / 1024.0;
+  float voltage = map(sensorValue, 0, 5, 0, 1023);
 
   // the sensor's output is about 9.8mV per inch,
   // so multiply by 2.54 to get it in centimeters:
@@ -26,6 +26,7 @@ void loop() {
   // so the sensor can stabilize: 
   delay(50);                    
 }
+
 
 
 
