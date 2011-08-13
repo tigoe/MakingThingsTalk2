@@ -14,7 +14,7 @@ unsigned long tag = 0;     // address of the current tag
 unsigned long lastTag = 0; // address of the previous tag
 int addressBlock = 4;      // memory block on the tag to read
 
-int state = 0;              // the state that the sketch is in
+int state = 0;   // go back to first state              // the state that the sketch is in
 
 // Enter a MAC address and IP address for your controller below.
 // The IP address will be dependent on your local network:
@@ -60,7 +60,7 @@ void setup() {
   pinMode(potVoltage, OUTPUT);
   digitalWrite(potGround, LOW);
   digitalWrite(potVoltage, HIGH);
-  
+
   // reserve 140 * 2 screenWidths + 3 bytes extra for tweet:
   tweetBufferLength = 140 + 2*screenWidth + 3;
   tweet.reserve(tweetBufferLength);   
@@ -79,7 +79,7 @@ void loop() {
     if (tag != 0) {
       // you have a tag, so print it:
       Serial.println(tag, HEX);  
-      state++;
+      state++;    // go to the next state
     }
     break;
   case 1:    // read block
@@ -93,10 +93,9 @@ void loop() {
       lcd.setCursor(0,0);       // move the cursor to the beginning of the top line
       lcd.print(twitterHandle); // tweet handle on the top line 
       Serial.println(twitterHandle);
-      state++;
+      state++;        // go to the next state
     } 
-    else state = 0;
-
+    else state = 0;   // go back to first state
     break;
   case 2:    //connect to server
     // if this is a new tag, or if the request delay
@@ -105,16 +104,16 @@ void loop() {
       millis() - lastRequestTime > requestDelay) {
       // attempt to connect:
       if (connectToServer()) {
-        state++;
+        state++;        // go to the next state
       } 
-      else state = 0;
+      else state = 0;   // go back to first state
     } 
-    else state = 0; 
+    else state = 0;     // go back to first state 
     lastTag = tag;  
     break;
   case 3:    // read response
     tweetLength = readResponse();
-    state = 0;
+    state = 0;   // go back to first state
     break;
   }
 
@@ -207,4 +206,6 @@ int readResponse() {
   }
   return result;
 }
+
+
 

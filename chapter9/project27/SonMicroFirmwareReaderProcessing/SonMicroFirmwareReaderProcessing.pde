@@ -26,7 +26,7 @@ void draw() {
 }
 
 void keyReleased() {
-  int command = 0x81;    // reset command is the default
+  int command = 0x81;    // read firmware command is the default
   int dataLength = 1;    // data length for both commands here is 1
   if (key == 's') {      //  "select tag" command
     command = 0x83;
