@@ -25,7 +25,7 @@ const int right = 891;        // threshold for the joystick to go right
 const int sendInterval = 20;  // minimum time between messages to the server
 const int debounceInterval = 15;  // used to smooth out pushbutton readings
 
-Client client;               // instance of the Client class for connecting
+EthernetClient client;               // instance of the Client class for connecting
 int lastButtonState = 0;     // previous state of the pushbutton
 long lastTimeSent = 0;       // timestamp of the last server message
 

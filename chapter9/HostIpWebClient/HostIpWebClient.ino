@@ -16,7 +16,7 @@ byte mac[] = {
   0x00, 0xAA, 0xBB, 0xCC, 0xDE, 0x02 };
 IPAddress ip(192,168,1,20);               // will only be used if DHCP fails
 char serverName[] = "api.hostip.info";    // HostIP's API URL
-Client client;                            // the client connection
+EthernetClient client;                            // the client connection
 
 float latitude = 0.0;                     // the latitude returned from HostIP
 float longitude = 0.0;                    // the longitude returned from HostIP

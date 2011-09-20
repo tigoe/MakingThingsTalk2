@@ -24,7 +24,7 @@ byte mac[] = {
 IPAddress ip(128,12,151,6);          // will only be used if DHCP fails
 
 IPAddress server(199,59,149,200);    // Twitter's API address
-Client client;                       // the client connection
+EthernetClient client;                       // the client connection
 
 String twitterHandle = "";       // the tweeter
 String tweet = "";               // the tweet

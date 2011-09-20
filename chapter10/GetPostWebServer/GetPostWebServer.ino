@@ -71,7 +71,7 @@ void loop() {
   int requestedFileLength = 0;  // length of the filename they asked for
 
   // listen for incoming clients:
-  Client client = server.available();  
+  EthernetClient client = server.available();  
 
   if (client) {
     // make an instance of TextFinder to look for stuff from the client:

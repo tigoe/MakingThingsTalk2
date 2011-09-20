@@ -32,7 +32,7 @@ void setup()
 void loop()
 {
   // listen for incoming clients
-  Client client = server.available();
+  EthernetClient client = server.available();
   if (client) {
     Serial.println("Got a client");
 
