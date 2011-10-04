@@ -1,0 +1,8 @@
+RewriteEngine On
+# put in the base path to your directory:
+RewriteBase /mtt2/myservice
+# redirect anything after the base directory to index.php:
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -l
+RewriteRule ^.*$ - [NC,L]
+RewriteRule ^.*$ index.php [NC,L]
