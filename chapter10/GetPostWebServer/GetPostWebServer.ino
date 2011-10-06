@@ -19,7 +19,7 @@ IPAddress subnet(255,255,255,0);
 IPAddress ip(192,168,1,20);
 
 // Initialize the Ethernet server library:
-Server server(80);
+EthernetServer server(80);
 
 const int fileStringLength = 16;       // length of the file requested
 const int typeLength = 6;              // length of GET or POST
@@ -181,7 +181,7 @@ boolean checkThermostat() {
 }
 
 // send the file that was requested:
-void sendFile(Client thisClient, char thisFile[]) {
+void sendFile(EthernetClient thisClient, char thisFile[]) {
   String outputString = "";      // a String to get each line of the file
 
   // open the file for reading:
@@ -238,7 +238,7 @@ void sendFile(Client thisClient, char thisFile[]) {
 
 
 // send a HTTP header to the client:
-void sendHttpHeader(Client thisClient, int errorCode) {
+void sendHttpHeader(EthernetClient thisClient, int errorCode) {
   thisClient.print(F("HTTP/1.1 "));
   switch(errorCode) {
   case 200:      // OK
