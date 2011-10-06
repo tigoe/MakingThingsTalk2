@@ -17,7 +17,7 @@ char password[] = "secretpassword"; // the password you’re using to connect
 
 int status = WL_IDLE_STATUS;     // the Wifi radio's status
 
-Server server(80);
+WiFiServer server(80);
 int lineLength = 0;    // length of the incoming text line
 
 
@@ -45,7 +45,7 @@ void setup() {
 
 void loop() {
   // listen for incoming clients
-  WifiClient client = server.available();
+  WiFiClient client = server.available();
   if (client) {
     Serial.println("Got a client");
 
@@ -82,7 +82,7 @@ void loop() {
 }
 
 
-void makeResponse(Client thisClient) {
+void makeResponse(WiFiClient thisClient) {
   thisClient.print("HTTP/1.1 200 OK\n");
   thisClient.print("Content-Type: text/html\n\n");
   thisClient.print("<html><head><meta http-equiv=\"refresh\" content=\"3\">");
