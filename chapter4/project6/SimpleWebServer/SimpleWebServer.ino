@@ -7,7 +7,7 @@
 #include <SPI.h>
 #include <Ethernet.h>
 
-Server server(80);
+EthernetServer server(80);
 
 byte mac[] = {  0x00, 0xAA, 0xBB, 0xCC, 0xDE, 0x01 };
 IPAddress gateway(192,168,1,1);
