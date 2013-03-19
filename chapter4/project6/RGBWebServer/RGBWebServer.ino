@@ -1,15 +1,16 @@
 /*
   RGB Web  Server
-  Context: Arduino
+ Context: Arduino
  
  */
 
 #include <SPI.h>
 #include <Ethernet.h>
 
-Server server(80);
+EthernetServer server(80);
 
-byte mac[] = {  0x00, 0xAA, 0xBB, 0xCC, 0xDE, 0x01 };
+byte mac[] = {  
+  0x00, 0xAA, 0xBB, 0xCC, 0xDE, 0x01 };
 IPAddress gateway(192,168,1,1);
 IPAddress subnet(255,255,255,0);
 IPAddress ip(192,168,1,20);
@@ -19,7 +20,6 @@ IPAddress ip(192,168,1,20);
 // with the IP address and port you want to use 
 // (port 80 is default for HTTP):
 
-int lineLength = 0;    // length of the incoming text line
 
 void setup()
 {
@@ -35,6 +35,7 @@ void loop()
   EthernetClient client = server.available();
   if (client) {
     Serial.println("Got a client");
+    int lineLength = 0;    // length of the incoming text line
 
     while (client.connected()) {
       if (client.available()) {
@@ -56,7 +57,6 @@ void loop()
         else {
           // for any other character, increment the line length:
           lineLength++;
-
         }
       }    
     }
@@ -69,7 +69,7 @@ void loop()
 }
 
 
-void makeResponse(Client thisClient) {
+void makeResponse(EthernetClient thisClient) {
   thisClient.print("HTTP/1.1 200 OK\n");
   thisClient.print("Content-Type: text/html\n\n");
   thisClient.print("<html><head><meta http-equiv=\"refresh\" content=\"3\">");
@@ -94,6 +94,7 @@ void makeResponse(Client thisClient) {
   // close the page:
   thisClient.println("</body></html>\n");
 }
+
 
 
 
