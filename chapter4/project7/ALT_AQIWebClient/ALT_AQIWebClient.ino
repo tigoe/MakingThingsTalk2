@@ -101,9 +101,9 @@ boolean makeRequest() {
   Serial.println("requesting...");
   // make HTTP GET request and fill in the path to
   // the PHP script on your server:
-  client.println("GET /mtt2/scraper.php HTTP/1.1");
+  client.println("GET /~myAccount/scraper.php HTTP/1.1");
   // fill in your server's name:
-  client.println("HOST: tigoe.net");
+  client.println("HOST: example.com");
   client.println();
   return true;
 }
