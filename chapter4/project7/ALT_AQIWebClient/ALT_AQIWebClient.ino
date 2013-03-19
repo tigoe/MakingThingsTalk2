@@ -66,7 +66,7 @@ void loop()
       // see if the response from the server contains the AQI value:
       if(client.find("Air Quality:"))  {
         // convert the remaining part into an integer:
-        airQuality = client.parseInt(':');
+        airQuality = client.parseInt();
         // set the meter:
         Serial.println(airQuality);
         meterIsSet = setMeter(airQuality);
