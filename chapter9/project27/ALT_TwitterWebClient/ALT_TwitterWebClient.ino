@@ -185,7 +185,7 @@ int readResponse() {
      // TextFinder response(client);
       // see if the response from the server contains <text>:
       if (client.find("<text>")) {
-      client.readCharsUntil('<', tweetBuffer, 141);
+      client.readBytesUntil('<', tweetBuffer, 141);
       // print the tweet string:
       Serial.println(tweetBuffer);
       // make a String with padding on both ends:
