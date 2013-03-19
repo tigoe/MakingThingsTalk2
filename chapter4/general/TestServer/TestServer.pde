@@ -12,6 +12,7 @@ import processing.net.*;
 
 int port = 8080;        // the port the server listens on
 Server myServer;        // the server object
+Client thisClient;
 int counter = 0;
 void setup()
 {
@@ -21,7 +22,7 @@ void setup()
 void draw()
 {
   // get the next client that sends a message:
-  Client thisClient = myServer.available();
+   thisClient = myServer.available();
   // if the message is not null, display what it sent:
 
   if (thisClient != null) {
@@ -40,4 +41,3 @@ void draw()
     counter++;
   }
 }
-
