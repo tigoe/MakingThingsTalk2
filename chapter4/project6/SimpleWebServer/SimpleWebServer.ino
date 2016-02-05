@@ -1,40 +1,37 @@
 /*
   Web  Server
   Context: Arduino
+ 
+ */
 
-*/
 #include <SPI.h>
-#include <WiFi101.h>
-#include "config.h"
+#include <Ethernet.h>
 
-int status = WL_IDLE_STATUS;
-WiFiServer server(80);
+EthernetServer server(80);
 
+byte mac[] = {  0x00, 0xAA, 0xBB, 0xCC, 0xDE, 0x01 };
+IPAddress gateway(192,168,1,1);
+IPAddress subnet(255,255,255,0);
+IPAddress ip(192,168,1,20);
 
 void setup()
 {
-  // attempt to connect to Wifi network:
-  while ( status != WL_CONNECTED) {
-    Serial.print("Attempting to connect to Network named: ");
-    Serial.println(ssid);                   // print the network name (SSID);
-
-    // Connect to WPA/WPA2 network:
-    status = WiFi.begin(ssid, pass);
-  }
-  server.begin();               // start the web server on port 80
-  printWifiStatus();            // you're connected now, so print out the status
+  // start the Ethernet connection and the server:
+  Ethernet.begin(mac, ip, gateway, subnet);
+  server.begin();
+  Serial.begin(9600);
 }
 
 void loop()
 {
   // listen for incoming clients
-  WiFiClient client = server.available();
+  EthernetClient client = server.available();
   if (client) {
     while (client.connected()) {
       if (client.available()) {
         char thisChar = client.read();
         Serial.write(thisChar);
-      }
+      }    
     }
     // close the connection:
     client.stop();
