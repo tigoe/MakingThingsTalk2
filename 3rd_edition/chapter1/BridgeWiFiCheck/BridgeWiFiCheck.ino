@@ -2,6 +2,10 @@
   WiFi status check
   context: Arduino
   Example of how to run a shell command using Bridge
+    
+  Based on Arduino Bridge examples at https://www.arduino.cc/en/Reference/YunBridgeLibrary
+  created 2/16/16
+  by Tom Igoe
 */
 #include <Process.h>   // include the Bridge Process library
 
