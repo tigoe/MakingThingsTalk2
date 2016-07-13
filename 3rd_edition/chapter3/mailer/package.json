@@ -1,0 +1,18 @@
+{
+  "name": "mailer",
+  "version": "0.0.1",
+  "description": "a mailer program",
+  "main": "mailer.js",
+  "dependencies": {
+    "nodemailer": "^2.3.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "email"
+  ],
+  "author": "Tom Igoe",
+  "license": "ISC"
+}

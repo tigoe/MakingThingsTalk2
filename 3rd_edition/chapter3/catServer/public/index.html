@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript">
+    // update the image and the text on the page:
+    function update() {
+      // get the current date and time:
+      var now = new Date();
+      // get the page elements: the image and the text div:
+      var timeLabel = document.getElementById('timeLabel');
+      var catPic = document.getElementById('catPic');
+      // create a unique URL using the date, so the page will force an update:
+      catPic.src= "/catcam.jpg?" + now;
+      // update the text in the text div:
+      timeLabel.innerHTML = now;
+    }
+
+    // set an interval to call the update function every 2000 ms:
+    setInterval(update, 2000);
+    </script>
+    <title>CatCam!</title>
+  </head>
+  <body align=center>
+    <h1 align=center>CatCam!</h1>
+    <img src="/catcam.jpg" id="catPic">
+    <div id="timeLabel"></div>
+  </body>
+</html>

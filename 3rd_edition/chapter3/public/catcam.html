@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.23/p5.min.js">
+
+    </script>
+    <script type="text/javascript">
+    var img;
+    function setup() {
+      frameRate(0.2);
+      createCanvas(windowWidth, windowHeight);
+      imageMode(CENTER);
+       img = loadImage("/catcam.jpg");
+    }
+
+    function draw() {
+      image(img, width/2, height/2);
+      var now = new Date();
+      fill(255);
+      text(now,  width/2-190, height/2+140);
+    //  println(new Date() - now);
+      img = loadImage("/catcam.jpg?" + now);
+    }
+
+    </script>
+    <title>CatCam!</title>
+  </head>
+  <body>
+  </body>
+</html>
