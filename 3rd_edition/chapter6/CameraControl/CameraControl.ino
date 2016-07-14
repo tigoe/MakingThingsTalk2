@@ -30,7 +30,7 @@ void loop() {
 
   // compare the buttonState to its previous state
   // if it's changed, and it's high now, then the person
-  // just puched the button:
+  // just pushed the button:
   if (buttonState != lastButtonState) {
     if (buttonState == HIGH) {
       // send the signal to open the shutter:
@@ -38,9 +38,9 @@ void loop() {
       Serial.println("click");
     }
   }
-    // save the current state as the last state,
-    //for next time through the loop
-    lastButtonState = buttonState;
+  // save the current state as the last state,
+  //for next time through the loop
+  lastButtonState = buttonState;
 }
 
 
