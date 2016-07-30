@@ -1,10 +1,16 @@
-// include libraries
 #include <multiCameraIrControl.h>
-#include <CurieBLE.h>
+#include <SPI.h>
+#include <BLEPeripheral.h>
 
 
-// initialize peripheral
-BLEPeripheral blePeripheral;
+
+// define pins (varies per shield/board)
+const int BLE_REQ = 10;
+const int BLE_RDY = 2;
+const int BLE_RST = 9;
+
+// create peripheral instance, see pinouts above
+BLEPeripheral blePeripheral = BLEPeripheral(BLE_REQ, BLE_RDY, BLE_RST);
 // initialize the camera service and its UUID:
 BLEService cameraService("F01A");
 // initialize the shutter characteristic, its UUID and its properties:
@@ -33,7 +39,7 @@ void setup() {
 
 void loop() {
   // poll the peripheral for activity:
-//  blePeripheral.poll();
+  blePeripheral.poll();
 
   // if a central wrote to the shutter characteristic:
   if (shutter.written()) {
