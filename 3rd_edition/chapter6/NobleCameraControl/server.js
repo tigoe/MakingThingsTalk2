@@ -13,7 +13,7 @@ var cameraUuid = 'f01a';          // uuid for the the camera service
 var shutterUuid = 'f01b';         // uuid for the shutter characteristic
 var shutter = null;               // the shutter characteristic
 var clickCount = 0;               // count of camera clicks from the client
-var device;
+var device;                       // the peripheral to which you're connecting
 
 // serve static files from /public:
 server.use('/',express.static('public'));
@@ -37,7 +37,7 @@ function readPeripheral (peripheral) {
   // the readServices function. This is local to the discovery function
   // because it needs the peripheral’s identity to discover services:
   function readServices() {
-    device = peripheral;
+    device = peripheral;    // save the peripheral to a global variable
     console.log('Checking services: ' + peripheral.advertisement.localName);
     // Look for services and characteristics.
     // Call the explore function when you find them:
@@ -66,21 +66,18 @@ function explore(error, services, characteristics) {
   }
 }
 
-// the function for the HTTP response to GET /click :
+// the function for the HTTP response to GET /click:
 function click(request, response) {
-  // what you'll send to the HTTP client if there's no peripheral present:
-  var result = "no peripheral present to control";
-  // make sure you have a valid characteristic to control:
+  var result = "no peripheral present";  // what you'll send to the client
+  // if you're connected and have a valid characteristic:
   if (device.state === 'connected' && shutter != null ) {
     // write to the characteristic:
     var output =  new Buffer([0x01]);
     shutter.write(output, true);
-    // increment click counter and change client message:
-    clickCount++;
-    result = "Client clicked " + clickCount + " times";
+    clickCount++;                           // increment click counter
+    result = "Click count: " + clickCount;  // change the response
   }
-  // respond to the client:
-  response.end(result);
+  response.end(result);   // respond to the HTTP client
 }
 
 // Scan for peripherals with the camera service UUID:

@@ -1,4 +1,4 @@
-#include <multiCameraIrControl.h>
+//#include <multiCameraIrControl.h>
 #include <SPI.h>
 #include <BLEPeripheral.h>
 
@@ -16,7 +16,7 @@ BLEService cameraService("F01A");
 // initialize the shutter characteristic, its UUID and its properties:
 BLEIntCharacteristic shutter("F01B", BLERead | BLEWrite);
 // initialize the IR camera control:
-Nikon camera(3);
+//Nikon camera(3);
 
 void setup() {
   Serial.begin(9600);
@@ -31,7 +31,7 @@ void setup() {
 
   // set the initial value for the characeristic:
   shutter.setValue(0);
-
+pinMode(13, OUTPUT);
   // begin advertising camera service:
   blePeripheral.begin();
   Serial.println("Starting");
@@ -45,9 +45,11 @@ void loop() {
   if (shutter.written()) {
     // and the characteristic's value is 1:
     if (shutter.value() == 1) {
-      camera.shutterNow();        // send the IR signal
+     // camera.shutterNow();        // send the IR signal
+     digitalWrite(13, HIGH);
       Serial.println("click");
       shutter.setValue(0);        // reset the value to 0
+      digitalWrite(13, LOW);
     }
   }
 }
