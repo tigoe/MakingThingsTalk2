@@ -66,3 +66,5 @@ chapter5/project8/PongServer/sketch.properties
 *.DS_Store
 
 3rd_edition/chapter7/Candle/settings.h
+
+3rd_edition/chapter7/WifiUDPClient/settings.h
