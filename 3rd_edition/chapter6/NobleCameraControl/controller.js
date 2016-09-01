@@ -4,11 +4,11 @@ Noble characteristic writer  example
 
 created 12 July 2016
 by Tom Igoe
-with much advice from Sandeep Mistry 
+with much advice from Sandeep Mistry
 */
 
 var noble = require('noble');   //noble library
-var targetService = '19b10010e8f2537e4f6cd104768a1214';     // the service you want
+var targetService = 'f01a';     // the service you want
 var shutter = null;
 
 // The scanning function
@@ -41,7 +41,7 @@ function findMe (peripheral) {
   }
 
   // when a peripheral disconnects, run disconnectMe:
-  peripheral.on('disconnect', disconnectMe);
+  // peripheral.on('disconnect', disconnectMe);
 }
 
 // the service/characteristic exploration function:
@@ -51,7 +51,7 @@ function exploreMe(error, services, characteristics) {
   for (c in characteristics) {
     var myUuid = characteristics[c].uuid;
     characteristics[c].notify(true);    // turn on notifications
-    if (myUuid === '19b10011e8f2537e4f6cd104768a1214') {
+    if (myUuid === 'f01b') {
       // this is the service we want to control
       shutter = characteristics[c];
       setInterval(click, 2000);
@@ -67,11 +67,11 @@ function click() {
   }
 }
 
-function disconnectMe() {
-  console.log('peripheral disconnected');
-  // exit the script:
-  process.exit(0);
-}
+// function disconnectMe() {
+//   console.log('peripheral disconnected');
+//   // exit the script:
+//   process.exit(0);
+// }
 
 /* ----------------------------------------------------
 The actual commands that start the program are below:
