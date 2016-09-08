@@ -1,8 +1,9 @@
 /*
   WiFi Status check
   Context: Arduino, with WINC1500 module
-  This sketch is not identical with the ESP8266WiFi library. 
-  Check that library's online examples for changes
+  This sketch is not identical with the ESP8266WiFi library.
+  Check that library's online examples for changes.
+  Some changes are noted in the comments below
 */
 
 #include <SPI.h>
@@ -18,7 +19,7 @@ void setup() {
     Serial.print("Attempting to connect to Network named: ");
     Serial.println(ssid);           // print the network name (SSID)
     WiFi.begin(ssid, pass);         // try to connect
-    delay(2000);                    // wait 2 seconds before next attempt
+    delay(5000);                    // wait 2 seconds before next attempt
   }
 }
 
@@ -43,30 +44,42 @@ void printWiFiStatus() {
   Serial.println(subnet);
 
   // print the MAC address of the WiFi AP to which you're attached:
-  byte apMac[6];
-  WiFi.BSSID(apMac);
-  Serial.print("BSSID (Base station's MAC address): ");
-  for (int i = 0; i < 5; i++) { // loop from 0 to 4
-    if (apMac[i] < 0x10) {      // if the byte is less than 16 (0x0A hex)
-      Serial.print("0");        // print a 0 to the string
+  // note: BSSID won't work on the ESP8266, so comment this block out for that processor
+    byte apMac[6];
+    WiFi.BSSID(apMac);
+    Serial.print("BSSID (Base station's MAC address): ");
+    for (int i = 0; i < 5; i++) { // loop from 0 to 4
+      if (apMac[i] < 0x10) {      // if the byte is less than 16 (0x0A hex)
+        Serial.print("0");        // print a 0 to the string
+      }
+      Serial.print(apMac[i], HEX);// print byte of MAC address
+      Serial.print(":");          // add a colon
     }
-    Serial.print(apMac[i], HEX);// print byte of MAC address
-    Serial.print(":");          // add a colon
-  }
-  Serial.println(apMac[5], HEX);// println final byte of address
+    Serial.println(apMac[5], HEX);// println final byte of address
+
 
   // print your MAC address:
   byte mac[6];
   WiFi.macAddress(mac);
   Serial.print("Device MAC address: ");
-  for (int i = 5; i > 0; i--) { // loop from 5 to 1
+
+  /*
+     NOTE: ESP stores MAC address in the reverse order that WIFi101 does.
+     For WiFi101, loop from mac[5] to mac[0]. For ESP, loop from
+     mac[0] to mac[5]
+
+  */
+  for (int i = 5; i > 0; i--) { // loop from 5 to 1  -- for WiFi101
+    //    for (int i = 0; i < 5; i++) { // loop from 1 to 5 -- for ESP8266
+
     if (mac[i] < 0x10) {        // if the byte is less than 16 (0x0A hex)
       Serial.print("0");        // print a 0 to the string
     }
     Serial.print(mac[i], HEX);  // print byte of MAC address
     Serial.print(":");          // add a colon
   }
-  Serial.println(mac[0], HEX);  // println final byte of address
+  Serial.println(mac[0], HEX);  // println final byte of address  -- for WiFi101
+  //Serial.println(mac[5], HEX);  // println final byte of address  -- for ESP8266
 
   // print your  IP address:
   IPAddress gateway = WiFi.localIP();
