@@ -9,7 +9,7 @@ import processing.video.*;
 
 // set global variables:
 int port = 8080;                     // the port the server listens on
-Server myServer;                     // the server object
+Server myServer = new Server(this, port); // the server object
 ArrayList clients = new ArrayList(); // list of clients
 Movie myVideo;                       //  movie player
 boolean playing = false;             // state if the video: playing/paused
@@ -18,7 +18,6 @@ String lastMessage = "";             // last message received from client
 void setup() { 
   size(640, 360);
   myVideo = new Movie(this, "train.mov"); // initialize the video
-  myServer = new Server(this, port);      // start the server 
   scrub(0.0);                             // set the video to the start
 }
 
