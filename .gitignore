@@ -62,6 +62,7 @@ chapter5/project8/PongServer/sketch.properties
 *.mov
 
 *config.h
+*node_modules*
 3rd_edition/chapter6/NobleCameraControl/node_modules
 *.DS_Store
 
