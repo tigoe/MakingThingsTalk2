@@ -25,6 +25,15 @@ var SerialPort = require('serialport');		// include the serialport library
 //SerialPort  = serialport.SerialPort,			// make a local instance of serial
 var portName = process.argv[2];								// get the port name from the command line
 var output = [];		// an array to hold the output
+var message
+= {
+	address: -1,
+	packetLength: -1,
+	rssi: 0,
+	sampleCount:-1,
+	samples: [],
+	average:-1,
+}
 
 
 portConfig = {
@@ -93,18 +102,19 @@ myPort.on('error', function(error) {
 function parseData(thisPacket) {
   // make sure the packet is 22 bytes long first:
   if (thisPacket.length >= 20) {
+		message.samples = [];
     var samplesStart = 10;                     // ADC reading starts at byte 11
-    var numSamples = thisPacket[7];        // number of samples in packet
-		var samplesEnd = samplesStart + (numSamples * 2);
+    message.sampleCount = thisPacket[7];        // number of samples in packet
+		var samplesEnd = samplesStart + (message.sampleCount * 2);
     var total = 0;                         // sum of all the ADC readings
 
     // read the address. It's a two-byte value, so you
     // add the two bytes as follows:
-		var packetLength = thisPacket[1] + thisPacket[0] * 256;
-    var address = thisPacket[4] + thisPacket[3] * 256;
+		 message.packetLength = thisPacket[1] + thisPacket[0] * 256;
+     message.address = thisPacket[4] + thisPacket[3] * 256;
 
     // read the received signal strength:
-    var signalStrength = thisPacket[5];
+     message.rssi = -thisPacket[5];
 
     // read <numSamples> 10-bit analog values, two at a time
     // because each reading is two bytes long:
@@ -112,16 +122,12 @@ function parseData(thisPacket) {
     for (var i = samplesStart; i < samplesEnd;  i=i+2) {
       // 10-bit value = high byte * 256 + low byte:
       var thisSample = thisPacket[i]* 256 + thisPacket[i + 1];
-
+			message.samples.push(thisSample);
       // add the result to the total for averaging later:
       total = total + thisSample;
     }
     // average the result:
-    var average = total / numSamples;
+    message.average = total / message.sampleCount;
   }
-  console.log("address: " + address
-		+ " packet length: " + packetLength
-  	+ " RSSI: -" + signalStrength
-  	+ " samples: " + numSamples
-  	+ " average: " + average);
+	console.log(message);
 }
