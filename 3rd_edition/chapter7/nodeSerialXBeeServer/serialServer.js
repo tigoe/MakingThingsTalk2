@@ -1,133 +1,117 @@
 /*
-	nodeSerialInXBee.js
+serialServer.js
+context: node.js
 
-	Takes in a serial stream from a Digi XBee 802.15.4 radio (XB24 firmware)
-
-	This script expects a steady stream of input from the serial port
-	separated by a byte with the value 0x7E.
-
-	This is written as an exercise to see if I could interpret XBee API packets
-	in node.js. This is not production-ready code.
-
-	To call this from the command line:
-
-	node serialTest.js portname
-
-	where portname is the path to the serial port.
-
-	created 22 Dec 2014
-	modified 10 Jun 2015
-	by Tom Igoe
+To call this from the command line:
+$ node serialTest.js portname
 */
 
+// include libraries and declare global variables:
+var express = require('express');  // include the express library
+var server = express();            // create a server using express
+
+
 // serial port initialization:
-var SerialPort = require('serialport');		// include the serialport library
-//SerialPort  = serialport.SerialPort,			// make a local instance of serial
-var portName = process.argv[2];								// get the port name from the command line
-var output = [];		// an array to hold the output
-var message
-= {
-	address: -1,
-	packetLength: -1,
-	rssi: 0,
-	sampleCount:-1,
-	samples: [],
-	average:-1,
-}
-
-
-portConfig = {
-	baudRate: 9600
+var SerialPort = require('serialport');    // include the serialport library
+var portName = process.argv[2];            // get the port name from the command line
+var output = [];                          // an array to hold the raw serial output
+var message = {         // the XBee packet as a JSON object:
+  address: -1,          // sender's address
+  packetLength: -1,     // packet length
+  type: 0,              // message API type
+  rssi: 0,              // signal strength
+  channels: 0,          // which I/O channels are in use
+  sampleCount:-1,       // number of I/O samples
+  samples: [],          // the array of samples
+  average:-1,           // the average of the samples
+  avgVoltage: -1        // the average in volts
 };
 
 // open the serial port:
-var myPort = new SerialPort(portName, portConfig);
+var myPort = new SerialPort(portName);
 
-// called when the serial port opens:
-myPort.on('open', function() {
-	console.log('port open');
-	console.log('baud rate: ' + myPort.options.baudRate);
+function readData(data) {
+    for (c=0; c < data.length; c++) {   // loop over all the bytes
+      var value = Number(data[c]);      // get the byte value
+      if (value === 0x7E) {             // 0x7E starts a new message
+        parseData(output);              // run existing message through the parser
+        output = [];                    // clear existing message
+      } else {                          // if the byte's not 0x7E,
+      output.push(value);               // add it to the output array
+    }
+  }
+}
 
-	// called when there's new incoming serial data:
-	myPort.on('data', function (data) {
+function portOpen(portName) {
+  console.log('port ' + myPort.path + ' open');
+  console.log('baud rate: ' + myPort.options.baudRate);
+}
 
-		for (c=0; c < data.length; c++) {
-			var value = Number(data[c]);			// get the byte value
-			if (value === 0x7E) {
-				parseData(output);						// run this through the parser
-				output = [];
-			} else {
-				output.push(value);									// add it to the output array
-			}
-		}
-	});		// end data
-});			// end open
+function portClose() {
+  console.log('port closed');
+}
 
-// called when the serial port closes:
-myPort.on('close', function() {
-	console.log('port closed');
-});
+function portError(error) {
+  console.log('there was an error with the serial port: ' + error);
+  myPort.close();
+}
 
-// called when there's an error with the serial port:
-myPort.on('error', function(error) {
-	console.log('there was an error with the serial port: ' + error);
-	myPort.close();
-});
-
-
-/*
-	This parser is adapted from one I wrote for an example in "Making Things Talk"
-	(specifically https://github.com/tigoe/MakingThingsTalk2/blob/master/chapter7/project14/XbeePacketGrapher/XbeePacketGrapher.pde)
-
-	The packet should be 21 bytes long,
- 	made up of the following:
- 	byte 0:     0x7E, the start byte value
- 	byte 1-2:   packet size, a 2-byte value  (not used here)
- 	byte 3:     API identifier value, a code that says what this response is (not used here)
- 	byte 4-5:   Sender's address
- 	byte 6:     signalStrength, Received Signal Strength Indicator (not used here)
- 	byte 7:     Broadcast options (not used here)
- 	byte 8:     Number of samples to follow
- 	byte 9-10: Active channels indicator (not used here)
- 	byte 11-20: 5 10-bit values, each ADC samples from the sender
-
-	The Xbee radio sending this packet should have the following settings:
-	ATMY (whatver address you want)
-	ATDL (the address of the receiving radio)
-	ATID (same PAN ID as the receiving radio)
-	ATD0 2  (enable analog in on pin D0)
-	ATIT 5 	(5 samples per packet)
-	ATIR FF	(I used FF for the longest possible time between transmissions)
-*/
 function parseData(thisPacket) {
-  // make sure the packet is 22 bytes long first:
-  if (thisPacket.length >= 20) {
-		message.samples = [];
-    var samplesStart = 10;                     // ADC reading starts at byte 11
-    message.sampleCount = thisPacket[7];        // number of samples in packet
-		var samplesEnd = samplesStart + (message.sampleCount * 2);
-    var total = 0;                         // sum of all the ADC readings
+  if (thisPacket.length >= 20) {        // if the packet is 20 bytes long
+    message.samples = [];               // clear the samples array
+    var samplesStart = 10;              // ADC reading starts at byte 10
+    message.sampleCount = thisPacket[7];// number of samples in packet
 
-    // read the address. It's a two-byte value, so you
-    // add the two bytes as follows:
-		 message.packetLength = thisPacket[1] + thisPacket[0] * 256;
-     message.address = thisPacket[4] + thisPacket[3] * 256;
+    // each sample is two bytes large, so calculate the end position:
+    var samplesEnd = samplesStart + (message.sampleCount * 2);
+    var total = 0;                      // sum of all samples, for averaging
 
+    // read the address. It's a two-byte value, so
+    // packetLength = firstByte * 256 + secondByte:
+    message.packetLength = (thisPacket[0] * 256) + thisPacket[1];
+    // same formula with address:
+    message.address = (thisPacket[3] * 256) + thisPacket[4];
     // read the received signal strength:
-     message.rssi = -thisPacket[5];
+    message.rssi = -thisPacket[5];
+    // message type is shown in hex in the docs, so convert to a hex string:
+    message.type = (thisPacket[2]).toString(16);
+    // channels is best read in binary, so convert to a binary string:
+    message.channels = ((thisPacket[8] * 256) + thisPacket[9]).toString(2);
 
-    // read <numSamples> 10-bit analog values, two at a time
-    // because each reading is two bytes long:
-
+    // read the ADC inputs. Each is 10 bits, in two bytes, so
+    // sample = firstByte * 256 + secondByte:
     for (var i = samplesStart; i < samplesEnd;  i=i+2) {
-      // 10-bit value = high byte * 256 + low byte:
-      var thisSample = thisPacket[i]* 256 + thisPacket[i + 1];
-			message.samples.push(thisSample);
+      // 10-bit value = firstByte * 256 + secondByte:
+      var thisSample = (thisPacket[i]* 256) + thisPacket[i+1];
+      // add the sample to the array of samples:
+      message.samples.push(thisSample);
       // add the result to the total for averaging later:
       total = total + thisSample;
     }
-    // average the result:
+    // average all the samples and convert to a voltage:
     message.average = total / message.sampleCount;
+    message.avgVoltage = message.average *3.3 / 1024;
   }
-	console.log(message);
+  console.log(message);    // print it all out
 }
+
+// define the callback function that's called when
+// a client makes a request:
+function respondToClient(request, response) {
+  // write back to the client:
+  response.end("latest: " + JSON.stringify(message));
+}
+
+// called when the serial port opens:
+myPort.on('open', portOpen);
+// called when there's new incoming serial data:
+myPort.on('data', readData);
+// called when the serial port closes:
+myPort.on('close', portClose);
+// called when there's an error with the serial port:
+myPort.on('error', portError);
+
+// start the server:
+server.listen(8080);
+// define what to do when the client requests something:
+server.get('/', respondToClient);
