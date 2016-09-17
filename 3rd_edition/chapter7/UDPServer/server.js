@@ -8,7 +8,7 @@
 var dgram = require('dgram');               // include datagram library
 var UDP_PORT = 8888;                        // the port on which to listen
 var udpServer = dgram.createSocket('udp4'); // create UDP socket
-var broadcastAddress = '128.122.6.255';     // broadcast address for this computer's subnet
+var broadcastAddress = '192.168.0.255';     // broadcast address for this computer's subnet
 
 // serve static files from /public:
 // server.use('/',express.static('public'));

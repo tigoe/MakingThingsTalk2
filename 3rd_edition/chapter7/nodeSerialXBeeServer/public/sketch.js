@@ -40,11 +40,11 @@ function draw() {
         stroke(0, 127, 255);
         // calculate the current and previous Y positions:
         var yPos = map(thisReading.average, minValue, maxValue,
-          0, height);
+          height, 0);
         var lastYPos = map(lastReading.average, minValue, maxValue,
-          0, height);
+          height, 0);
         // draw a line from the last position to the current one:
-        line(xPos - 1, yPos, xPos, lastYPos);
+        line(xPos - 1, yPos, xPos,lastYPos);
     }
     // if the array is the width of the canvas,
     // start deleting elements from the front of the array

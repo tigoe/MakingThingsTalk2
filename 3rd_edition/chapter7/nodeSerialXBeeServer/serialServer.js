@@ -10,7 +10,7 @@ server.use('/',express.static('public'));
 
 // serial port initialization:
 var SerialPort = require('serialport');    // include the serialport library
-var portName = '/dev/tty.usbserial-00001414';// your port name
+var portName = '/dev/tty.usbserial-AH0330NT';// your port name
 var incoming = [];                          // an array to hold the serial data
 var message = {         // the XBee packet as a JSON object:
   packetLength: -1,     // packet length
