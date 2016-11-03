@@ -33,7 +33,7 @@ function scanForPeripherals(state){
 // callback function for noble discover event:
 function readPeripheral (peripheral) {
   console.log('discovered ' + peripheral.advertisement.localName);
-
+  console.log('signal strength: ' + peripheral.rssi);
   // the readServices function. This is local to the discovery function
   // because it needs the peripheral’s identity to discover services:
   function readServices() {
