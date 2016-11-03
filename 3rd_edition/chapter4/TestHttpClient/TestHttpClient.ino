@@ -10,7 +10,7 @@
 #include "config.h"
 
 WiFiClient netSocket;               // network socket to server
-const char serverAddress[] = "example.com";  // server name
+const char server[] = "example.com";  // server name
 String route = "/foo";              // API route
 
 void setup() {
@@ -31,7 +31,7 @@ void setup() {
 }
 
 void loop() {
-  HttpClient http(netSocket, serverAddress, 8080);      // make an HTTP client
+  HttpClient http(netSocket, server, 8080);      // make an HTTP client
   http.get(route);  // make a GET request
 
   while (http.connected()) {       // while connected to the server,
