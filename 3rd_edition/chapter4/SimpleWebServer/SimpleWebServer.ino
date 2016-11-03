@@ -16,7 +16,7 @@ void setup() {
   while ( WiFi.status() != WL_CONNECTED) {
     Serial.print("Attempting to connect to Network named: ");
     Serial.println(ssid);
-    WiFi.begin(ssid); //   try to connect
+    WiFi.begin(ssid, pass); //   try to connect
     delay(2000);       // wait 2 seconds before trying again
   }
 
@@ -39,6 +39,11 @@ void loop() {
       // if the request is a blank line (\n or \r\n):
       if (request.length() <= 2) {
         client.println("HTTP 200 OK\n"); // send an HTTP response
+         client.println("\r\n\r\n"); // send an HTTP response
+        client.print("Sensor Value: "); // send an HTTP response
+        int sensorValue = analogRead(A0);
+        client.println(sensorValue); // send an HTTP response
+       
         delay(10);                       // give the server time to get the data
         if (client.connected()) {        // if the client's still connected
           client.stop();                 // disconnect the client
