@@ -27,11 +27,8 @@ function getRssi(request, response) {
   if (rssi > -40 ) {
     message += "a few steps away ";
   }
-  if (rssi > -30 ) {
-    message += "arm's reach";
-  }
   if (rssi > -20 ) {          // really strong signal
-    message += "hand's reach";
+    message += "arm's reach";
   }
   message += " from the sender."  // add an end to the message
   response.send(message);         // send message to the client
