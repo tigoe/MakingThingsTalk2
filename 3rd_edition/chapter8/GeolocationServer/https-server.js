@@ -12,7 +12,7 @@ var server = express();					  // create a server using express
 var options = {                             // options for the HTTPS server
   key: fs.readFileSync('./keys/key.pem'),   // the key
   cert: fs.readFileSync('./keys/cert.pem'), // the certificate
-  passphrase: 'z00mz0rf'                    // the passphrase in the key
+  passphrase: 's33kr!+'                    // the passphrase in the key
 };
 
 server.use('/',express.static('public'));   // set a static file directory
