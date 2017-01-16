@@ -22,7 +22,7 @@ var options = {                              // options for the HTTPS server
   cert: fs.readFileSync('./keys/domain.crt') // the certificate
 };
 
-server.use(httpRedirect);                   // set a redirect function for http
+server.use('*', httpRedirect);              // set a redirect function for http
 server.use('/',express.static('public'));   // set a static file directory
 
 function httpRedirect(request,response, next) {
