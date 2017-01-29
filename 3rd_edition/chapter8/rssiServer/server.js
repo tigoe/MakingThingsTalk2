@@ -11,20 +11,20 @@ function postRssi(request, response) {
   response.send("rssi received: " + rssi);  // respond to the client
   response.end();               // close the connection
 }
-// server response to GET /rssi
+
 function getRssi(request, response) {
   // make a string to send to the client:
   // auto-refresh meta tag:
   var message = "<meta http-equiv=\"refresh\" content=\"3\">\n";
-  message += "Last RSSI received: " + rssi + " dBm<br>";
+  var message = "Last RSSI received: " + rssi + " dBm<br>";
   message += "The receiver is ";
   if (rssi <= -60 ) {         // weakest signal strength
     message += "far away ";
   }
-  if (rssi > -60 ) {          // a little stronger
+  if (rssi > -60 && rssi <=-40 ) {// a little stronger
     message += "within a few meters ";
   }
-  if (rssi > -40 ) {
+  if (rssi > -40 && rssi <=-20 ) {
     message += "a few steps away ";
   }
   if (rssi > -20 ) {          // really strong signal
