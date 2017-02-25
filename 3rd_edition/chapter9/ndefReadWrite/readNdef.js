@@ -2,13 +2,8 @@
   NDEF message reader
   context: node.js
 */
-var ndef = require('ndef');             // instance of ndef library
-var mifare = require('mifare-classic'); // instance of mifare classic library
-var ndefMsg = new Array();              // array for NDEF message
-
-function pollReader() {
-  mifare.read(listTag);   // read for tag
-}
+var ndef = require('ndef');             // import ndef library
+var mifare = require('mifare-classic'); // import mifare classic library
 
 // callback function for when you successfully read a tag:
 function listTag(error, buffer) {
@@ -20,11 +15,10 @@ function listTag(error, buffer) {
       bytes = bytes.data;                   // then get the data
     }
     var message = ndef.decodeMessage(bytes);// decode the message
-    for (r in message) {                    // loop over the message array
-      console.log(message[r].value);        // get each record's value
+    for (record in message) {               // loop over the message array
+      console.log(message[record].value);   // get each record's value
     }
   }
 }
 
-pollReader();                     // read for tags
-//setInterval(pollReader, 1000);  // use this instead to read once per second
+mifare.read(listTag);   // read for tag
