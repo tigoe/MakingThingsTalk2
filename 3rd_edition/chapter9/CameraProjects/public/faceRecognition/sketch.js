@@ -1,41 +1,36 @@
-// For more: https://github.com/auduno/clmtrackr
-
-var faceTracker;
-var canvas;
-var probabilityThreshold = 0.3;
-var pSlider;
+/*
+  Face detection using tracking.js
+  Context: P5.js
+*/
+var tracker;    // instance of the tracker library
 
 function setup() {
   // setup camera capture
-  var video = createCapture(VIDEO);    // take control of the camera
+  var video = createCapture(VIDEO); // take control of the camera
   video.size(400, 300);             // set the capture resolution
-  video.position(0, 0);            // set the position of the camera image
-  canvas = createCanvas(400, 300); // draw the canvas over the image
-  canvas.position(0,0);            // set the canvas position
-
-  faceTracker = new clm.tracker();  // initialize the face tracker
-  faceTracker.init(pModel);         // give it a model to start with
-  faceTracker.start(video.elt);  // give it a camera to read from
-  pSlider = createSlider(0, 1, 0.3, 0.01);
-  pSlider.position(10, height-30);
-  pSlider.mouseReleased(setProbability);
+  video.position(0, 0);             // set the position of the camera image
+  var canvas = createCanvas(400, 300);  // draw the canvas over the image
+  canvas.position(0,0);             // set the canvas position
+  // set up the tracker:
+  tracker = new tracking.ObjectTracker('face');
+  tracker.setInitialScale(4);     // set the tracking parameters
+  tracker.setStepSize(2);
+  tracker.setEdgesDensity(0.1);
+  tracking.track(video.elt, tracker); // track on the video image
+  tracker.on('track', showTracks);    // callback for the tracker
+  ellipseMode(CORNER);                // draw circles from the corner
 }
 
 function draw() {
-  clear();
-  // get array of face marker positions [x, y] format
-  var positions = faceTracker.getCurrentPosition();
-  var probability = faceTracker.getScore();
-  if (probability > probabilityThreshold) {
-    faceTracker.draw(canvas.elt );
-  }
-  // put some text at the bottom of the screen:
-  fill(255);
-  noStroke();
-  text("probability: " + probability, 10, height-60);
-  text("threshold: " + probabilityThreshold, 10, height-40);
+  // nothing to do here.
 }  // end of draw() function
 
-function setProbability() {
-  probabilityThreshold = pSlider.value();
+function showTracks(event) {
+    clear();
+    var faces = event.data;
+    for (f in faces) {
+      fill(0xFF, 0x00, 0x84, 0x3F);   // a nice shade of fuchsia
+      noStroke();                     // no border
+      ellipse(faces[f].x, faces[f].y, faces[f].width, faces[f].height);
+    }
 }
