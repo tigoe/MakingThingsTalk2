@@ -6,21 +6,17 @@ var ndef = require('ndef');             // instance of ndef library
 var mifare = require('mifare-classic'); // instance of mifare classic library
 var ndefMsg = new Array();              // array for NDEF message
 
-var record = {                          // NDEF record
-  "name": "Clay",
-  "light": 1,
-  "brightness": 50
-};
+var textRecord = ndef.textRecord("Here's a string");
+var uriRecord = ndef.uriRecord("http://www.example.com");
 
-var recordString = JSON.stringify(record);      // convert record to a string
-var ndefRecord = ndef.textRecord(recordString); // make it an NDEF record
-ndefMsg.push(ndefRecord);                       // add it to the NDEF message
-var bytes = ndef.encodeMessage(ndefMsg); // encode the record as a byte stream
+ndefMsg.push(textRecord);               // add a text record the NDEF message
+ndefMsg.push(uriRecord);                // add  a URI record
+var bytes = ndef.encodeMessage(ndefMsg);// encode the record as a byte stream
 
 function writeResponse(error){          // write function
     if (error) {                        // if there's an error,
-      console.log("Error: " + error);
-    } else {
+      console.log("Error: " + error);   // report it
+    } else {                            // otherwise, report success
       console.log("Tag written successfully");
     }
 }
