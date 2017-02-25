@@ -12,16 +12,6 @@
 #include <WiFi101.h>
 //#include <ESP8266WiFi.h>    // use this instead of WiFi101 for ESP8266 modules
 #include <ArduinoHttpClient.h>
-#if 0
-#include <SPI.h>
-#include <PN532_SPI.h>
-#include <PN532.h>
-#include <NfcAdapter.h>
-
-PN532_SPI pn532spi(SPI, 7);
-NfcAdapter nfc = NfcAdapter(pn532spi);
-#else
-
 #include <Wire.h>
 #include <PN532_I2C.h>
 #include <PN532.h>
@@ -29,7 +19,6 @@ NfcAdapter nfc = NfcAdapter(pn532spi);
 
 PN532_I2C pn532_i2c(Wire);
 NfcAdapter nfc = NfcAdapter(pn532_i2c);
-#endif
 
 #include "config.h"
 
@@ -71,7 +60,7 @@ void setup() {
 void loop() {
   String username = "";           // the username
   String wemoAddress = "";        // address of the wemo you are talking to
-  int wemoNumber = 0;             // the wemo number you are talking to
+  int wemoNumber = -1;            // the wemo number you are talking to
 
   if (nfc.tagPresent()) {                             // read NFC tag
     NfcTag tag = nfc.read();                          // get data
@@ -100,7 +89,7 @@ void loop() {
             wemoRequest(wemoNumber, wemoAddress); // then you can make a request
             break;
         }   // end of case statement
-        Serial.println(payloadString);    // print the payload string
+        Serial.println(payloadString);            // print the payload string
       }     // end of record for-loop
     }       // end of if tag.hasMessage()
   }         // end of if tagPresent()
@@ -113,6 +102,7 @@ void wemoRequest( int thisWemo, String wemo) {
     soap.replace(">1<", ">0<");   // turn it off
   }
   wemoStates[thisWemo] = !wemoStates[thisWemo];   // toggle wemoState
+  
   HttpClient http(netSocket, wemo.c_str(), port); // make an HTTP client
   http.connectionKeepAlive();             // keep the connection alive
   http.beginRequest();                    // start assembling the request
@@ -123,13 +113,13 @@ void wemoRequest( int thisWemo, String wemo) {
   http.sendHeader("SOAPACTION", soapAction);
   http.sendHeader("Connection: keep-alive");
   http.sendHeader("Content-Length", soap.length());
-  http.sendHeader("");    // a blank line before the body
-  http.sendHeader(soap);  // add the body
-  http.endRequest();      // end the request
+  http.sendHeader("");                    // a blank line before the body
+  http.sendHeader(soap);                  // add the body
+  http.endRequest();                      // end the request
   Serial.println("request opened");
 
-  while (http.connected()) {       // while connected to the server,
-    if (http.available()) {        // if there is a response from the server,
+  while (http.connected()) {              // while connected to the server,
+    if (http.available()) {               // if there's a server response,
       String result = http.readString();  // read it
       Serial.println(result);             // and print it
     }
