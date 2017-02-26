@@ -1,36 +1,44 @@
 /*
   WeMo NFC HTTP Client
   Context: Arduino, with WINC1500 module
-
-  card data:
-    username
-    wemo number
-    wemo IP address
 */
-// include required libraries and config files
-#include <SPI.h>
-#include <WiFi101.h>
-//#include <ESP8266WiFi.h>    // use this instead of WiFi101 for ESP8266 modules
+#include <SPI.h>          // include SPI library
+#include <WiFi101.h>      // include WiFi101 library
+//#include <ESP8266WiFi.h>// use this instead of WiFi101 for ESP8266 modules
 #include <ArduinoHttpClient.h>
-#include <Wire.h>
-#include <PN532_I2C.h>
-#include <PN532.h>
-#include <NfcAdapter.h>
-
-PN532_I2C pn532_i2c(Wire);
-NfcAdapter nfc = NfcAdapter(pn532_i2c);
-
 #include "config.h"
+#include <PN532_SPI.h>    // include SPI library for PN532
+#include <PN532.h>        // include PN532 library
+#include <NfcAdapter.h>   // include NFC library
 
+PN532_SPI pn532spi(SPI, 11);          // initialize adapter
+NfcAdapter nfc = NfcAdapter(pn532spi);
+
+const int tagLed = 5;               // LED to indicate tags' presence
+const int wifiLed = 4;              // LED to indicate WiFi connection
 WiFiClient netSocket;               // network socket to device
-const char wemo[] = "192.168.0.17"; // device address
-int port = 49153;                   // port number
+const int port = 49153;             // port number
 String route = "/upnp/control/basicevent1";  // API route
-String soap;                        // string for the SOAP request
-boolean wemoStates[] = {1, 1};      // state of the wemo switches
+boolean wemoStates[] = {0, 0};      // state of the wemo switches
+String username = "";               // the username
+String wemoAddress = "";            // address of the current wemo
+int wemoNumber = -1;                // the current wemo number 
+
+// string for the SOAP request:
+String soap = "<?xml version=\"1.0\" encoding=\"utf-8\"?> \
+<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" \
+s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"> \
+<s:Body> \
+<u:SetBinaryState xmlns:u=\"urn:Belkin:service:basicevent:1\"> \
+<BinaryState>1</BinaryState></u:SetBinaryState></s:Body> \
+</s:Envelope>";
 
 void setup() {
   Serial.begin(9600);               // initialize serial communication
+  nfc.begin();                      // initialize NFC communication
+  pinMode(tagLed, OUTPUT);          // make tagLed an output
+  pinMode(wifiLed, OUTPUT);         // make wifiLed an output
+
   // while you're not connected to a WiFi AP,
   while ( WiFi.status() != WL_CONNECTED) {
     Serial.print("Attempting to connect to Network named: ");
@@ -43,56 +51,52 @@ void setup() {
   IPAddress ip = WiFi.localIP();
   Serial.print("IP Address: ");
   Serial.println(ip);
-  delay(2000);
-  nfc.begin();
-
-  // set up the SOAP request string. This formatting is just
-  // for readability of the code:
-  soap = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
-  soap += "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"";
-  soap += "s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">";
-  soap += "<s:Body>";
-  soap += "<u:SetBinaryState xmlns:u=\"urn:Belkin:service:basicevent:1\">";
-  soap += "<BinaryState>1</BinaryState></u:SetBinaryState>";
-  soap += "</s:Body></s:Envelope>";
 }
 
 void loop() {
-  String username = "";           // the username
-  String wemoAddress = "";        // address of the wemo you are talking to
-  int wemoNumber = -1;            // the wemo number you are talking to
+  if (nfc.tagPresent()) {                          // read NFC tag
+    digitalWrite(tagLed, HIGH);                    // indicate tag presence
+    NfcTag tag = nfc.read();                       // get data
+    if (tag.hasNdefMessage()) {                    // if tag has a message
+      NdefMessage message = tag.getNdefMessage();  // get message
+      int recordCount = message.getRecordCount();  // get records count
 
-  if (nfc.tagPresent()) {                             // read NFC tag
-    NfcTag tag = nfc.read();                          // get data
-    if (tag.hasNdefMessage()) {                       // if tag has a message
-      NdefMessage message = tag.getNdefMessage();     // get message
-      int recordCount = message.getRecordCount();     // get records count 
-      
       for (int r = 0; r < recordCount; r++) {
-        NdefRecord record = message.getRecord(r);     // get record
+        NdefRecord record = message.getRecord(r);  // get record
         int payloadLength = record.getPayloadLength();// get payload length
-        byte payload[payloadLength];                  // array for payload 
-        record.getPayload(payload);                   // get payload
-        String payloadString;                         // clear payloadString
-        for (int c = 3; c < payloadLength; c++) {     // get bytes from byte 3
-          payloadString += (char)payload[c];          // copy to payloadString
-        }     
-        
-        switch (r) {  // do something different for each record
-          case 0:     // the username record; nothing to do
-            break;
-          case 1:     // the wemo number record; convert to integer
-            wemoNumber = payloadString.toInt();
-            break;
-          case 2:     // the IP address record; make request
-            wemoAddress = payloadString;          // if you have an IP address,
-            wemoRequest(wemoNumber, wemoAddress); // then you can make a request
-            break;
-        }   // end of case statement
-        Serial.println(payloadString);            // print the payload string
+        byte payload[payloadLength];               // array for payload
+        record.getPayload(payload);                // get payload
+        String payloadString;                      // clear payloadString
+        for (int c = 3; c < payloadLength; c++) {  // get bytes from byte 3
+          payloadString += (char)payload[c];       // copy to payloadString
+        }
+
+        Serial.println(payloadString);            // print payloadString
+        copyRecords(r, payloadString);
       }     // end of record for-loop
     }       // end of if tag.hasMessage()
   }         // end of if tagPresent()
+  digitalWrite(tagLed, LOW);                      // indicate tag is gone
+  if (WiFi.status() == WL_CONNECTED) {            // indicate  WiFi connection
+    digitalWrite(wifiLed, HIGH);
+  } else {
+    digitalWrite(wifiLed, HIGH);
+  }
+  delay(3000);                                    // let the user remove tag
+}
+
+void copyRecords(int recordNum, String recordString) {
+  switch (recordNum) {  // do something different for each record
+    case 0:     // the username record; nothing to do
+      break;
+    case 1:     // the wemo number record; convert to integer
+      wemoNumber = recordString.toInt();
+      break;
+    case 2:     // the IP address record; make request
+      wemoAddress = recordString;           // if you have an IP address,
+      wemoRequest(wemoNumber, wemoAddress); // then you can make a request
+      break;
+  }   // end of case statement
 }
 
 void wemoRequest( int thisWemo, String wemo) {
@@ -102,7 +106,7 @@ void wemoRequest( int thisWemo, String wemo) {
     soap.replace(">1<", ">0<");   // turn it off
   }
   wemoStates[thisWemo] = !wemoStates[thisWemo];   // toggle wemoState
-  
+
   HttpClient http(netSocket, wemo.c_str(), port); // make an HTTP client
   http.connectionKeepAlive();             // keep the connection alive
   http.beginRequest();                    // start assembling the request
