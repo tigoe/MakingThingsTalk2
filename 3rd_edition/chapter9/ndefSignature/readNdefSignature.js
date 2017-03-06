@@ -33,6 +33,7 @@ function listTag(error, buffer) {
       console.log("record: " + record);     // print it
       var verified = verifyRecord(record, secret);     // verify it
       result = verified;
+      console.log(result);
     }
   }
   return result;
