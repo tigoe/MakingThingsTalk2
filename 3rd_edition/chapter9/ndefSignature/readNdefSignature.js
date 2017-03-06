@@ -11,17 +11,17 @@ var fs = require('fs');                 // instance of the filesystem library
 
 var pubKey = fs.readFileSync('keys/domain.crt');  // read the public key
 var publicKey = pubKey.toString();                // conver it to a string
-var secret = "tom.igoe@gmail.com";                // set the secret message
+var secret = "Hello";                // set the secret message
 var ndefMsg = new Array();                        // array for the NDEF message
 
-function pollReader() {
-  mifare.read(listTag);   // read for tag
+function setSecret(input) {
+  secret = input;
 }
-
 // callback function for when you successfully read a tag:
 function listTag(error, buffer) {
+  var result = false;
   if (error) {                              // if there's an error
-    console.log("Read failed:  " + error);  // report it
+    result = error;
   } else {                                  // otherwise
     var bytes = buffer.toJSON();            // convert the tag data to JSON
     if (bytes.hasOwnProperty('data')) {     // if it's got a data property
@@ -31,19 +31,23 @@ function listTag(error, buffer) {
     for (r in message) {                    // loop over the message array
       var record  = message[r].value;       // get each record's value
       console.log("record: " + record);     // print it
-      verifyRecord(record);                 // verify it
+      var verified = verifyRecord(record, secret);     // verify it
+      result = verified;
     }
   }
+  return result;
 }
 
-function verifyRecord(signature) {
+function verifyRecord(signature, secret) {
   var verifier = crypto.createVerify('RSA-SHA256');// make a verifier
   verifier.update(secret);                         // update it with the secret
   // verify the incoming encrypted signature:
   var result = verifier.verify(publicKey, signature, 'hex');
-  // if the signature's good, report that:
-  console.log("record matches secret: " + result);
+  return result;
 }
 
-pollReader();                     // read for tags
-//setInterval(pollReader, 1000);  // use this instead to read once per second
+module.exports = {
+  setSecret: setSecret,
+  read: mifare.read,
+  verify: listTag
+}
