@@ -2,7 +2,7 @@
 /**
  * <p>The web is much more than just canvas and p5.dom makes it easy to interact
  * with other HTML5 objects, including text, hyperlink, image, input, video,
- * audio, and webcam.</p>
+ * audio, and webcam.</p> 
  * <p>There is a set of creation methods, DOM manipulation methods, and
  * an extended p5.Element that supports a range of HTML elements. See the
  * <a href="https://github.com/processing/p5.js/wiki/Beyond-the-canvas">
