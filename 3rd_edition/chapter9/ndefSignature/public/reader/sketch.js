@@ -1,5 +1,5 @@
 /*
-  Writer/formatter page script
+  Reader page script
   context: p5.js
 */
 var userField, challengeField;  // fields for username and challenge phrase
@@ -20,14 +20,10 @@ function setup() {
   challengeLabel.position(10, 40);
   challengeField = createInput('','password');// create challenge field
   challengeField.position(100, 40);
-  var writeButton = createButton('Write to tag');// create write button
-  writeButton.position(10, 70);
-  writeButton.id('writeTag');
-  writeButton.touchEnded(submit);
-  var formatButton = createButton('Format tag'); // create format button
-  formatButton.position(10, 100);
-  formatButton.id('formatTag');
-  formatButton.touchEnded(submit);
+	var readButton = createButton('Verify tag');// create read button
+	readButton.position(120, 70);
+	readButton.id("readTag");
+	readButton.touchEnded(submit);
 }
 
 function submit(event) {

@@ -50,18 +50,20 @@ function showResponse(error){
     }
 }
 
-// comment this section out when used as a module:
-if (process.argv[2] === '-f') {             // if the -f flag is included,
-  mifare.format(showResponse);              // format the tag
-} else {                                    // otherwise,
-  setSecret(process.argv[2]);               // get secret from command line
-  var response = setMessage(secret, true);  // Add the secret, encrypted
-  mifare.write(response, showResponse);     // attempt to write the tag
+// If there are command line arguments, process them:
+if (process.argv[2] != null) {
+  if (process.argv[2] === '-f') {             // if the -f flag is included,
+    mifare.format(showResponse);              // format the tag
+  } else {                                    // otherwise,
+    setSecret(process.argv[2]);               // get secret from command line
+    var response = setMessage(secret, true);  // Add the secret, encrypted
+    mifare.write(response, showResponse);     // attempt to write the tag
+  }
 }
 
 // this section exports some functions for use by other scripts:
 module.exports = {
   format: mifare.format,
-  makeMessage: setMessage,
+  setMessage: setMessage,
   write: mifare.write
 };

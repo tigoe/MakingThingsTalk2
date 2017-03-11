@@ -54,9 +54,11 @@ function verifyRecord(signature, secret) {
   return result;
 }
 
-// comment this section out when used as a module:
+// If there are command line arguments, process them:
+if (process.argv[2] != null) {
  setSecret(process.argv[2]);  // get the secret from the command line
  mifare.read(getMessage);     // attempt to read the tag
+}
 
  // this section exports some functions for use by other scripts:
 module.exports = {
