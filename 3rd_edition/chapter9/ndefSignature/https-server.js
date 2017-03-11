@@ -1,5 +1,5 @@
 /*
-HTTP/HTTPS server
+HTTP/HTTPS 2-Factor Authentication server
 context: node.js
 
  to create keys for self-signing: https://www.digitalocean.com/community/tutorials/openssl-essentials-working-with-ssl-certificates-private-keys-and-csrs
@@ -16,7 +16,7 @@ var bodyParser = require('body-parser'); // include body parser middleware
 var https = require('https');     // require the HTTPS library
 var http = require('http');       // require the HTTP library
 var fs = require('fs');           // require the filesystem library
-// include the external modules
+// include the external modules:
 var tagWriter = require('./writeNdefSignature.js');
 var tagReader = require('./readNdefSignature.js');
 var lockControl = require('./gpioControl.js');
