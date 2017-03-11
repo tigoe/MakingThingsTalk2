@@ -9,7 +9,7 @@ function setup() {
   noCanvas();    // no drawing, so no canvas needed
   // create the response div:
   responseDiv = createDiv('Enter your username and challenge phrase \
-   to write to the tag.');
+   to verify the tag.');
   responseDiv.position(10, 130);
 
   var userLabel = createSpan('Username');     // create user field label

@@ -1,14 +1,7 @@
 /*
 HTTP/HTTPS 2-Factor Authentication server
+Tag reader/verifier version
 context: node.js
-
- to create keys for self-signing: https://www.digitalocean.com/community/tutorials/openssl-essentials-working-with-ssl-certificates-private-keys-and-csrs
-
-openssl req -newkey rsa:2048 -nodes -keyout domain.key -x509 -days 365 -out domain.crt
-
-to properly sign:
-https://certbot.eff.org
-
 */
 // include libraries and declare global variables:
 var express = require('express');	// include the express library
@@ -59,7 +52,8 @@ function processTag(request, response) {
         response.write('You entered the correct response.<br>');
         lockControl.open();
       } else {
-        response.write('However, your response does not match this tag.<br>');
+        response.write('However, your response does not \
+          match this tag.<br>');
       }
     }
     response.end();
