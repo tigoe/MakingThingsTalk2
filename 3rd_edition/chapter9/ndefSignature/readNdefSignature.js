@@ -8,6 +8,7 @@ To generate keys:
 $ openssl genrsa -out private.key 2048
 $ openssl rsa -pubout -in private.key -out public.key
 */
+
 var ndef = require('ndef');             // include ndef library
 var mifare = require('mifare-classic'); // include mifare classic library
 var crypto = require('crypto');         // include the crypto library

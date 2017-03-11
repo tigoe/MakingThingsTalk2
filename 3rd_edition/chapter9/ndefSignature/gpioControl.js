@@ -1,6 +1,6 @@
 /*
  GPIO control
- context: node.js
+ context: node.js 
 */
 
 var Gpio = require('onoff').Gpio; // include onoff library

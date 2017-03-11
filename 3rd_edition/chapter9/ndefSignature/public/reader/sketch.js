@@ -27,8 +27,8 @@ function setup() {
 }
 
 function submit(event) {
-  var route = '/' + event.target.id;    // get the ID of the button pressed
-  var data = {                    // create the body of the POST request
+  var route = '/' + event.target.id;  // get the ID of the button pressed
+  var data = {                     // create the body of the POST request
     'user' : userField.value(),
     'challenge' : challengeField.value()
   };

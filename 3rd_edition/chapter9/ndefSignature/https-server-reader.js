@@ -35,7 +35,7 @@ function httpRedirect(request,response, next) {
 function processTag(request, response) {
   var command = request.path;             // get the command
   command = command.slice(1);             // slice off the leading /
-  var data = JSON.stringify(request.body);  // convert the body to a string
+  var data = JSON.stringify(request.body);// convert the body to a string
 
   // write the beginning of the response:
   response.writeHead(200, {"Content-Type": "text/html"});
