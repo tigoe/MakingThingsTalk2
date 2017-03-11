@@ -38,9 +38,6 @@ chapter5/project8/PongServer/sketch.properties
 3rd_edition/chapter4/WiFiStatus/config.h
 3rd_edition/chapter9/*/node_modules
 *.crt
-
 *.key
-
 3rd_edition/chapter9/ndefReadWrite/ndef.bin
-
 *.pem
