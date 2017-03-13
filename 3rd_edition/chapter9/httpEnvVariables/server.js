@@ -3,10 +3,9 @@ var server = new express();
 
 function respond(request, response) {
  // console.log(request.headers);
- console.log(request.rempoteIp); 
- console.log(request.hostname);
- console.log(request.ip);
- console.log(request.xhr);
+ console.log("client address: " + request.remoteIp);
+ console.log("server hostname: " + request.hostname);
+ console.log("server IP address: " + request.ip);
   response.end("hello client!");
 }
 
