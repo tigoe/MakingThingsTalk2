@@ -15,6 +15,7 @@ function respond(request, response) {
     port: 80,
     path: '/json/' + request.ip
   };
+  var location;
 
   function getIPAddress(geoResponse) {
     var result = '';		// string to hold the response
@@ -24,20 +25,19 @@ function respond(request, response) {
     }
 
     function showResponse() {
-      var loc = JSON.parse(result);
+      location = JSON.parse(result);
       console.log(loc.latitude + "," + loc.longitude);
 
     }
     geoResponse.on('data', collectData);  // add chunks to result as they arrive
     geoResponse.on('end', showResponse);  // when the server finishes, show result
   }
-
+  function finishResponse() {
+      response.end(location);
+  }
   var geoRequest = http.request(options, getIPAddress);	// start it
   geoRequest.end();												// end it
 
-  geoRequest.end("hello client!");
-
-response.end();
 }
 
 server.listen(8080);        // start the server on port 8080
