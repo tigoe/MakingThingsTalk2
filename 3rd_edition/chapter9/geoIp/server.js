@@ -24,7 +24,8 @@ function respond(request, response) {
     }
 
     function showResponse() {
-      console.log(result.latitude + "," + result.longitude);
+      var loc = JSON.parse(result);
+      console.log(loc.latitude + "," + loc.longitude);
 
     }
     geoResponse.on('data', collectData);  // add chunks to result as they arrive
