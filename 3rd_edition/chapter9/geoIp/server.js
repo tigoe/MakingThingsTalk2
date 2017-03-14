@@ -25,9 +25,12 @@ function respond(request, response) {
     }
 
     function showResponse() {
+      var mapsAddress = 'https://www.google.com/maps/place/';
       location = JSON.parse(result);
+      var latLong =  location.latitude + "," + location.longitude;
       console.log(location.latitude + "," + location.longitude);
-      response.end(JSON.stringify(location));
+      response.redirect(mapsAddress + latLong);
+      //response.end(JSON.stringify(location));
     }
     geoResponse.on('data', collectData);  // add chunks to result as they arrive
     geoResponse.on('end', showResponse);  // when the server finishes, show result
