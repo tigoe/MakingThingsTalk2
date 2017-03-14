@@ -2,7 +2,6 @@
 server that looks up client's location by IP address
 context: node.js
 */
-
 var http = require('http');          // include http library
 var express = require('express');    // include express
 var server = new express();          // make an instance of it
@@ -11,25 +10,22 @@ var mapsAddress = 'https://www.google.com/maps/place/';
 // freegeoip server options:
 var geoOptions = {
   host: 'freegeoip.net',
-  port: 80,
   path: '/json/'
 };
 
 // GET response listener callback function:
 function respond(request, response) {
   console.log("client IP address: " + request.ip);
-  var location;                    // geolocation returned from freegeoip
 
   function getIPAddress(geoResponse) {
-    var result = '';		           // string to hold the response
-
-    function collectData(data) {   // response data may arrive in chunks;
-      result += data;              // add chunks together as they arrive.
-    }
+    var result = '';               // string to hold the response
+    // listen for events in the request to freegeoip:
+    geoResponse.on('data', collectData);  // response data listener
+    geoResponse.on('end', finishResponse);  // response close listener
 
     // when response closes, process it:
-    function showResponse() {
-      location = JSON.parse(result);
+    function finishResponse() {
+      var location = JSON.parse(result);
       var latLong =  location.latitude + "," + location.longitude;
       console.log(latLong);
       // if the user-agent is a browser (most modern browsers
@@ -41,14 +37,16 @@ function respond(request, response) {
         response.end(JSON.stringify(location));
       }
     }
-    // listen for events in the request to freegeoip:
-    geoResponse.on('data', collectData);  // response data listener
-    geoResponse.on('end', showResponse);  // response close listener
   }
+
+  function collectData(data) {   // response data may arrive in chunks;
+    result += data;              // add chunks together as they arrive.
+  }
+
   // start the geoIp request:
-  geoOptions.path = '/json/' + request.ip;   // add the client IP to the geoIP path
+  geoOptions.path = '/json/' + request.ip;   // add client IP to geoIP path
   var geoRequest = http.request(geoOptions, getIPAddress);  // start request
-  geoRequest.end();								 // end it
+  geoRequest.end();                 // end it
 }
 
 server.listen(8080);        // start the server on port 8080
