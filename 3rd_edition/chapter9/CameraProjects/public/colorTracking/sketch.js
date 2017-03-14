@@ -11,12 +11,12 @@
  function setup() {
    video = createCapture(VIDEO);        // take control of the camera
    video.size(400, 300);                // set the capture resolution
-   video.position(0, 0);                // set the position of the camera image
+   video.position(0, 0);          // set the position of the camera image
    var canvas = createCanvas(400, 300); // draw the canvas over the image
    canvas.position(0,0);                // set the canvas position
    dSlider = createSlider(0, 100, 10, 1); // initialize the slider
    dSlider.position(10, height-30);     // position the slider
-   dSlider.mouseReleased(setDifference);// set a mouseReleased callback
+   dSlider.touchEnded(setDifference);// set a touchEnded callback
  }
 
 function draw() {
