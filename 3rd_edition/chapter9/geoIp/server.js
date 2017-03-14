@@ -29,7 +29,7 @@ function respond(request, response) {
       location = JSON.parse(result);
       var latLong =  location.latitude + "," + location.longitude;
       console.log(location.latitude + "," + location.longitude);
-      if (request.headers.request.headers['user-agent'].includes('Mozilla/5.0')) {
+      if (request.headers['user-agent'].includes('Mozilla/5.0')) {
         response.redirect(mapsAddress + latLong);
       } else {
         response.end(JSON.stringify(location));
