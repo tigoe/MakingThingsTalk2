@@ -1,5 +1,5 @@
 /*
-server, showing client headers
+server that looks up client's location by IP address
 context: node.js
 */
 
@@ -8,26 +8,26 @@ var express = require('express');    // include express
 var server = new express();          // make an instance of it
 // address for Google Maps server:
 var mapsAddress = 'https://www.google.com/maps/place/';
-var geoAddress = 'freegeoip.net/json/';
 // freegeoip server options:
 var geoOptions = {
   host: 'freegeoip.net',
   port: 80,
-  path: '/json/' + request.ip
+  path: '/json/'
 };
 
 // GET response listener callback function:
 function respond(request, response) {
   console.log("client IP address: " + request.ip);
-  var location;
+  var location;                    // geolocation returned from freegeoip
 
   function getIPAddress(geoResponse) {
-    var result = '';		// string to hold the response
+    var result = '';		           // string to hold the response
 
-    function collectData(data) {
-      result += data;
+    function collectData(data) {   // response data may arrive in chunks;
+      result += data;              // add chunks together as they arrive.
     }
 
+    // when response closes, process it:
     function showResponse() {
       location = JSON.parse(result);
       var latLong =  location.latitude + "," + location.longitude;
@@ -41,13 +41,14 @@ function respond(request, response) {
         response.end(JSON.stringify(location));
       }
     }
-
-    geoResponse.on('data', collectData);  // add chunks to result as they arrive
-    geoResponse.on('end', showResponse);  // when geoIP server closes, show result
+    // listen for events in the request to freegeoip:
+    geoResponse.on('data', collectData);  // response data listener
+    geoResponse.on('end', showResponse);  // response close listener
   }
   // start the geoIp request:
-  var geoRequest = http.request(geoAddress + request.ip, getIPAddress);
-  geoRequest.end();												// end it
+  geoOptions.path += request.ip;   // add the client IP to the geoIP path
+  var geoRequest = http.request(geoOptions, getIPAddress);  // start request
+  geoRequest.end();								 // end it
 }
 
 server.listen(8080);        // start the server on port 8080
