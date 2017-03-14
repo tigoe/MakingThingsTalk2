@@ -46,7 +46,7 @@ function respond(request, response) {
     geoResponse.on('end', showResponse);  // response close listener
   }
   // start the geoIp request:
-  geoOptions.path += request.ip;   // add the client IP to the geoIP path
+  geoOptions.path = '/json/' + request.ip;   // add the client IP to the geoIP path
   var geoRequest = http.request(geoOptions, getIPAddress);  // start request
   geoRequest.end();								 // end it
 }
