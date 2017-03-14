@@ -26,15 +26,13 @@ function respond(request, response) {
 
     function showResponse() {
       location = JSON.parse(result);
-      console.log(loc.latitude + "," + loc.longitude);
-
+      console.log(location.latitude + "," + location.longitude);
+      response.end(JSON.stringify(location));
     }
     geoResponse.on('data', collectData);  // add chunks to result as they arrive
     geoResponse.on('end', showResponse);  // when the server finishes, show result
   }
-  function finishResponse() {
-      response.end(location);
-  }
+
   var geoRequest = http.request(options, getIPAddress);	// start it
   geoRequest.end();												// end it
 
