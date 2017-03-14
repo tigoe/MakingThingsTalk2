@@ -19,9 +19,13 @@ function respond(request, response) {
 
   function getIPAddress(geoResponse) {
     var result = '';               // string to hold the response
-    // listen for events in the request to freegeoip:
+    // listen for events from  the freegeoip server:
     geoResponse.on('data', collectData);  // response data listener
     geoResponse.on('end', finishResponse);  // response close listener
+
+    function collectData(data) {   // response data may arrive in chunks;
+      result += data;              // add chunks together as they arrive.
+    }
 
     // when response closes, process it:
     function finishResponse() {
@@ -37,10 +41,6 @@ function respond(request, response) {
         response.end(JSON.stringify(location));
       }
     }
-  }
-
-  function collectData(data) {   // response data may arrive in chunks;
-    result += data;              // add chunks together as they arrive.
   }
 
   // start the geoIp request:
