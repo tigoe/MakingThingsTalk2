@@ -18,6 +18,7 @@ function postFile(request, response) {
   output = data.replace(/<temperature>/g, '25');
   output = output.replace(/<setpoint>/g, '18');
   output = output.replace(/<on>/g, 'on');
+ res.writeHead(200, {'Content-Type': 'text/xml'});
   response.end(output);
 }
 
