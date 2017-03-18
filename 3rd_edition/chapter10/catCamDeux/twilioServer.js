@@ -22,9 +22,9 @@ function answerCall(request, response) {
     action: '/gather'
   };
   var twiml = new twilio.TwimlResponse();
-  twiml.gather(expected, nextResponse);
+  twiml.gather(expected, makeResponse);
 
-  function nextResponse(gatherNode) {
+  function makeResponse(gatherNode) {
    gatherNode.say('The current temperature is '
    + String(temperature)
    + ' degrees Celsius. \
@@ -52,14 +52,16 @@ function getButtons(request, response) {
   // If the user entered digits, process their request
   if (request.body.Digits) {
     setPoint = Number(request.body.Digits);
-    twiml.say('The thermostat will be set at ' + String(setPoint) + ' degrees');
+    twiml.say('The thermostat will be set at ' + String(setPoint)
+    + ' degrees.');
     twiml.pause();
+    twiml.say('Thank you and goodbye!');
     twiml.hangup();
   } else {
     // If no input was sent, redirect to the /voice route
     twiml.say('You didn\'t give a new setting, \
     so the thermostat will remain at '
-    + thermostat
+    + String(thermostat)
     + ' degrees. Goodbye!');
     twiml.pause();
     twiml.redirect('/voice');
