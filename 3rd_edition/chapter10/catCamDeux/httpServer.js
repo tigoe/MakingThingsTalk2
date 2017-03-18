@@ -10,10 +10,10 @@ var fs = require('fs');
 
 
 server.use('/',express.static('public'));   // set a static file directory
-server.use(bodyParser.urlencoded({extended: true})); // enable body parsing
+server.use(bodyParser.urlencoded({extended:false})); // enable body parsing
 
 function postFile(request, response) {
-  console.log(request.body.Digits);
+  console.log(request.body);
   var fileName = __dirname + '/public/' + request.path;
   var data = fs.readFileSync(fileName);
   data = String(data);
