@@ -26,11 +26,11 @@ function answerCall(request, response) {
 
   function nextResponse(gatherNode) {
    gatherNode.say('The current temperature is '
-   + temperature
+   + String(temperature)
    + ' degrees Celsius. \
-   The thermostat is set to ' + setPoint + ' degrees Celsius. \
-   The air conditioner is set to ' + on
-   +  '. If you would like to change the thermostat, please enter a new setting. \
+   The thermostat is set to ' + String(setPoint) + ' degrees Celsius. \
+   The air conditioner is set to on. \
+   If you would like to change the thermostat, please enter a new setting. \
    If you are satisfied, please hang up.'
    );
  }
@@ -52,7 +52,7 @@ function getButtons(request, response) {
   // If the user entered digits, process their request
   if (request.body.Digits) {
     setPoint = Number(request.body.Digits);
-    twiml.say('The thermostat will be set at ' + setPoint + ' degrees');
+    twiml.say('The thermostat will be set at ' + String(setPoint) + ' degrees');
     twiml.pause();
     twiml.hangup();
   } else {
