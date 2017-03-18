@@ -11,7 +11,8 @@
 
 WiFiClient netSocket;
 MQTTClient client;
-char serverAddress[] = "192.168.0.13";
+//char serverAddress[] = "192.168.0.13";
+char serverAddress[] = "104.236.102.241";
 boolean deviceIsOn = false;
 int temperature = 0;
 int lastTemperature = 0;
