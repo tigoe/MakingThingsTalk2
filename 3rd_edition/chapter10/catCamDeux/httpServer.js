@@ -13,7 +13,7 @@ server.use('/',express.static('public'));   // set a static file directory
 server.use(bodyParser.urlencoded({extended: true})); // enable body parsing
 
 function postFile(request, response) {
-  console.log(request.body.digits);
+  console.log(request.body.Digits);
   var fileName = __dirname + '/public/' + request.path;
   var data = fs.readFileSync(fileName);
   data = String(data);
