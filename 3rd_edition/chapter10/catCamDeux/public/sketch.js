@@ -3,7 +3,7 @@
   context: p5.js
 */
 var clientOptions = {     // mqtt client options
-  port: 8080,
+  port: 8888,
   host: 'localhost',
   keepalive: 10000
 };
