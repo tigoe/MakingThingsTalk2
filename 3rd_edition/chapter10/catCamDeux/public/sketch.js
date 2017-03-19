@@ -5,6 +5,8 @@
 var clientOptions = {     // mqtt client options
   port: 8888,
   host: self.location.hostname,
+  username: 'someone',
+  password: 'something',
   keepalive: 10000
 };
 

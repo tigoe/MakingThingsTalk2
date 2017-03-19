@@ -5,13 +5,14 @@ context: node.js
 // include libraries and declare global variables:
 var express = require('express');	// include the express library
 var server = express();					  // create a server using express
-var bodyParser = require('body-parser'); // include body parser middleware
 var fs = require('fs');
 var mqtt = require('mqtt');         // include mqtt library
 
 var clientOptions = {     // mqtt client options
   port: 1883,
   host: 'localhost',
+  username: 'someone',
+  password: 'something',
   keepalive: 10000
 };
 
@@ -25,11 +26,7 @@ var device = {            // device properties
 var deviceName = 'airConditioner';  // name of the device
 var client;                         // mqtt client
 
-server.use('/',express.static('public'));   // set a static file directory
-server.use(bodyParser.urlencoded({extended:false})); // enable body parsing
-
 function postFile(request, response) {
-
   console.log(request.body);
   var fileName = __dirname + '/public/' + request.path;
   var data = fs.readFileSync(fileName);
@@ -50,7 +47,7 @@ function announce() {
   }
 }
 
-function readMessages() {
+function readMessages(topic, message) {
   topic = topic.toString();               // convert topic to String
   var strings = topic.split('/');         // split at the slash
   var origin = strings[0];                // origin comes before the slash
@@ -68,6 +65,7 @@ function readMessages() {
 
 // start the server:
 server.listen(8080);           // listen for HTTP
+server.use('/',express.static('public'));   // set a static file directory
 server.post('/*', postFile);
 
 client = mqtt.connect(clientOptions); // connect
