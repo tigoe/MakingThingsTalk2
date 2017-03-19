@@ -8,13 +8,27 @@ var server = express();					  // create a server using express
 var bodyParser = require('body-parser'); // include body parser middleware
 var twilio = require('twilio');
 var fs = require('fs');
+var mqtt = require('mqtt');         // include mqtt library
 
-var temperature = 21;
-var setPoint = 18;
-var on = false;
+var clientOptions = {     // mqtt client options
+  port: 1883,
+  host: 'localhost',
+  keepalive: 10000
+};
+
+var device = {            // device properties
+  on: false,
+  temperature: 24,
+  setPoint: 18,
+  mode: 1,
+  connected: false
+};
+var deviceName = 'airConditioner';  // name of the device
+var client;                         // mqtt client
 
 server.use('/',express.static('public'));   // set a static file directory
 server.use(bodyParser.urlencoded({extended:false})); // enable body parsing
+
 
 function answerCall(request, response) {
   var expected = {
@@ -51,8 +65,8 @@ function getButtons(request, response) {
 
   // If the user entered digits, process their request
   if (request.body.Digits) {
-    setPoint = Number(request.body.Digits);
-    twiml.say('The thermostat will be set at ' + String(setPoint)
+    device.setPoint = Number(request.body.Digits);
+    twiml.say('The thermostat will be set at ' + String(device.setPoint)
     + ' degrees.');
     twiml.pause();
     twiml.say('Thank you and goodbye!');
@@ -61,7 +75,7 @@ function getButtons(request, response) {
     // If no input was sent, redirect to the /voice route
     twiml.say('You didn\'t give a new setting, \
     so the thermostat will remain at '
-    + String(thermostat)
+    + String(device.setPoint)
     + ' degrees. Goodbye!');
     twiml.pause();
     twiml.redirect('/voice');
@@ -72,8 +86,33 @@ function getButtons(request, response) {
   response.send(twiml.toString());
 }
 
+function announce() {
+  for (property in device) {
+    client.subscribe(deviceName + '/' + property);  // subscribe to them
+  }
+}
+
+function readMessages() {
+  topic = topic.toString();               // convert topic to String
+  var strings = topic.split('/');         // split at the slash
+  var origin = strings[0];                // origin comes before the slash
+  var property = strings[1];              // property comes after the slash
+
+  if (property === 'temperature' ||       // these properties need to
+    property ==='mode' ||                 // be converted to numbers
+    property === 'setPoint') {
+    device[property] = Number(message);
+  } else {                                // the other properties are Boolean
+    // tricky way of getting the boolean value:
+    device[property] = (String(message) == '1');
+  }
+}
 
 // start the server:
 server.listen(8080);           // listen for HTTP
 server.post('/voice', answerCall);
 server.post('/gather', getButtons);
+
+client = mqtt.connect(clientOptions); // connect
+client.on('connect', announce);       // listener for connection
+client.on('message', readMessages);   // listener for incoming messages
