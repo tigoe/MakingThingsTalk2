@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
         <Say>
-            The thermostat is now set to #setpoint degrees.
+            The thermostat is now set to #setPoint degrees.
             The temperature is #temperature degrees.
             Thank you. Goodbye.
         </Say>

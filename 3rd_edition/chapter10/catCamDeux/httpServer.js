@@ -29,6 +29,7 @@ server.use('/',express.static('public'));   // set a static file directory
 server.use(bodyParser.urlencoded({extended:false})); // enable body parsing
 
 function postFile(request, response) {
+  connectMe();
   console.log(request.body);
   var fileName = __dirname + '/public/' + request.path;
   var data = fs.readFileSync(fileName);
@@ -61,14 +62,16 @@ function readMessages() {
     device[property] = Number(message);
   } else {                                // the other properties are Boolean
     // tricky way of getting the boolean value:
-    device[property] = (String(message) == '1');
+    device[property] = (String(message) == 'true');
   }
+}
+
+function connectMe() {
+  client = mqtt.connect(clientOptions); // connect
+  client.on('connect', announce);       // listener for connection
+  client.on('message', readMessages);   // listener for incoming messages
 }
 
 // start the server:
 server.listen(8080);           // listen for HTTP
 server.post('/*', postFile);
-
-client = mqtt.connect(clientOptions); // connect
-client.on('connect', announce);       // listener for connection
-client.on('message', readMessages);   // listener for incoming messages
