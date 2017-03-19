@@ -5,8 +5,8 @@
             The current temperature is
             #temperature
             degrees Celsius.
-            The thermostat is set to #setpoint degrees Celsius.
-            The air conditioner is set to $on.
+            The thermostat is set to #setPoint degrees Celsius.
+            The air conditioner is set to #on.
             If you would like to change the thermostat,
             please enter a new setting.
             If you are satisfied, please hang up.
@@ -14,6 +14,6 @@
     </Gather>
     <Say>
     	You didn't give a new setting,
-    	so the thermostat will remain at #setpoint degrees. Goodbye!
+    	so the thermostat will remain at #setPoint degrees. Goodbye!
     </Say>
 </Response>

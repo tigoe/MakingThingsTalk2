@@ -33,8 +33,9 @@ function postFile(request, response) {
   var fileName = __dirname + '/public/' + request.path;
   var data = fs.readFileSync(fileName);
   output = String(data);
+
   for (property in device) {
-    var searchTerm = '/#' + property + '/g';
+    var searchTerm = new RegExp('#'+ property, 'g');
     var value = String(device[property]);
     output = output.replace(searchTerm, value);
   }
