@@ -71,7 +71,7 @@ void loop() {
 
 
 void mqttConnect() {
-  while (!client.connect("airConditioner")) {
+  while (!client.connect("airConditioner", mqttUser, mqttPass)) {
     delay(500);
   }
   Serial.println("connected to server");
