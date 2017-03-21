@@ -19,22 +19,25 @@ var device = {            // device properties
 };
 var deviceName = 'airConditioner';  // name of the device
 var client;                         // mqtt client
+var img;
+var timeStamp;
 
 var connected = false;					// client connected
 var deviceLabel, deviceDiv;			// display objects on page
 var connectButton, modeControl;	// input objects on page
 
 function setup() {
+  frameRate(0.033);
 	noCanvas();																		// no canvas needed
 	deviceLabel = createSpan(deviceName);					// device info label
 	deviceLabel.position(10, 10);
 	deviceDiv = createDiv(JSON.stringify(device));// device JSON div
-	deviceDiv.position(10, 130);
+	deviceDiv.position(10, 70);
 	connectButton = createButton('Connect');			// connect button
-	connectButton.position(10, 100);
+	connectButton.position(10, 40);
 	connectButton.touchEnded(connectMe);
 	setPointSlider = createSlider(10, 40, 21, 1);	// setPoint slider
-	setPointSlider.position(100, 100);
+	setPointSlider.position(100, 40);
 	setPointSlider.touchEnded(changeSetpoint);
 	modeControl = createRadio();									// on/off mode controller
   modeControl.option('off', 1);
@@ -44,8 +47,17 @@ function setup() {
 	modeControl.value(device.mode);
 	modeControl.position(350, 10);
 	modeControl.changed(changeMode);
+  timeStamp = createSpan(new Date());
+  timeStamp.position(10, 120);
+  img = createImg('./image.jpg?');
+  img.position(10, 140);
 }
 
+function draw() {
+  var now = new Date();
+  img.elt.src = './image.jpg?' + now;
+  timeStamp.html(now);
+}
 // event handler for setPoint slider:
 function changeSetpoint() {
 	update('setPoint', setPointSlider.value());		// publish new value
