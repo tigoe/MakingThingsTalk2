@@ -30,8 +30,8 @@ function setup() {
   noCanvas();                                   // no canvas needed
   deviceStatus = createSpan(device.name);        // device info label
   deviceStatus.position(10, 10);
-  responseSpan = createSpan(JSON.stringify(device));// device JSON div
-  responseSpan.position(10, 130);
+  // responseSpan = createSpan(JSON.stringify(device));// device JSON div
+  // responseSpan.position(10, 130);
   connectButton = createButton('Connect');      // connect button
   connectButton.position(10, 100);
   connectButton.touchEnded(connectMe);
@@ -46,7 +46,7 @@ function setup() {
   modeControl.option('auto', 3);
   modeControl.style('width', '50px');
   modeControl.value(device.mode);
-  modeControl.position(350, 10);
+  modeControl.position(250, 10);
   modeControl.changed(changeMode);
   timeStamp = createSpan(new Date());           // add image and timeStamp
   timeStamp.position(10, 160);
@@ -142,5 +142,5 @@ function updateInterface() {
   setPointSlider.value(device.setPoint);     // update setPoint slider
   modeControl.value(device.mode);            // update mode radio buttons
   // put device JSON in div:
-  responseSpan.html("Device: " + JSON.stringify(device));
+  //responseSpan.html("Device: " + JSON.stringify(device));
 }
