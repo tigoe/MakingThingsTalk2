@@ -13,6 +13,12 @@ var upload = multer({storage: imgStore});
 // (the client must have the same file type for the uploaded file):
 var type = upload.single('image');
 
+// set up options for storing uploaded files:
+var imgStore = multer.diskStorage({
+  destination: __dirname + '/public/', // where you'll save files
+  filename: saveUpload       // function to rename and save files
+});
+
 // callback function to handle route for uploads:
 function getUpload(request, response) {
   // print the file info from the request:
