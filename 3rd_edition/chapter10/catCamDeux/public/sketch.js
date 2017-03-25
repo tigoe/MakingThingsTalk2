@@ -46,7 +46,7 @@ function setup() {
   modeControl.option('auto', 3);
   modeControl.style('width', '50px');
   modeControl.value(device.mode);
-  modeControl.position(250, 10);
+  modeControl.position(220, 10);
   modeControl.changed(changeMode);
   timeStamp = createSpan(new Date());           // add image and timeStamp
   timeStamp.position(10, 160);
@@ -138,6 +138,7 @@ function updateInterface() {
   deviceStatus.html(device.name
   + '<br>' + onState
   + '<br>temperature: ' + device.temperature);
+  + '<br> thermostat setpoint: ' + device.setPoint);
 
   setPointSlider.value(device.setPoint);     // update setPoint slider
   modeControl.value(device.mode);            // update mode radio buttons
