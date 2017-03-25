@@ -7,17 +7,17 @@ var express = require('express');           // include the express library
 var server = express();					            // create a server using express
 var multer  = require('multer');        // middleware for file uploads
 
-// initialize multer bodyparser using storage options from above:
-var upload = multer({storage: imgStore});
-// set file type: single file, with the type "image"
-// (the client must have the same file type for the uploaded file):
-var type = upload.single('image');
-
 // set up options for storing uploaded files:
 var imgStore = multer.diskStorage({
   destination: __dirname + '/public/', // where you'll save files
   filename: saveUpload       // function to rename and save files
 });
+
+// initialize multer bodyparser using storage options from above:
+var upload = multer({storage: imgStore});
+// set file type: single file, with the type "image"
+// (the client must have the same file type for the uploaded file):
+var type = upload.single('image');
 
 // callback function to handle route for uploads:
 function getUpload(request, response) {
