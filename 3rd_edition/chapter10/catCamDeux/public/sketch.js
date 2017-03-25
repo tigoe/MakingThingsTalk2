@@ -137,7 +137,7 @@ function updateInterface() {
   // update device label with name, on/off, and temperature
   deviceStatus.html(device.name
   + '<br>' + onState
-  + '<br>temperature: ' + device.temperature);
+  + '<br>temperature: ' + device.temperature
   + '<br> thermostat setpoint: ' + device.setPoint);
 
   setPointSlider.value(device.setPoint);     // update setPoint slider
