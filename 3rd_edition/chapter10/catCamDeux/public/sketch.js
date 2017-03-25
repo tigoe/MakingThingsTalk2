@@ -22,7 +22,7 @@ var webConnected = false;         // if this client is connected
 
 var img;                          // the image from the cam
 var timeStamp;                    // a timeStamp span
-var deviceStatus, responseSpan;   // display objects on page
+var deviceStatus;                 // display objects on page
 var connectButton, modeControl;   // input objects on page
 
 function setup() {
@@ -30,13 +30,11 @@ function setup() {
   noCanvas();                                   // no canvas needed
   deviceStatus = createSpan(device.name);        // device info label
   deviceStatus.position(10, 10);
-  // responseSpan = createSpan(JSON.stringify(device));// device JSON div
-  // responseSpan.position(10, 130);
   connectButton = createButton('Connect');      // connect button
   connectButton.position(10, 100);
   connectButton.touchEnded(connectMe);
   setPointSlider = createSlider(10, 40, 21, 1); // setPoint slider
-  setPointSlider.position(160, 100);
+  setPointSlider.position(180, 100);
   setPointSlider.touchEnded(changeSetpoint);
   var sliderLabel = createSpan('Setpoint: ');
   sliderLabel.position(100,100);
@@ -44,7 +42,7 @@ function setup() {
   modeControl.option('off', 1);
   modeControl.option('on', 2);
   modeControl.option('auto', 3);
-  modeControl.style('width', '50px');
+  modeControl.style('width', '65px');
   modeControl.value(device.mode);
   modeControl.position(220, 10);
   modeControl.changed(changeMode);
@@ -142,6 +140,4 @@ function updateInterface() {
 
   setPointSlider.value(device.setPoint);     // update setPoint slider
   modeControl.value(device.mode);            // update mode radio buttons
-  // put device JSON in div:
-  //responseSpan.html("Device: " + JSON.stringify(device));
 }
