@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
-    <Gather numDigits="2" action="set-temp.xml" method="POST">
+    <Gather numDigits="2" timeout="5" action="set-temp.xml" method="POST">
         <Say>
             The current temperature is
             #temperature
