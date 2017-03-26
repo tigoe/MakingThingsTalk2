@@ -5,17 +5,19 @@
 
   module.exports = {
     apiKey: 'Axxxxx', // Twilio API key
-    auth: '1xxx'      // Twilio API auth
+    auth: '1xxx',     // Twilio API auth
+    number: '000000000' // Twilio phone number
   }
 */
 
 var https = require('https');             // include https library
 var querystring = require('querystring'); // include querystring library
 var creds = require('./twilioCreds.js');  // your Twilio credentials
+var recipient = process.argv[2];   // recipient phone number from command line
 
 var message = {         // the SMS message you plan to send
-  To:'+19177532699',
-  From:'+16467831513',
+  To: recipient,
+  From: creds.number,
   Body:'Hi There!'
 }
 // convert message to HTTP-style query string:
