@@ -1,6 +1,12 @@
 /*
   HTTPS client for Twilio SMS API
   context: node.js
+  You also need to create twilioCreds.js, which looks like this:
+
+  module.exports = {
+    apiKey: 'Axxxxx', // Twilio API key
+    auth: '1xxx'      // Twilio API auth
+  }
 */
 
 var https = require('https');             // include https library
