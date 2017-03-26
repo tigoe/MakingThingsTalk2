@@ -1,17 +1,17 @@
 /*
   mqtt client to control air conditioner
   context: Arduino
- */
-#include <SPI.h>
-#include <WiFi101.h>
-//#include <ESP8266WiFi.h>    // use this instead of WiFi101 for ESP8266 modules
-#include <MQTTClient.h>
-#include <DHT.h>
-#include "config.h"
+*/
+#include <DHT.h>            // include DHT library
+#include <SPI.h>            // include SPI library
+#include <WiFi101.h>        // include WiFi101 library
+//#include <ESP8266WiFi.h>  // use this instead of WiFi101 for ESP8266 modules
+#include <MQTTClient.h>     // include MQTT Client library
+#include "config.h"         // include credentials
 
-WiFiClient netSocket;
-MQTTClient client;
-char serverAddress[] = "192.168.0.13";
+WiFiClient netSocket;       // network connection instance
+MQTTClient client;          // MQTT client instance
+char serverAddress[] = "192.168.0.15";  // mosquitto server address
 boolean deviceIsOn = false;
 int temperature = 0;
 int lastTemperature = 0;
@@ -19,8 +19,10 @@ int setPoint = 18;
 int mode = 1;
 boolean deviceConnected = false;
 
-const int relayPin = LED_BUILTIN;
-DHT dht(4, DHT11);
+const int sensorPin = 4;
+const int relayPin = 5;
+
+DHT dht(sensorPin, DHT11);
 
 void setup() {
   // connect to WiFi
@@ -42,7 +44,6 @@ void setup() {
   temperature = dht.readTemperature();
 
   pinMode(relayPin, OUTPUT);    // make the relay pin an output
-
   // start the mqtt client and try to connect:
   client.begin(serverAddress, netSocket);
   mqttConnect();
@@ -58,24 +59,43 @@ void loop() {
 
   temperature = dht.readTemperature();          // read the temperature
   if (abs(temperature - lastTemperature) > 0) { // if it's changed, publish it
+    Serial.print("temperature changed to: ");
+    Serial.println(temperature);
     client.publish("airConditioner/temperature", String(temperature));
   }
   lastTemperature = temperature;         //save for comparison next time
-  
+
   if (mode == 3) {    // auto
     checkThermostat();
   }
-  
+
   digitalWrite(relayPin, deviceIsOn);    // turn on or off the relay pin
 }
 
+void checkThermostat() {
+  if (temperature > setPoint) {
+    if (!deviceIsOn) {
+      deviceIsOn = true;        // turn on
+      client.publish("airConditioner/on", String(deviceIsOn));
+    }
+  }
+  if (setPoint > temperature) {
+    if (deviceIsOn) {
+      deviceIsOn = false;       // turn off
+      client.publish("airConditioner/on", String(deviceIsOn));
+    }
+  }
+}
 
+// attempt to connect to the broker:
 void mqttConnect() {
-  while (!client.connect("airConditioner", mqttUser, mqttPass)) {
-    delay(500);
+  if (!client.connect("airConditioner", mqttUser, mqttPass)) {
+    return;   // skip the rest of the function
   }
   Serial.println("connected to server");
   deviceConnected = true;
+  // when you're connected, subscribe to properties
+  // that might be changed remotely:
   client.subscribe("airConditioner/on");
   client.subscribe("airConditioner/setPoint");
   client.subscribe("airConditioner/mode");
@@ -83,16 +103,20 @@ void mqttConnect() {
   publishAll();
 }
 
+// publish all properties:
 void publishAll() {
   client.publish("airConditioner/on", String(deviceIsOn));
   client.publish("airConditioner/temperature", String(temperature));
   client.publish("airConditioner/setPoint", String(setPoint));
   client.publish("airConditioner/mode", String(mode));
   client.publish("airConditioner/connected", String(deviceConnected));
-
 }
 
-void messageReceived(String topic, String payload, char bytes[], unsigned int length) {
+
+void messageReceived(String topic, String payload,
+                     char bytes[], unsigned int length) {
+  Serial.println(topic);
+  Serial.println(payload);
   // parse the topic
   int divider = topic.indexOf('/');
   String deviceName = topic.substring(0, divider);
@@ -132,22 +156,5 @@ void messageReceived(String topic, String payload, char bytes[], unsigned int le
         break;
     }
   }
-}
-
-void checkThermostat() {
-  if (temperature > setPoint) {
-    if (!deviceIsOn) {
-      // turn on
-      deviceIsOn = true;
-      client.publish("airConditioner/on", String(deviceIsOn));
-    }
-  }
-  if (setPoint > temperature) {
-    if (deviceIsOn) {
-      // turn off
-      deviceIsOn = false;
-      client.publish("airConditioner/on", String(deviceIsOn));
-    }
-  }
-}
+}     // end of messageReceived() function
 
