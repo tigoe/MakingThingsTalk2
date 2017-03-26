@@ -1,13 +1,13 @@
 /*
-  HTTPS client for Twilio SMS API
-  context: node.js
-  You also need to create twilioCreds.js, which looks like this:
+HTTPS client for Twilio SMS API
+context: node.js
+You also need to create twilioCreds.js, which looks like this:
 
-  module.exports = {
-    apiKey: 'Axxxxx', // Twilio API key
-    auth: '1xxx',     // Twilio API auth
-    number: '000000000' // Twilio phone number
-  }
+module.exports = {
+apiKey: 'Axxxxx', // Twilio API key
+auth: '1xxx',     // Twilio API auth
+number: '000000000' // Twilio phone number
+}
 */
 
 var https = require('https');             // include https library
@@ -38,21 +38,21 @@ var options = {
 
 // request callback function:
 function confirm(response) {
-  var result = '';		// string to hold the response
+  var result = '';          // string to hold the response
 
   function gather (data) {  // response 'data' callback function
-    result += data;
-  }
+  result += data;
+}
 
-  function printResult () { // response 'end' callback function
-    console.log(result);
-  }
+function printResult () {   // response 'end' callback function
+console.log(result);
+}
 
-  response.on('data', gather);    // add each chunk to the result string
-  response.on('end',printResult); // print result when done
+response.on('data', gather);    // add each chunk to the result string
+response.on('end',printResult); // print result when done
 }
 
 // make the actual request:
-var request = https.request(options, confirm);	// start it
-request.write(postData);							          // send the data
-request.end();												          // end it and send it
+var request = https.request(options, confirm);  // start it
+request.write(postData);                        // send the data
+request.end();                                  // end it and send it
