@@ -13,7 +13,7 @@ void setup() {
   Serial.println(BLE.address());
 
   // set advertised local name and service UUID:
-  BLE.setLocalName("LED");
+  BLE.setLocalName("Arduino101");
   BLE.setAdvertisedServiceUuid(ledService.uuid());
   // add descriptor and characteristic:
   ledCharacteristic.addDescriptor(ledDescriptor);

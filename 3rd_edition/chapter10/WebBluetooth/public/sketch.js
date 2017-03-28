@@ -4,6 +4,7 @@ var charValue = 0xFF11;			// short value of the Characteristic
 var ledCharacteristic;			// the ledCharacteristic needs to be global
 var ledStatus = 0;				  // led status
 var scanButton;						  // UI elements
+var disconnectButton;
 var ledButton;
 var messageSpan;
 
@@ -16,6 +17,10 @@ function setup() {
 		scanButton = createButton('scan');	          // create other elements
 		scanButton.position(10, 40);
 		scanButton.touchEnded(scan);
+		disconnectButton = createButton('disconnect');	          // create other elements
+		disconnectButton.position(10, 40);
+		disconnectButton.touchEnded(disconnect);
+		disconnectButton.hide();
 		ledButton = createButton('off');
 		ledButton.position(120, 40);
 		ledButton.touchEnded(changeLed);
@@ -41,30 +46,32 @@ function scan() {
 	var characteristicUuid = BluetoothUUID.getCharacteristic(charValue);
 
 	// functions for the scan, which is below:
-	function gatConnect(device) {
+	function connectToDevice(device) {
 		bluetoothDevice = device;
-		scanButton.html('disconnect');
-		scanButton.touchEnded(disconnect);
-		ledButton.hide();
+		device.addEventListener('gattserverdisconnected', onDisconnected);
+		scanButton.hide();
+		disconnectButton.show();
 		messageSpan.html('Connecting to GATT Server...');
 		return device.gatt.connect();
 	}
 
-	function getSvc(server) {
+	function getSvcs(services) {
 		messageSpan.html('Getting Service...');
-		return server.getPrimaryService(serviceUuid);
+		return services.getPrimaryService(serviceUuid);
 	}
 
-	function getChar(service) {
+	function getChars(service) {
 		messageSpan.html('Getting Characteristic...');
 		return service.getCharacteristics();
 	}
 
-	function listChar(characteristics) {
+	function findChar(characteristics) {
 		// iterate over all characteristics to find the LED characteristic:
 		for (c in characteristics) {
 			if (characteristics[c].uuid === characteristicUuid) {
-				messageSpan.html('LED Characteristic Found.'); // update messageSpan
+				var message = 'connected to ' + bluetoothDevice.name
+					+ ' LED Characteristic.'
+				messageSpan.html(message); // update messageSpan
 				ledCharacteristic = characteristics[c];				 // save in a global var
 				ledCharacteristic.readValue()						       // read the value,
 				.then(getLed);																 // and show  led button
@@ -72,17 +79,17 @@ function scan() {
 		}
 	}
 	// error message handler:
-	function showError() {
-		messageSpan.html('Argh! ' + error);
+	function showError(error) {
+		messageSpan.html('Error: ' + error);
 	}
 
 	// update messageSpan, then do all the steps of the scan:
 	messageSpan.html('Requesting Bluetooth Device...');
 	navigator.bluetooth.requestDevice({filters: [{services: [serviceUuid]}]})
-	.then(gatConnect)
-	.then(getSvc)
-	.then(getChar)
-	.then(listChar)
+	.then(connectToDevice)
+	.then(getSvcs)
+	.then(getChars)
+	.then(findChar)
 	.catch(showError);
 }
 
@@ -95,13 +102,24 @@ function getLed(value) {
 // change the LED value using the characteristic returned from the scan:
 function changeLed() {
 	ledStatus = !ledStatus;
+	console.log(bluetoothDevice);
 	ledCharacteristic.writeValue(new Uint8Array([ledStatus]));
 }
 
 function disconnect() {
-  if (bluetoothDevice && bluetoothDevice.gatt) {
-    bluetoothDevice.gatt.disconnect();
-  }
-  scanButton.html('scan');
-	scanButton.touchEnded(scan);
+	if (!bluetoothDevice) {
+		return;
+	}
+	messageSpan.html('Disconnecting from ' + bluetoothDevice.name);
+	if (bluetoothDevice.gatt.connected) {
+		bluetoothDevice.gatt.disconnect();
+	} else {
+		messageSpan.html(bluetoothDevice.name + ' is already disconnected');
+	}
+}
+
+function onDisconnected()  {
+	disconnectButton.hide();
+	ledButton.hide();
+	scanButton.show()
 }
