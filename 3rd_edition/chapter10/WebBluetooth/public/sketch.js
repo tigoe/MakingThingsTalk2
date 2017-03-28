@@ -102,7 +102,6 @@ function getLed(value) {
 // change the LED value using the characteristic returned from the scan:
 function changeLed() {
 	ledStatus = !ledStatus;
-	console.log(bluetoothDevice);
 	ledCharacteristic.writeValue(new Uint8Array([ledStatus]));
 }
 
