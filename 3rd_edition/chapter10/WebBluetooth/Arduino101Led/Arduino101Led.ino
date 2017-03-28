@@ -31,10 +31,12 @@ void loop() {
   if (central) {
     Serial.print("Connected to central: "); // print central's address
     Serial.println(central.address());
-
-    while (central.connected()) {   //  while central is connected,
-      if (ledCharacteristic.written()) {  // if it writes to the characteristic,
-        digitalWrite(LED_BUILTIN, ledCharacteristic.value());// turn on the LED
+    //  while central is connected:
+    while (central.connected()) {
+      // if the cental writes to the characteristic"
+      if (ledCharacteristic.written()) {
+        // change the LED:
+        digitalWrite(LED_BUILTIN, ledCharacteristic.value());
       }
     }
 
