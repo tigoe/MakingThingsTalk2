@@ -52,9 +52,9 @@ void loop() {
   http.sendHeader("SOAPACTION", soapAction);
   http.sendHeader("Connection: keep-alive");
   http.sendHeader("Content-Length", soap.length());
-  http.sendHeader("");    // a blank line before the body
-  http.sendHeader(soap);  // add the body
-  http.endRequest();      // end the request
+  http.endRequest();                      // end the request
+  http.println(soap);                     // add the body
+  Serial.println("request sent");
 
   while (http.connected()) {       // while connected to the server,
     if (http.available()) {        // if there is a response from the server,
@@ -62,7 +62,7 @@ void loop() {
       Serial.print(result);               // and print it
     }
   }
-  Serial.println();             // end of the response           
+  Serial.println();             // end of the response
   if (wemoState == 1) {         // if the wemo's on
     soap.replace(">1<", ">0<"); // turn it off next time
   } else {                      // otherwise

@@ -22,7 +22,7 @@ String route = "/upnp/control/basicevent1";  // API route
 boolean wemoStates[] = {0, 0};      // state of the wemo switches
 String username = "";               // the username
 String wemoAddress = "";            // address of the current wemo
-int wemoNumber = -1;                // the current wemo number 
+int wemoNumber = -1;                // the current wemo number
 
 // string for the SOAP request:
 String soap = "<?xml version=\"1.0\" encoding=\"utf-8\"?> \
@@ -117,10 +117,9 @@ void wemoRequest( int thisWemo, String wemo) {
   http.sendHeader("SOAPACTION", soapAction);
   http.sendHeader("Connection: keep-alive");
   http.sendHeader("Content-Length", soap.length());
-  http.sendHeader("");                    // a blank line before the body
-  http.sendHeader(soap);                  // add the body
   http.endRequest();                      // end the request
-  Serial.println("request opened");
+  http.println(soap);                     // add the body
+  Serial.println("request sent");
 
   while (http.connected()) {              // while connected to the server,
     if (http.available()) {               // if there's a server response,
