@@ -86,3 +86,5 @@ chapter5/project8/PongServer/sketch.properties
 3rd_edition/chapter10/BleDatalogger/www/libraries/p5.sound.min.js
 
 3rd_edition/chapter10/buttonApp/www/libraries/p5.sound.js
+
+3rd_edition/chapter10/dataServer/public/libraries/p5.sound.js
