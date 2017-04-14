@@ -56,3 +56,5 @@ chapter5/project8/PongServer/sketch.properties
 3rd_edition/chapter10/catCamDeux/sketch_mar19b/sketch_mar19b.ino
 
 3rd_edition/chapter10/TwilioFiles/twilioCreds.js
+3rd_edition/chapter10/*/platforms/*
+3rd_edition/chapter10/*/plugins/*
