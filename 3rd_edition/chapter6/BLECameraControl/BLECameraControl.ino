@@ -2,9 +2,6 @@
 #include <multiCameraIrControl.h>
 #include <CurieBLE.h>
 
-
-// initialize peripheral
-BLEPeripheral blePeripheral;
 // initialize the camera service and its UUID:
 BLEService cameraService("F01A");
 // initialize the shutter characteristic, its UUID and its properties:
@@ -14,27 +11,23 @@ Nikon camera(3);
 
 void setup() {
   Serial.begin(9600);
-
+  BLE.begin();
   // set  local name for the peripheral and advertise the camera service:
-  blePeripheral.setLocalName("irRemote");
-  blePeripheral.setAdvertisedServiceUuid(cameraService.uuid());
+  BLE.setLocalName("irRemote");
+  BLE.setAdvertisedServiceUuid(cameraService.uuid());
 
   // add the service and characteristic as attributes of the peripheral:
-  blePeripheral.addAttribute(cameraService);
-  blePeripheral.addAttribute(shutter);
+  BLE.addService(cameraService);
+  cameraService.addCharacteristic(shutter);
 
-  // set the initial value for the characeristic:
-  shutter.setValue(0);
-
-  // begin advertising camera service:
-  blePeripheral.begin();
+  BLE.advertise();            // begin advertising camera service
+  shutter.setValue(0);        // set initial value for shutter
   Serial.println("Starting");
 }
 
 void loop() {
-  // poll the peripheral for activity:
-//  blePeripheral.poll();
-
+  // poll for BLE activity:
+  BLE.poll();
   // if a central wrote to the shutter characteristic:
   if (shutter.written()) {
     // and the characteristic's value is 1:
