@@ -59,3 +59,5 @@ chapter5/project8/PongServer/sketch.properties
 3rd_edition/chapter10/*/platforms/*
 3rd_edition/chapter10/*/plugins/*
 3rd_edition/chapter1/p5Button/libraries/p5.sound.js
+
+3rd_edition/chapter1/p5Button/libraries/p5.dom.js
