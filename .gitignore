@@ -92,3 +92,7 @@ chapter5/project8/PongServer/sketch.properties
 3rd_edition/chapter5/VideoWebSocketServer/public/libraries/p5.sound.js
 
 chapter10/P4ATest/AndroidManifest.xml
+
+3rd_edition/chapter10/dataServer/data.csv
+
+3rd_edition/chapter10/test/libraries/p5.sound.js
