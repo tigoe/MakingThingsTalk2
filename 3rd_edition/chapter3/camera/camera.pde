@@ -13,6 +13,7 @@ void setup() {
 
   // use the first camera  in the list for capture:
   myCam = new Capture(this, width, height, devices[0]);
+  myCam.start();
 }
 
 void draw() {
