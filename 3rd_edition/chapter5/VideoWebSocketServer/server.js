@@ -63,7 +63,7 @@ function broadcast(thisClient, data) {
       client.send(JSON.stringify(data));
     }
   }
-
+  // run the sendToAll function on each element of wss.clients:
   wss.clients.forEach(sendToAll);
 }
 
