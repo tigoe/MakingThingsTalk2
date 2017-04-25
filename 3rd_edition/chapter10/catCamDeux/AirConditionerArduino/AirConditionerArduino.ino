@@ -11,10 +11,10 @@
 
 WiFiClient netSocket;       // network connection instance
 MQTTClient client;          // MQTT client instance
-char serverAddress[] = "192.168.0.15";  // mosquitto server address
+char serverAddress[] = "192.168.0.15";  // MQTT server address
 boolean deviceIsOn = false;
-int temperature = 0;
-int lastTemperature = 0;
+float temperature = 0;
+float lastTemperature = 0;
 int setPoint = 18;
 int mode = 1;
 boolean deviceConnected = false;
