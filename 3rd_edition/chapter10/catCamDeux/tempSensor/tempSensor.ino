@@ -12,8 +12,8 @@ void setup() {
 }
 
 void loop() {
-  int temperature = dht.readTemperature();  // read temperature
-  int humidity = dht.readHumidity();        // read humidity
+  float temperature = dht.readTemperature();  // read temperature
+  float humidity = dht.readHumidity();        // read humidity
   Serial.print(temperature);                // print them
   Serial.print("°C ,");
   Serial.print(humidity);
