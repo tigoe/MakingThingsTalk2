@@ -2,10 +2,11 @@
   UDP Query Responder
   context: Arduino
 */
+#include <SPI.h>
 #include <WiFi101.h>
 //#include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
-#include "settings.h"
+#include "config.h"
 
 WiFiUDP Udp;                // instance of UDP library
 const int port = 8888;      // port on which this client receives

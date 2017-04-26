@@ -7,7 +7,7 @@
 //#include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 #include <Adafruit_NeoPixel.h>
-#include "settings.h"
+#include "config.h"
 
 WiFiUDP Udp;                        // an instance of the UDP library
 IPAddress destination(192, 168, 0, 255); // UDP destination address for your network
