@@ -7,9 +7,9 @@
  */
 
 int inByte = 0;              // variable to hold incoming serial data
-long blinkTimer = 0;         // keeps track of how long since the LED 
+unsigned long blinkTimer = 0;// keeps track of how long since the LED 
                              // was last turned off
-int blinkInterval = 1000;    // a full second from on to off to on again
+unsigned int blinkInterval = 1000; // a full second from on to off to on again
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT); // set built in LED to be an output
@@ -25,7 +25,7 @@ void loop() {
   
   // Meanwhile, keep blinking the LED.
   // after a half a second, turn the LED on:
-  if (millis() - blinkTimer >= blinkInterval / 2) {
+  if (millis() - blinkTimer >= blinkInterval/2) {
     digitalWrite(LED_BUILTIN, HIGH);      // turn the LED on 
   }
   // after a half a second, turn the LED off and reset the timer:
