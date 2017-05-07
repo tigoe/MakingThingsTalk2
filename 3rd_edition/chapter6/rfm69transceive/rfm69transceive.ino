@@ -87,7 +87,7 @@ void loop() {
 
   //check if an incoming was message was received:
   if (radio.receiveDone()) {
-    digitalWrite(receiveLED, LOW); // turn on  the LED
+    digitalWrite(receiveLED, HIGH); // turn on  the LED
     if (radio.ACKRequested()) {     // if sender wanted acknowledgement,
       radio.sendACK();              // send it
       Serial.println("ACK sent");
