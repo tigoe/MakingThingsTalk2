@@ -23,36 +23,36 @@ function setup() {
   // create scan, connect, disconnect, and upload buttons:
   scanButton = createButton('Scan for devices');
   scanButton.touchEnded(scanForDevices);
-  scanButton.position(10, 10);
+  scanButton.position(10, 60);
   scanButton.size(80,40);
 
   connectButton = createButton('connect');
   connectButton.touchEnded(connectToDevice);
-  connectButton.position(100, 10);
+  connectButton.position(100, 60);
   connectButton.size(80,40);
 
   disconnectButton = createButton('disconnect');
   disconnectButton.touchEnded(disconnectFromDevice);
-  disconnectButton.position(190, 10);
+  disconnectButton.position(190, 60);
   disconnectButton.size(80,40);
 
   uploadButton = createButton('Send to Server');
   uploadButton.touchEnded(sendToServer);
-  uploadButton.position(10, 200);
+  uploadButton.position(10, 250);
   uploadButton.size(80,40);
 
   // create auto-upload checkbox:
   autoUpload = createCheckbox('Upload every two minutes', false);
-  autoUpload.position(100, 200);
+  autoUpload.position(100, 250);
   autoUpload.changed(setAutoUpload);
 
   // create response and data divs:
   responseDiv = createDiv('tap the scan button to begin');
-  responseDiv.position(10, 100);
+  responseDiv.position(10, 150);
   responseDiv.style("font-size", "14px");
 
   dataDiv = createDiv('');
-  dataDiv.position(10, 150);
+  dataDiv.position(10, 200);
   dataDiv.style("font-size", "14px");
 
   // check if BLE is enabled:
@@ -66,7 +66,7 @@ function scanForDevices() {
   if (deviceList) deviceList.remove();
 
   deviceList = createSelect();             // create a new select element
-  deviceList.position(10, 60);
+  deviceList.position(10, 110);
   deviceList.size(150, 30)
   deviceList.option('Pick a device', '');  // set default option
   deviceList.changed(selectDevice);
