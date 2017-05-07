@@ -9,19 +9,18 @@ server.use('/',express.static('public'));
 
 
 // serial port initialization:
-var SerialPort = require('serialport');    // include the serialport library
-var portName = '/dev/tty.usbserial-AH0330NT';// your port name
-var incoming = [];                          // an array to hold the serial data
-var message = {         // the XBee packet as a JSON object:
-  packetLength: -1,     // packet length
+var SerialPort = require('serialport');  // include the serialport library
+var portName = '/dev/tty.Bluetooth-Incoming-Port';// your port name
+var incoming = [];                       // an array to hold the serial data
+
+var message = {          // the XBee packet as a JSON object:
+  packetLength: -1,      // packet length
   apiId: 0,              // message API identifier
-  address: -1,          // sender's address
-  rssi: 0,              // signal strength
-  sampleCount:-1,       // number of I/O samples
-  channels: 0,          // which I/O channels are in use
-  samples: [],          // the array of samples
-  average:-1,           // the average of the samples
-  avgVoltage: -1        // the average in volts
+  address: -1,           // sender's address
+  rssi: 0,               // signal strength
+  channels: 0,           // which I/O channels are in use
+  sampleData: 0,         // sample data from all pins
+  pinStates: []         // array with the state of the digital pins
 };
 
 // open the serial port:
@@ -38,25 +37,19 @@ function portError(error) {
 }
 
 function readData(data) {
-    for (c=0; c < data.length; c++) {   // loop over all the bytes
-      var value = Number(data[c]);      // get the byte value
-      if (value === 0x7E) {             // 0x7E starts a new message
-        parseData(incoming);
-        incoming = [];                    // clear existing message
-      } else {                          // if the byte's not 0x7E,
-      incoming.push(value);               // add it to the incoming array
-    }
+  for (c=0; c < data.length; c++) {   // loop over all the bytes
+    var value = Number(data[c]);      // get the byte value
+    if (value === 0x7E) {             // 0x7E starts a new message
+      parseData(incoming);
+      incoming = [];                    // clear existing message
+    } else {                          // if the byte's not 0x7E,
+    incoming.push(value);               // add it to the incoming array
   }
+}
 }
 
 function parseData(thisPacket) {
-  var samplesStart = 10;    // first byte of the actual samples
-  var samplesEnd;           // last byte of the samples
-  var sum = 0;              // sum of all the samples, for averaging
-  var sample = 0;           // the current sample
-  message.samples = [];      // clear the samples array
-
-  if (thisPacket.length >= 20) {   // if the packet is 20 bytes long
+  if (thisPacket.length >= 12) {   // if the packet is 12 bytes long
     // read the address. It's a two-byte value, so
     // packetLength = firstByte * 256 + secondByte:
     message.packetLength = (thisPacket[0] * 256) + thisPacket[1];
@@ -66,29 +59,21 @@ function parseData(thisPacket) {
     message.address = (thisPacket[3] * 256) + thisPacket[4];
     // read the received signal strength:
     message.rssi = -thisPacket[5];
-    message.sampleCount = thisPacket[7]; // number of samples in packet
     // channels is also a two-byte value.
     // It's best read in binary, so convert to a binary string:
     message.channels = ((thisPacket[8] * 256) + thisPacket[9]).toString(2);
-    samplesStart = 10;         // ADC reading starts at byte 10
-    // each sample is two bytes, so calculate the end position:
-    samplesEnd = samplesStart + (message.sampleCount * 2);
-    sum = 0;                   // sum of all samples, for averaging
-
-    // read the ADC inputs. Each is 10 bits, in two bytes, so
-    // use the two-byte formula: sample = firstByte * 256 + secondByte:
-    for (var i = samplesStart; i < samplesEnd;  i=i+2) {
-      sample = (thisPacket[i]* 256) + thisPacket[i+1];
-      // add the sample to the array of samples:
-      message.samples.push(sample);
-      // add the result to the sum for averaging later:
-      sum = sum + sample;
+    // pin states:
+    message.sampleData = (thisPacket[10] * 256) + thisPacket[11];
+    message.pinStates = [];
+    // convert the sample data into an array of pin states:
+    for (var pin = 0; pin < 9; pin++) {
+      // isolate each bit of the sample data:
+      var thisPinState = message.sampleData & (1 << pin);
+      // push each pin's state to the pin states array:
+      message.pinStates.push(thisPinState);
     }
-    // average all the samples and convert to a voltage:
-    message.average = sum / message.sampleCount;
-    message.avgVoltage = message.average *3.3 / 1024;
+    console.log(message);    // print it all out
   }
-  console.log(message);    // print it all out
 }
 
 // define the callback function that's called when
@@ -105,6 +90,20 @@ myPort.on('data', readData);
 // called when there's an error with the serial port:
 myPort.on('error', portError);
 
+
+setInterval( function () {
+  message.pinStates = [];
+    for (var pin = 0; pin < 9; pin++) {
+    var f = Math.random();
+    console.log(f);
+      if (f > 0.5) {
+        f = 1;
+      } else {
+        f = 0;
+      }
+      message.pinStates.push(f);
+    }
+}, 5000)
 
 server.listen(8080);              // start the server
 server.get('/json', respondToClient); // respond to GET requests
