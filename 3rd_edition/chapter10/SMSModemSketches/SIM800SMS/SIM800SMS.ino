@@ -37,7 +37,7 @@ void loop() {
   if (buttonState != lastButtonState) {            // if it’s changed,
     delay(100);                                    // debounce delay
     if (buttonState == LOW) {                      // and it’s pushed,
-      int reading = analogRead(A0);                // read analog input
+      int reading = analogRead(A4);                // read analog input
       String sensorReading = "{\"Sensor\":X}";     // make JSON format
       sensorReading.replace("X", String(reading)); // add sensor value
 
