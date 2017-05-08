@@ -10,7 +10,7 @@ server.use('/',express.static('public'));
 
 // serial port initialization:
 var SerialPort = require('serialport');  // include the serialport library
-var portName = '/dev/tty.Bluetooth-Incoming-Port';// your port name
+var portName = '/dev/tty.usbserial-00002014';// your port name
 var incoming = [];                       // an array to hold the serial data
 
 var message = {          // the XBee packet as a JSON object:
@@ -89,21 +89,6 @@ myPort.on('open', portOpen);
 myPort.on('data', readData);
 // called when there's an error with the serial port:
 myPort.on('error', portError);
-
-
-setInterval( function () {
-  message.pinStates = [];
-    for (var pin = 0; pin < 9; pin++) {
-    var f = Math.random();
-    console.log(f);
-      if (f > 0.5) {
-        f = 1;
-      } else {
-        f = 0;
-      }
-      message.pinStates.push(f);
-    }
-}, 5000)
 
 server.listen(8080);              // start the server
 server.get('/json', respondToClient); // respond to GET requests
