@@ -14,8 +14,8 @@ var readings = new Array();  // readings not yet uploaded
 
 // parameters of the BLE peripheral you're looking for:
 var myDevice = {
-  serviceUUID: 'FE10',
-  sensorCharacteristic: 'FE11',
+  serviceUUID: '0927AA6A-3588-11E7-A919-92EBCB67FE33',
+  sensorCharacteristic: '0927ADA8-3588-11E7-A919-92EBCB67FE33',
   id:''
 };
 

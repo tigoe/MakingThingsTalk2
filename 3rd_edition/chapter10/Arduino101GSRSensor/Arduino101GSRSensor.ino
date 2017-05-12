@@ -1,15 +1,21 @@
 /*
- Galvanic Skin Response reader
- Context:  Arduino, for Arduino 101
- */#include <CurieBLE.h>
+  Galvanic Skin Response reader
+  Context:  Arduino, for Arduino 101
+*/
+#include <CurieBLE.h>
 
 int lastInput = 0;    // previous input from the sensor
 int threshold = 10;   // sensor difference threshold
-BLEService sensorService("FE10");  // create service
 
-// create LED characteristic and set descriptor:
-BLEIntCharacteristic sensorCharacteristic("FE11", BLERead | BLENotify);
-BLEIntCharacteristic thresholdCharacteristic("FE12", BLERead | BLEWrite);
+// create service:
+BLEService sensorService( \
+                          "0927AA6A-3588-11E7-A919-92EBCB67FE33");  
+                          
+// create LED characteristic and threshold:
+BLEIntCharacteristic sensorCharacteristic( \
+    "0927ADA8-3588-11E7-A919-92EBCB67FE33", BLERead | BLENotify);
+BLEIntCharacteristic thresholdCharacteristic( \
+    "0927AF9C-3588-11E7-A919-92EBCB67FE33", BLERead | BLEWrite);
 
 void setup() {
   Serial.begin(9600);           // initialize serial
