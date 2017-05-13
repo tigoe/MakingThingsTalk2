@@ -33,12 +33,6 @@ String fileName = "catcam.jpg";    // local filename for the camera image
 
 void setup() {
   size(400, 300);
-  // initialize serial communications
-  // change the port number to your microcontroller's serial port:
-  String portName = Serial.list()[5];
-  myPort = new Serial(this, portName, 9600);
-  // don't generate a serialEvent() unless you get a newline character:
-  myPort.bufferUntil('\n');
   // take control of the camera
   // list all available capture devices to the console to find your camera.
   String[] devices = Capture.list();
@@ -46,6 +40,12 @@ void setup() {
   // Change devices[0] to the proper number for your camera:
   myCam = new Capture(this, width, height, devices[15]);
   myCam.start();
+  // initialize serial communications
+  // change the port number to your microcontroller's serial port:
+  String portName = Serial.list()[5];
+  myPort = new Serial(this, portName, 9600);
+  // don't generate a serialEvent() unless you get a newline character:
+  myPort.bufferUntil('\n');
 }
 
 void draw() {

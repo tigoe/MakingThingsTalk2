@@ -6,6 +6,8 @@
       name (a text string)
       age (an integer)
    Prints a personalized greeting based on the name and age.
+
+   This version takes HTTP POST requests
 */
 
 var express = require('express');	// include the express library
