@@ -1,0 +1,15 @@
+{
+  "name": "crypto-examples",
+  "version": "0.1.0",
+  "description": "examples of how to use crypto",
+  "main": "encrypt.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tigoe/MakingThingsTalk2/"
+  },
+  "author": "Tom Igoe",
+  "license": "ISC"
+}

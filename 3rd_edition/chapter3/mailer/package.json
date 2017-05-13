@@ -1,6 +1,6 @@
 {
   "name": "mailer",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "a mailer program",
   "main": "mailer.js",
   "dependencies": {
