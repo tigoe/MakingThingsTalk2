@@ -5,16 +5,15 @@
 // include required libraries and config files
 #include <SPI.h>
 #include <WiFi101.h>
-#define ENCODER_DO_NOT_USE_INTERRUPTS
 #include <Encoder.h>
 #include <Button.h>
 #include "config.h"      // includes char ssid[] and char pass[] for WiFi connect
 
-const char serverAddress[] = "192.168.0.12";  // server address
+const char serverAddress[] = "192.168.0.10";  // server address
 int port = 8080;                              // port number
 WiFiClient tcpSocket;                         // server socket
 
-Encoder myEncoder(0, 1);       // instance of the encoder library
+Encoder myEncoder(0,1);        // instance of the encoder library
 Button playButton(2);          // instances of the button library
 Button connectButton(3);
 const int playLED = 4;         // pin numbers for the LEDs
