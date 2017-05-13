@@ -43,7 +43,29 @@ void loop() {
         //client.println("HTTP 200 OK\n"); // send an HTTP response
         String response = makeResponse();
         client.println(response);
-        delay(10);                       // give the server time to get the data
+        delay(10);                       // give the client/*
+    Voltmeter Tester
+    Uses analogWrite() to control a voltmeter.
+    Context: Arduino, with  WINC1500 module
+*/
+const int meterPin = 5;
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  // move the meter from lowest to highest values:
+  for (int pwmValue = 0; pwmValue < 255; pwmValue ++) {
+    analogWrite(meterPin, pwmValue); 
+    Serial.println(pwmValue);
+    delay(10);
+  } 
+  delay(1000);
+  // reset the meter to zero and pause:
+  analogWrite(meterPin, 0);
+  delay(1000);
+} time to get the data
         if (client.connected()) {        // if the client's still connected
           client.stop();                 // disconnect the client
         }
