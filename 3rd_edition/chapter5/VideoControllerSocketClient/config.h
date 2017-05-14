@@ -1,4 +1,4 @@
 char ssid[] = "network";     //  your network SSID (name)
-char pass[] = "password"; // your network password
+char password[] = "password"; // your network password
 
 

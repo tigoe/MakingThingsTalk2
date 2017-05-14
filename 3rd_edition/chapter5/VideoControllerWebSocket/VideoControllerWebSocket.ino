@@ -5,7 +5,6 @@
 #include <SPI.h>
 #include <WiFi101.h>
 #include <ArduinoHttpClient.h>
-#define ENCODER_DO_NOT_USE_INTERRUPTS
 #include <Encoder.h>
 #include "config.h"     // includes char ssid[] and char pass[] for WiFi connect
 
@@ -33,14 +32,14 @@ void setup() {
   pinMode(1, INPUT_PULLUP);
   pinMode(connectLED, OUTPUT);      // intialize LED pins
   pinMode(playLED, OUTPUT);
-  pinMode(connectButton, INPUT);            // initialize buttons
+  pinMode(connectButton, INPUT);    // initialize buttons
   pinMode(playButton, INPUT);
 
   // while you're not connected to a WiFi AP,
   while ( WiFi.status() != WL_CONNECTED) {
     Serial.print("Attempting to connect to Network named: ");
     Serial.println(ssid);           // print the network name (SSID)
-    WiFi.begin(ssid, pass);         // try to connect
+    WiFi.begin(ssid, password);     // try to connect
     delay(2000);
   }
 

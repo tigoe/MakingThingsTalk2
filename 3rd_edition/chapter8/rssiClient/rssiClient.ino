@@ -19,7 +19,7 @@ void setup() {
   while ( WiFi.status() != WL_CONNECTED) {
     Serial.print("Attempting to connect to Network named: ");
     Serial.println(ssid);           // print the network name (SSID)
-    WiFi.begin(ssid, pass);         // try to connect
+    WiFi.begin(ssid, password);     // try to connect
     delay(2000);
   }
   Serial.print("Connected to: "); // Now that you're connected,

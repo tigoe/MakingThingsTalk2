@@ -35,16 +35,18 @@ void setup() {
   candle.clear();       // turn off all pixels
   candle.show();        // refresh the candle
 
-  // while you're not connected to a WiFi AP:
+  // while you're not connected to a WiFi AP,
   while ( WiFi.status() != WL_CONNECTED) {
     Serial.print("Attempting to connect to Network named: ");
-    Serial.println(ssid);
-    WiFi.begin(ssid, password); //   try to connect
-    delay(2000);       // wait 2 seconds before trying again
+    Serial.println(ssid);           // print the network name (SSID)
+    WiFi.begin(ssid, password);     // try to connect
+    delay(2000);
   }
 
-  Serial.println("Connected to wifi");
-  printWifiStatus();
+  // When you're connected, print out the device's network status:
+  IPAddress ip = WiFi.localIP();
+  Serial.print("IP Address: ");
+  Serial.println(ip);
   Udp.begin(port);    // initialize UDP communications
 }
 
@@ -129,22 +131,5 @@ unsigned long compare(unsigned long thisColor, unsigned long thatColor) {
   // combine the values to get the new color:
   unsigned long  result = candle.Color(r, g, b);
   return result;
-}
-
-void printWifiStatus() {
-  // print the SSID of the network you're attached to:
-  Serial.print("SSID: ");
-  Serial.println(WiFi.SSID());
-
-  // print your IP address:
-  IPAddress ip = WiFi.localIP();
-  Serial.print("IP Address: ");
-  Serial.println(ip);
-
-  // print the received signal strength:
-  long rssi = WiFi.RSSI();
-  Serial.print("signal strength (RSSI):");
-  Serial.print(rssi);
-  Serial.println(" dBm");
 }
 

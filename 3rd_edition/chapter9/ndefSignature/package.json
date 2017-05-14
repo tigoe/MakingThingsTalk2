@@ -7,7 +7,8 @@
     "body-parser": "^1.17.0",
     "express": "^4.15.0",
     "mifare-classic": "^0.0.2",
-    "ndef": "^0.1.3"
+    "ndef": "^0.1.3",
+    "onoff": "^1.1.2" 
   },
   "devDependencies": {},
   "scripts": {
