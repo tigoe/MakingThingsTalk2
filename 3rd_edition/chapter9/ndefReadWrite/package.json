@@ -1,0 +1,20 @@
+{
+  "name": "ndef-examples",
+  "version": "0.1.0",
+  "description": "a collection of NDEF and mifare classic read-write examples",
+  "main": "readNdef.js",
+  "dependencies": {
+    "mifare-classic": "^0.0.2",
+    "ndef": "^0.1.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tigoe/MakingThingsTalk2/"
+  },
+  "author": "Tom Igoe",
+  "license": "ISC"
+}
