@@ -9,7 +9,7 @@ function setup() {
   // create the shutter button, position it, and give it a callback:
   shutterButton = createButton('shutter');
   shutterButton.position(windowWidth/2, 20);
-  shutterButton.mousePressed(getShutter);
+  shutterButton.touchEnded(getShutter);
   // create the message div and position it:
   messageDiv = createDiv("waiting for messages");
   messageDiv.position(20, 50);

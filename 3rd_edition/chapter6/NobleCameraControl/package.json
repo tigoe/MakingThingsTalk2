@@ -1,0 +1,21 @@
+{
+  "name": "noble-camera-control",
+  "version": "0.1.0",
+  "description": "a node-based BLE controller",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.14.0",
+    "noble": "^1.6.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tigoe/MakingThingsTalk2/"
+  },
+  "author": "Tom Igoe",
+  "license": "ISC"
+}

@@ -74,6 +74,7 @@ void onReceive(int packetSize) {
 
   if (msgLength != incoming.length()) { // check length for error
     Serial.println("error: message length is wrong.");
+    return;           // skip rest of loop
   }
   // if the recipient isn't this device or broadcast,
   if (recipient != localAddress && recipient != 0xFF) {
