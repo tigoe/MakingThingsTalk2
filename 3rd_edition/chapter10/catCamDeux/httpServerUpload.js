@@ -1,5 +1,6 @@
 /*
-  A static file server in node.js.
+  A static file server in node.js that accepts uploads.
+  
   Put your static content in a directory next to this called public.
   context: node.js
 */

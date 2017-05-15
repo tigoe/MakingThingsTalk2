@@ -1,0 +1,24 @@
+{
+  "name": "twilio-sms",
+  "version": "0.1.0",
+  "description": "a collection of scripts for sending and receiving SMS messages from Twilio.com",
+  "main": "smsClient.js",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tigoe/MakingThingsTalk2.git"
+  },
+  "author": "Tom Igoe",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tigoe/MakingThingsTalk2/issues"
+  },
+  "homepage": "https://github.com/tigoe/MakingThingsTalk2#readme"
+}
