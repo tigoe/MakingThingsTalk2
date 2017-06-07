@@ -96,3 +96,15 @@ chapter10/P4ATest/AndroidManifest.xml
 3rd_edition/chapter10/dataServer/data.csv
 
 3rd_edition/chapter10/test/libraries/p5.sound.js
+
+3rd_edition/chapter10/WebBluetooth/server.js
+
+3rd_edition/chapter10/TwilioSms/ArduinoSMSPost/ArduinoSMSPost.ino
+
+3rd_edition/chapter10/TwilioSms/twilioCreds.js
+
+3rd_edition/chapter10/WebBluetooth/https-server.js
+
+3rd_edition/chapter10/WebBluetooth/server.js
+
+3rd_edition/chapter10/WebBluetooth/server.js
