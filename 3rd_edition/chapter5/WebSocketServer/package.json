@@ -1,0 +1,21 @@
+{
+  "name": "websocket-server",
+  "version": "0.0.1",
+  "description": "a simple websocket server",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.15.3",
+    "ws": "^3.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tigoe/MakingThingsTalk2/"
+  },
+  "author": "Tom Igoe",
+  "license": "ISC"
+}
