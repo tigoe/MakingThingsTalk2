@@ -45,17 +45,17 @@ void printWiFiStatus() {
 
   // print the MAC address of the WiFi AP to which you're attached:
   // note: BSSID won't work on the ESP8266, so comment this block out for that processor
-    byte apMac[6];
-    WiFi.BSSID(apMac);
-    Serial.print("BSSID (Base station's MAC address): ");
-    for (int i = 0; i < 5; i++) { // loop from 0 to 4
-      if (apMac[i] < 0x10) {      // if the byte is less than 16 (0x0A hex)
-        Serial.print("0");        // print a 0 to the string
-      }
-      Serial.print(apMac[i], HEX);// print byte of MAC address
-      Serial.print(":");          // add a colon
+  byte apMac[6];
+  WiFi.BSSID(apMac);
+  Serial.print("BSSID (Base station's MAC address): ");
+  for (int i = 0; i < 5; i++) { // loop from 0 to 4
+    if (apMac[i] < 0x10) {      // if the byte is less than 16 (0x0A hex)
+      Serial.print("0");        // print a 0 to the string
     }
-    Serial.println(apMac[5], HEX);// println final byte of address
+    Serial.print(apMac[i], HEX);// print byte of MAC address
+    Serial.print(":");          // add a colon
+  }
+  Serial.println(apMac[5], HEX);// println final byte of address
 
 
   // print your MAC address:

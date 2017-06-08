@@ -10,7 +10,7 @@
 #include "config.h"
 
 WiFiClient netSocket;               // network socket to server
-const char server[] = "example.com";  // server name
+const char server[] = "192.168.0.12";  // server name
 String route = "/foo";              // API route
 
 void setup() {
@@ -42,6 +42,6 @@ void loop() {
   }
   // when there's nothing left to the response,
   http.stop();                     // close the request
-  delay(10000);                    // wait 10 seconds
+  delay(500);                    // wait 10 seconds
 }
 
