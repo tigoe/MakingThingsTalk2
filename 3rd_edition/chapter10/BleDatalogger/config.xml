@@ -10,7 +10,6 @@
     <content src="index.html" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="android-minSdkVersion" value="14" />
-    <plugin name="cordova-plugin-battery-ble-central" source="npm" spec="~1.1.4" />
     <platform name="android">
     </platform>
     <platform name="ios">
@@ -29,4 +28,5 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
+    <plugin name="cordova-plugin-ble-central" spec="~1.1.4" />
 </widget>
