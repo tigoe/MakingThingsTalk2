@@ -10,7 +10,7 @@
 #include "config.h"
 
 WiFiClient netSocket;               // network socket to device
-const char wemo[] = "192.168.0.17"; // device address
+const char wemo[] = "192.168.0.2"; // device address
 int port = 49153;                   // port number
 String route = "/upnp/control/basicevent1";  // API route
 String soap;                        // string for the SOAP request
@@ -21,8 +21,8 @@ void setup() {
   // while you're not connected to a WiFi AP,
   while ( WiFi.status() != WL_CONNECTED) {
     Serial.print("Attempting to connect to Network named: ");
-    Serial.println(ssid);           // print the network name (SSID)
     WiFi.begin(ssid, password);     // try to connect
+     WiFi.begin(ssid);     // try to connect
     delay(2000);
   }
 
