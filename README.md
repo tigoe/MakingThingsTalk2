@@ -1,4 +1,6 @@
-These code samples, in Arduino, Processing, and PHP, are for my book "Making Things Talk", second edition. Note that the Arduino examples are all written for the current experimental build of Arduino, so will not work in versions 22 or earlier.
+## Making Things Talk
+
+These code samples, in Arduino, Processing, and PHP, are for my book [Making Things Talk](http://shop.oreilly.com/product/0636920031369.do), second and third editions. All of the latest material is in the 3rd_edition directory.
 
 The book itself is copyrighted material, published under a Creative Commons CC-NC-ND license. As for the code:
 
