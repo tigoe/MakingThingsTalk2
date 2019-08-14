@@ -111,3 +111,5 @@ chapter10/P4ATest/AndroidManifest.xml
 3rd_edition/chapter4/TestHttpSSLClient/arduino_secrets.h
 3rd_edition/chapter3/crypto/.vscode/c_cpp_properties.json
 3rd_edition/chapter3/crypto/.vscode/arduino.json
+3rd_edition/chapter4/.vscode/arduino.json
+3rd_edition/chapter4/.vscode/c_cpp_properties.json
