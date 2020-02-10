@@ -10,9 +10,9 @@
   modified 8 Feb 2020
   by Tom Igoe
 */
+
 // include required libraries and config files
 #include <SPI.h>
-
 #include <WiFiNINA.h>           // use this  for MKR1010/Nano 33 IoT modules
 //#include <WiFi101.h>          // use this  for MKR1000/WINC1500 modules
 //#include <ESP8266WiFi.h>      // use this for ESP8266 modules
