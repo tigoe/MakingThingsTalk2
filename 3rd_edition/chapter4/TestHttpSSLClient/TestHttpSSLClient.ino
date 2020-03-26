@@ -21,7 +21,7 @@
 
 WiFiSSLClient netSocket;                  // network socket to server
 const char server[] = "www.example.com";  // server name
-String route = "/";                       // API route
+String route = "/api/route";              // API route
 int portNumber = 443;
 
 void setup() {
@@ -43,8 +43,8 @@ void setup() {
 
 void loop() {
   HttpClient http(netSocket, server, portNumber); // make an HTTP client
-  http.get(route);                                // make a GET request
-
+  http.get(route);     // make a GET request
+  
   while (http.connected()) {              // while connected to the server,
     if (http.available()) {               // if there is a response from the server,
       String result = http.readString();  // read it

@@ -7,9 +7,10 @@
 */
 
 #include <SPI.h>
-#include <WiFi101.h>
-//#include <ESP8266WiFi.h>    // use this instead of WiFi101 for ESP8266 modules
-#include "config.h"
+//#include <WiFi101.h>        // use this for MKR1000 boards
+//#include <ESP8266WiFi.h>  // use this instead of WiFi101 for ESP8266 modules
+#include <WiFiNINA.h>       // use this for MKR1010 and Nano 33 IoT boards
+#include "arduino_secrets.h"
 
 void setup() {
   Serial.begin(9600);
@@ -17,8 +18,8 @@ void setup() {
   // while you're not connected to a WiFi AP,
   while ( WiFi.status() != WL_CONNECTED) {
     Serial.print("Attempting to connect to Network named: ");
-    Serial.println(ssid);           // print the network name (SSID)
-    WiFi.begin(ssid, pass);         // try to connect
+    Serial.println(SECRET_SSID);           // print the network name (SSID)
+    WiFi.begin(SECRET_SSID, SECRET_PASS);  // try to connect
     delay(5000);                    // wait 2 seconds before next attempt
   }
 }
@@ -93,5 +94,3 @@ void printWiFiStatus() {
   Serial.println(" dBm");
   Serial.println();
 }
-
-

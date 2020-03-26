@@ -1,22 +1,25 @@
 /*
   Web  Server
-  Context: Arduino, with WINC1500 module
+  Context: Arduino, with WINC1500 module or UBlox NINA module
 */
 
 #include <SPI.h>
-#include <WiFi101.h>
-//#include <ESP8266WiFi.h>    // use this instead of WiFi101 for ESP8266 modules
-#include "config.h"
+//#include <WiFi101.h>        // use this for MKR1000 boards
+//#include <ESP8266WiFi.h>  // use this instead of WiFi101 for ESP8266 modules
+#include <WiFiNINA.h>       // use this for MKR1010 and Nano 33 IoT boards
+#include "arduino_secrets.h"
 
 WiFiServer server(80);        // make an instance of the server class
 
 void setup() {
-  Serial.begin(9600);// initialize serial communications
+  Serial.begin(9600); // initialize serial communications
+  while(!Serial);     // wait until serial monitor is open
+  
   // while you're not connected to a WiFi AP:
   while ( WiFi.status() != WL_CONNECTED) {
     Serial.print("Attempting to connect to Network named: ");
-    Serial.println(ssid);
-    WiFi.begin(ssid, pass); //   try to connect
+    Serial.println(SECRET_SSID);
+    WiFi.begin(SECRET_SSID, SECRET_PASS); //   try to connect
     delay(2000);       // wait 2 seconds before trying again
   }
 
