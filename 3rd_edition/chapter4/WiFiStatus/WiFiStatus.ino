@@ -14,7 +14,8 @@
 
 void setup() {
   Serial.begin(9600);
-  Serial.println("Starting");
+  while (!Serial);        // wait for serial monitor to open
+  
   // while you're not connected to a WiFi AP,
   while ( WiFi.status() != WL_CONNECTED) {
     Serial.print("Attempting to connect to Network named: ");

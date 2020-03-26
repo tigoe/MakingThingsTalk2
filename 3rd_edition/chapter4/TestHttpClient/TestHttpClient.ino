@@ -1,7 +1,7 @@
 /*
   Test HTTP Client
   Context: Arduino, with WINC1500 module or uBlox NINA module
- 
+
 */
 // include required libraries and config files
 #include <SPI.h>
@@ -10,7 +10,7 @@
 #include <WiFiNINA.h>       // use this for MKR1010 and Nano 33 IoT boards
 #include "arduino_secrets.h"
 #include <ArduinoHttpClient.h>
-#include "arduino_secrets.h"
+
 
 WiFiClient netSocket;               // network socket to server
 const char server[] = "www.example.com";  // server name
@@ -18,7 +18,8 @@ String route = "/api/route";              // API route
 
 void setup() {
   Serial.begin(9600);               // initialize serial communication
-
+  while (!Serial);        // wait for serial monitor to open
+  
   // while you're not connected to a WiFi AP,
   while ( WiFi.status() != WL_CONNECTED) {
     Serial.print("Attempting to connect to Network named: ");

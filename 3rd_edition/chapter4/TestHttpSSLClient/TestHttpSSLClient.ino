@@ -25,8 +25,9 @@ String route = "/api/route";              // API route
 int portNumber = 443;
 
 void setup() {
-  Serial.begin(9600);               // initialize serial communication
-
+  Serial.begin(9600);     // initialize serial communication
+  while (!Serial);        // wait for serial monitor to open
+  
   // while you're not connected to a WiFi AP,
   while ( WiFi.status() != WL_CONNECTED) {
     Serial.print("Attempting to connect to Network named: ");
@@ -44,7 +45,7 @@ void setup() {
 void loop() {
   HttpClient http(netSocket, server, portNumber); // make an HTTP client
   http.get(route);     // make a GET request
-  
+
   while (http.connected()) {              // while connected to the server,
     if (http.available()) {               // if there is a response from the server,
       String result = http.readString();  // read it
