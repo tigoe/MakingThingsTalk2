@@ -14,7 +14,7 @@
 
 WiFiClient netSocket;               // network socket to server
 const char server[] = "www.example.com";  // server name
-String route = "/api/route";              // API route
+String route = "/";              // API route
 
 void setup() {
   Serial.begin(9600);               // initialize serial communication
@@ -38,17 +38,6 @@ void loop() {
   Serial.println("making request");
   HttpClient http(netSocket, server, 80);      // make an HTTP client
   http.get(route);  // make a GET request
-
-  // read the status code and body of the response
-  int statusCode = http.responseStatusCode();
-  String response = http.responseBody();
-
-  // print them:
-  Serial.print("Status code from server: ");
-  Serial.println(statusCode);
-  Serial.print("Server response: ");
-  Serial.println(response);
-  Serial.println();
 
   while (http.connected()) {       // while connected to the server,
     if (http.available()) {        // if there is a response from the server,
