@@ -11,17 +11,17 @@ var account = {
   port: 465,
   secure: true,
   auth: {
-    user: 'tigoe@tigoe.com',
-    pass:'9hcPE3&EvsjM8mFg'
+    user: 'your.mail@dreamhost.com',
+    pass: 'your_password'
   }
 }
 
 // define the message:
 var message = {
   from: account.auth.user,
-  to: 'tom.igoe@nyu.edu',
-  subject: 'Lolo',
-  text: 'The cat says hello',
+  to: 'recipient@gmail.com',
+  subject: 'Hello',
+  text: 'Hello world',
 };
 
 // make a callback function to respond when the mail is sent:
