@@ -1,1 +1,1 @@
-See the [mailer script readme](../mailer.readme.md) for important details on using the node mailer script. 
+See the [mailer script readme](../mailer) for important details on using the node mailer script. 
