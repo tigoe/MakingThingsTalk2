@@ -7,21 +7,21 @@ var nodemailer = require('nodemailer');
 
 // define your account and mail server:
 var account = {
-  host: 'smtp.gmail.com',
+  host: 'imap.dreamhost.com',
   port: 465,
   secure: true,
   auth: {
-    user: 'your.mail@gmail.com',
-    pass: 'your_password'
+    user: 'tigoe@tigoe.com',
+    pass:'9hcPE3&EvsjM8mFg'
   }
 }
 
 // define the message:
 var message = {
   from: account.auth.user,
-  to: 'recipient@gmail.com',
-  subject: 'Hello',
-  text: 'Hello world',
+  to: 'tom.igoe@nyu.edu',
+  subject: 'Lolo',
+  text: 'The cat says hello',
 };
 
 // make a callback function to respond when the mail is sent:

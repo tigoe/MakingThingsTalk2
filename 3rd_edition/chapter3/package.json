@@ -6,7 +6,7 @@
   "dependencies": {
     "crypto": "^0.0.3",
     "express": "^4.15.2",
-    "nodemailer": "^4.0.1"
+    "nodemailer": "^6.4.16"
   },
   "devDependencies": {},
   "scripts": {

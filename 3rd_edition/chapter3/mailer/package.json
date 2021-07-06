@@ -4,7 +4,7 @@
   "description": "a mailer program",
   "main": "mailer.js",
   "dependencies": {
-    "nodemailer": "^2.3.2"
+    "nodemailer": "^6.4.16"
   },
   "devDependencies": {},
   "scripts": {

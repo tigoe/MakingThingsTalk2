@@ -1,0 +1,1 @@
+See the [mailer script readme](../mailer.readme.md) for important details on using the node mailer script. 
