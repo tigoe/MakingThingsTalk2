@@ -2,7 +2,7 @@
 decryption script
 context: node.js
 to run this script add the filename and key at the end of your command like so:
-$ node encrypt.js message key
+$ node decrypt.js message key
 
 Updated 2 Nov 2020 because createDecipher had been deprecated.
 

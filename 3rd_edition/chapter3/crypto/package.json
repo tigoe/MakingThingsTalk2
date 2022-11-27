@@ -1,15 +1,19 @@
 {
   "name": "crypto-examples",
-  "version": "0.1.1 ",
+  "version": "0.1.2",
   "description": "examples of how to use crypto",
-  "main": "encrypt.js",
+  "main": "decrypt.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tigoe/MakingThingsTalk2/"
+    "url": "git+https://github.com/tigoe/MakingThingsTalk2.git"
   },
   "author": "Tom Igoe",
-  "license": "ISC"
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tigoe/MakingThingsTalk2/issues"
+  },
+  "homepage": "https://github.com/tigoe/MakingThingsTalk2#readme"
 }
