@@ -4,7 +4,7 @@
   "description": "A websoocket-based video controller server",
   "main": "server.js",
   "dependencies": {
-    "express": "^4.15.2",
+    "express": "^4.17.3",
     "ws": "^3.3.1"
   },
   "devDependencies": {},
