@@ -25,7 +25,7 @@ const int connectedLED = 4;           // indicates connection to server
 const int meterPin = 5;               // controls voltmeter
 const int meterMin = 0;               // minimum level for the meter
 const int meterMax = 255;             // maximum level for the meter
-const int AQIMax = 200;               // maximum level for air quality
+const int AQIMax = 350;               // maximum level for air quality
 const long requestInterval = 120000;  // delay between updates to the server
 
 // use WiFiSSLClient for https:
