@@ -4,7 +4,7 @@
   "description": "a collection of scripts to make a catCam",
   "main": "httpServer.js",
   "dependencies": {
-    "body-parser": "^1.19.0",
+    "body-parser": "^1.20.2",
     "express": "^4.17.3",
     "multer": "^1.4.3",
     "mqtt": "^4.2.8",
