@@ -5,7 +5,7 @@
   "main": "httpServer.js",
   "dependencies": {
     "body-parser": "^1.19.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "multer": "^1.4.3",
     "mqtt": "^4.2.8",
     "twilio": "^3.71.1"
