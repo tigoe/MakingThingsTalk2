@@ -82,15 +82,17 @@ void connectToServer() {
   http.skipResponseHeaders();  // ignore the HTTP headers
   // while connected to the server:
   while (http.connected()) {
-    setLeds();                        // update status LEDs
-    if (http.available()) {           // if there's a response from the server,
-      http.findUntil("PM2.5", "\n");  // parse response for "PM2.5"
-      AQI = http.parseInt();          // read PM2.5 value from the response
-      http.flush();                   // throw out the rest of the response
-      if (AQI > -1) {                 // If you got an AQI value,
-        Serial.print("PM2.5: ");      // print it out, and
-        Serial.println(AQI);
-        setMeter(AQI);  //  set the meter
+    setLeds();                                       // update status LEDs
+    if (http.available()) {                          // if there's a response from the server,
+      bool gotPM25 = http.findUntil("PM2.5", "\n");  // parse response for "PM2.5"
+      if (gotPM25) {                                 // if there's a PM2.5 value,
+        AQI = http.parseInt();                       // read PM2.5 value from the response
+        http.flush();                                // throw out the rest of the response
+        if (AQI > -1) {                              // If you got an AQI value,
+          Serial.print("PM2.5: ");                   // print it out, and
+          Serial.println(AQI);
+          setMeter(AQI);  //  set the meter
+        }
       }
       http.stop();  // close the request
     }
